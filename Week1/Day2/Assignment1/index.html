@@ -96,5 +96,57 @@
 
     </div>
 
+    <!-- Overlay & Modal -->
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-60 hidden z-40"></div>
+    <div id="modal" class="fixed inset-0 flex items-center justify-center hidden z-50">
+      <div id="modal-wrapper" class="rounded-xl shadow-[0_0_30px_6px_rgba(117,65,200,0.6)] transition-all duration-300 transform scale-90 opacity-0"></div>
+    </div>
+
+    <script>
+      const cards = document.querySelectorAll('.grid > div');
+      const modal = document.getElementById('modal');
+      const overlay = document.getElementById('overlay');
+      const modalWrapper = document.getElementById('modal-wrapper');
+
+      cards.forEach(card => {
+        card.style.cursor = 'pointer';
+        card.addEventListener('click', () => {
+          // Clone entire card with class styles
+          const clone = card.cloneNode(true);
+          clone.classList.add("max-w-2xl", "w-full");
+
+          // Clear previous content
+          modalWrapper.innerHTML = '';
+          modalWrapper.appendChild(clone);
+
+          // Show modal + overlay
+          modal.classList.remove('hidden');
+          overlay.classList.remove('hidden');
+
+          // Animation
+          requestAnimationFrame(() => {
+            modalWrapper.classList.remove('scale-60', 'opacity-0');
+            modalWrapper.classList.add('scale-100', 'opacity-100');
+          });
+        });
+      });
+
+      // Click outside to close
+      overlay.addEventListener('click', closeModal);
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+      });
+
+      function closeModal() {
+        modalWrapper.classList.remove('scale-100', 'opacity-100');
+        modalWrapper.classList.add('scale-90', 'opacity-0');
+
+        setTimeout(() => {
+          modal.classList.add('hidden');
+          overlay.classList.add('hidden');
+        }, 200);
+      }
+    </script>
+
   </body>
 </html>
