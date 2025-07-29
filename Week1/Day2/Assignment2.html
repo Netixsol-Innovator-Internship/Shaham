@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Assignment 2</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      color: #222;
+    }
+
+    .container {
+        width: 60vw;
+        margin: 40px auto;
+        color: #222;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 24px;
+      margin-bottom: 5px;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .contact {
+      text-align: center;
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 20px;
+    }
+
+    .contact i {
+      margin: 0 5px;
+      color: green;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid #aaa;
+      margin: 20px 0 10px;
+    }
+
+    .grid-section {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      column-gap: 30px;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-weight: bold;
+      font-size: 14px;
+      color: #333;
+      text-align: left;
+    }
+
+    .socials {
+      display: flex;
+      justify-content: space-around;
+      font-size: 13px;
+    }
+
+    .socials div {
+      text-align: center;
+    }
+
+    .summary-text {
+      font-size: 14px;
+      text-align: justify;
+    }
+
+    .experience-entry {
+      margin-bottom: 15px;
+    }
+
+    .job-company {
+      display: flex;
+      justify-content: space-between;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .job-title {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 2px;
+      font-size: 12px;
+      color: #444;
+    }
+
+    .job-location {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 5px;
+    }
+
+    .certifications {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+    }
+
+    ul {
+      margin-top: 5px;
+      margin-left: 20px;
+    }
+
+    ul li {
+      font-size: 13px;
+      margin-bottom: 3px;
+    }
+
+    .two-col {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .two-col > div {
+      width: 48%;
+      font-size: 13px;
+    }
+
+    .skills-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        font-size: 13px;
+        flex-wrap: nowrap;
+    }
+
+    .skills-block {
+        width: 32%;
+    }
+
+    .bold {
+      font-weight: bold;
+    }
+
+    .small {
+      font-size: 12px;
+      color: #444;
+    }
+  </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>John Doe</h1>
+        <div class="subtitle">Creative and Innovative Web Developer</div>
+
+        <div class="contact">
+            <i class="fas fa-location-dot"></i> Pleasantville, CA 94588
+            <i class="fas fa-phone"></i> (555) 123-4567
+            <i class="fas fa-envelope"></i> john.doe@gmail.com
+            <i class="fas fa-globe"></i> https://johndoe.dev
+        </div>
+
+        <hr>
+        <div class="grid-section">
+            <div class="section-title">Profiles</div>
+            <div class="socials">
+            <div class="header"><i class="fab fa-linkedin"></i> johndoe<br><span class="small" style=";">LinkedIn</span></div>
+            <div class="header"><i class="fab fa-github"></i> johndoe<br><span class="small">GitHub</span></div>
+            <div class="header"><i class="fab fa-stack-overflow"></i> johndoe<br><span class="small">StackOverflow</span></div>
+            </div>
+        </div>
+
+        <hr>
+        <div class="grid-section">
+            <div class="section-title">Summary</div>
+            <div class="summary-text">
+            Innovative Web Developer with 5 years of experience in building impactful and user-friendly websites and applications.
+            Specializes in <strong>front-end technologies</strong> and passionate about modern web standards and cutting-edge development techniques.
+            Proven track record of leading successful projects from concept to deployment.
+            </div>
+        </div>
+
+        <hr>
+        <div class="grid-section">
+            <div class="section-title">Experience</div>
+            <div>
+            <div class="experience-entry">
+                <div class="job-company">
+                    <span>Creative Solutions Inc.</span>
+                    <span>January 2019 to Present</span>
+                </div>
+                <div class="job-title">
+                    <span>Senior Web Developer</span>
+                    <span>San Francisco, CA</span>
+                </div>
+                <div class="job-location"><i class="fas fa-link"></i>https://creativesolutions.inc/</div>
+                <ul>
+                <li>Superheaded the redesign of the main product website, resulting in a 40% increase in user engagement.</li>
+                <li>Developed and implemented a new responsive framework, improving cross-device compatibility.</li>
+                <li>Mentored a team of four junior developers, fostering a culture of technical excellence.</li>
+                </ul>
+            </div>
+
+            <div class="experience-entry">
+                <div class="job-company">
+                <span>TechAdvancers</span>
+                <span>June 2016 to December 2018</span>
+                </div>
+                <div class="job-title">
+                    <span>Web Developer</span>
+                    <span>San Jose, CA</span>
+                </div>
+                <div class="job-location"><i class="fas fa-link"></i> techadvancers.com - San Jose, CA</div>
+                <ul>
+                <li>Collaborated in a team of 10 to develop high-quality web application using React.js and Node.js.</li>
+                <li>Managed the integration of third-party services such as Stripe for payments and Twilio for SMS services.</li>
+                <li>Optimized application performance, achieving a 30% reduction in load times.</li>
+                </ul>
+            </div>
+            </div>
+        </div>
+
+        <hr>
+        <div class="grid-section">
+            <div class="section-title">Education</div>
+            <div class="two-col">
+            <div>
+                <span class="bold">University of California</span><br>
+                Berkeley, CA
+            </div>
+            <div style="text-align: right;">
+                <div style="font-weight: bold;">
+                    August 2012 to May 2016
+                </div>
+                Bachelor's in Computer Science
+            </div>
+            </div>
+        </div>
+
+        <hr>
+        <div class="grid-section">
+            <div class="section-title">Projects</div>
+            <div class="two-col">
+                <div>
+                    <span class="bold">E-Commerce Platform</span><br>
+                    Project Lead<br>
+                    Led the development of a full-stack e-commerce platform, improving sales conversion by 25%.
+                </div>
+                <div>
+                    <span class="bold">Interactive Dashboard</span><br>
+                    Frontend Developer<br>
+                    Created an analytics dashboard for a SaaS application, enhancing data visualization for clients.
+                </div>
+            </div>
+        </div>
+
+        <hr>
+        <div class="grid-section">
+            <div class="section-title">Skills</div>
+            <div class="skills-row">
+                <div class="skills-block">
+                <span class="bold">Web Technologies</span><br>
+                Advanced<br>
+                HTML5, JavaScript, PHP, Python
+                </div>
+                <div class="skills-block">
+                <span class="bold">Web Frameworks</span><br>
+                Intermediate<br>
+                React.js, Angular, Vue.js, Laravel, Django
+                </div>
+                <div class="skills-block">
+                <span class="bold">Tools</span><br>
+                Intermediate<br>
+                Webpack, Git, Jenkins, Docker, JIRA
+                </div>
+            </div>
+        </div>
+
+        <hr>
+        <div class="grid-section">
+            <div class="section-title">Certifications</div>
+            <div class="two-col">
+            <div class="certifications">
+                <div>
+                    <span class="bold">Full-Stack Web Development</span><br>
+                    CodeAcademy
+                </div>
+                <div style="font-weight: bold;">
+                    2020
+                </div>
+            </div>
+            <div class="certifications">
+                <div>
+                    <span class="bold">AWS Certified Developer</span><br>
+                    Amazon Web Services
+                </div>
+                <div style="font-weight: bold;">
+                    2019
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <hr>
+        <div class="grid-section">
+            <div class="section-title">Languages</div>
+            <div class="two-col">
+            <div>
+                <span class="bold">English</span><br>
+                Native Speaker
+            </div>
+            <div>
+                <span class="bold">Spanish</span><br>
+                Intermediate
+            </div>
+            </div>
+        </div>
+
+        <hr>
+        <div class="grid-section">
+            <div class="section-title">References</div>
+            <div style="font-weight: bold; font-size: 14px;">Available upon request</div>
+        </div>
+
+    </div>
+</body>
+</html>
