@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -120,9 +120,9 @@
       <div>Gallery</div>
     </div>
 
-    <div class="relative flex flex-col items-center justify-center h-full px-4 text-center">
-      <div class="w-[752px] h-[278px] flex flex-col items-center gap-[4px] text-center text-white z-30">
-        <h1 class="text-[98px] font-bold leading-[116%] mt-[90px]">About Us</h1>
+    <div class="relative flex flex-col items-center justify-center align-middle h-full px-4 text-center mt-[100px]">
+      <div class="w-[752px] h-[399px] flex flex-col items-center gap-[4px] text-center text-white z-30">
+        <h1 class="text-[98px] font-bold leading-[116%] mt-[290px]">About Us</h1>
         <p class="text-[20px] font-normal leading-[116%] w-full">Discover the country's hidden gems and breathtaking landscapes</p>
       </div>
       <div class="w-[1349px] h-[139px] flex justify-between text-white"></div>
@@ -130,133 +130,140 @@
     </div>
   </div>
 
-    <div class="absolute bottom-0 left-0 w-full h-[200px] bg-gradient-to-t from-black to-transparent opacity-90 z-20"></div>
+  <div class="absolute bottom-0 left-0 w-full h-[200px] bg-gradient-to-t from-black to-transparent opacity-90 z-20"></div>
 
-  <div class="text-white text-center px-4 py-10 sm:py-14 md:py-16">
-    <h2 class="text-3xl sm:text-4xl md:text-5xl leading-[116%] font-semibold font-[Poppins]">Saudi, a kingdom that inspires</h2>
-    <p class="text-lg sm:text-xl md:text-2xl leading-[125%] font-light font-[Poppins] mt-2 sm:mt-3 md:mt-4 max-w-xl sm:max-w-2xl mx-auto">a uniquely saudi experience waits in winters</p>
+  <div class="bg-white text-black font-[Poppins] dark:bg-black dark:text-white">
+    <div class="text-center px-4 py-10 sm:py-14 md:py-16">
+      <h2 class="text-3xl sm:text-4xl md:text-5xl leading-[116%] font-semibold font-[Poppins]">Saudi, a kingdom that inspires</h2>
+      <p class="text-lg sm:text-xl md:text-2xl leading-[125%] font-light font-[Poppins] mt-2 sm:mt-3 md:mt-4 max-w-xl sm:max-w-2xl mx-auto">a uniquely saudi experience waits in winters</p>
+    </div>
+
+    <section class="max-w-[1320px] mx-auto px-4 pt-8 pb-24">
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-semibold leading-tight mb-16">
+        Traditions of Saudi Arabia
+      </h1>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-y-16 gap-x-12 items-start">
+        <div class="w-full max-w-[520px] mx-auto aspect-[5/4] rounded-[28px] overflow-hidden">
+          <img
+            id="languageImage"
+            src="../Images/Language.png"
+            alt="Language"
+            class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+        </div>
+        <div class="relative">
+          <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-4">Language</h2>
+          <p class="text-base sm:text-lg md:text-xl leading-relaxed text-justify mb-10">
+            Arabic is the official language of Saudi Arabia and the primary language used in all dealings and public transactions. English serves as an informal second language in the Kingdom and is spoken by a large section of its society. All road signs are bilingual, showing information in both Arabic and English.
+          </p>
+          <button
+            onclick="nextLanguageSlide()"
+            class="absolute -bottom-2 right-0 translate-y-[50%] w-16 h-16 sm:w-[72px] sm:h-[72px] text-black dark:text-white"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="0.7"
+              stroke="currentColor"
+              class="w-full h-full cursor-pointer"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+              />
+            </svg>
+          </button>
+        </div>
+
+        <div class="relative self-start">
+          <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-4">Culture</h2>
+          <p class="text-base sm:text-lg md:text-xl leading-relaxed text-justify mb-10">
+            Saudi Arabia's rich heritage and traditions have been shaped by its position as a historic trade hub and the birthplace of Islam. In recent years, the Kingdom has undergone a significant cultural transformation, evolving century-old customs to fit the contemporary world we live in today.
+          </p>
+
+          <button
+            onclick="nextCultureSlide()"
+            class="absolute -bottom-14 -right-4 w-16 h-16 sm:w-[72px] sm:h-[72px] text-black dark:text-white"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="0.7"
+              stroke="currentColor"
+              class="w-full h-full cursor-pointer"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+              />
+            </svg>
+          </button>
+        </div>
+
+        <div class="w-full max-w-[520px] mx-auto aspect-[5/4] rounded-[28px] overflow-hidden self-end">
+          <img
+            id="cultureImage"
+            src="../Images/Culture.png"
+            alt="Culture"
+            class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+        </div>
+      </div>
+    </section>
   </div>
 
-  <section class="max-w-[1320px] mx-auto px-4 pt-8 pb-24">
-    <h1 class="text-3xl sm:text-4xl md:text-5xl font-semibold leading-tight mb-16">
-      Traditions of Saudi Arabia
-    </h1>
-
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-y-16 gap-x-12 items-start">
-      <div class="w-full max-w-[520px] mx-auto aspect-[5/4] rounded-[28px] overflow-hidden">
-        <img
-          id="languageImage"
-          src="../Images/Language.png"
-          alt="Language"
-          class="w-full h-full object-cover"
-        />
-      </div>
-      <div class="relative">
-        <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-4">Language</h2>
-        <p class="text-base sm:text-lg md:text-xl leading-relaxed text-justify mb-10">
-          Arabic is the official language of Saudi Arabia and the primary language used in all dealings and public transactions. English serves as an informal second language in the Kingdom and is spoken by a large section of its society. All road signs are bilingual, showing information in both Arabic and English.
-        </p>
-        <button
-          onclick="nextLanguageSlide()"
-          class="absolute -bottom-2 right-0 translate-y-[50%] w-16 h-16 sm:w-[72px] sm:h-[72px] text-white"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="0.7"
-            stroke="currentColor"
-            class="w-full h-full"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-            />
-          </svg>
-        </button>
-      </div>
-
-      <div class="relative self-start">
-        <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-4">Culture</h2>
-        <p class="text-base sm:text-lg md:text-xl leading-relaxed text-justify mb-10">
-          Saudi Arabia's rich heritage and traditions have been shaped by its position as a historic trade hub and the birthplace of Islam. In recent years, the Kingdom has undergone a significant cultural transformation, evolving century-old customs to fit the contemporary world we live in today.
-        </p>
-
-        <button
-          onclick="nextCultureSlide()"
-          class="absolute -bottom-14 -right-4 w-16 h-16 sm:w-[72px] sm:h-[72px] text-white"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="0.7"
-            stroke="currentColor"
-            class="w-full h-full"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-            />
-          </svg>
-        </button>
-      </div>
-
-      <div class="w-full max-w-[520px] mx-auto aspect-[5/4] rounded-[28px] overflow-hidden self-end">
-        <img
-          id="cultureImage"
-          src="../Images/Culture.png"
-          alt="Culture"
-          class="w-full h-full object-cover"
-        />
-      </div>
-    </div>
-  </section>
-
-  <section class="flex items-center justify-center p-4">
+  <!-- Contact -->
+  <section class="flex items-center justify-center p-4 bg-white dark:bg-black">
     <div class="w-full max-w-[1393px] h-auto min-h-[80px] sm:h-[140px] md:h-[180px] lg:h-[200px] bg-gradient-to-r from-[#047F01] to-[#047E01] rounded-pill shadow-whatsappShine px-4 sm:px-6 md:px-10 flex flex-col sm:flex-row items-center justify-between py-4 sm:py-2 whatsapp-cta">
       <h2 class="text-white text-xl sm:text-2xl lg:text-[28px] font-semibold tracking-tightCustom px-2 sm:px-0">Contact us on Whatsapp</h2>
       <button class="w-[140px] sm:w-[160px] md:w-[180px] lg:w-[200px] h-[40px] sm:h-[50px] md:h-[55px] lg:h-[60px] bg-white rounded-button flex items-center justify-center hover:bg-gray-100 transition-colors">
-        <span class="text-[#047E01] text-base sm:text-lg lg:text-[18px] font-normal tracking-tightCustom">Start Chat</span>
+        <span class="text-[#047E01] text-base sm:text-lg lg:text-[18px] font-normal tracking-tightCustom cursor-pointer">Start Chat</span>
       </button>
     </div>
   </section>
 
-  <section class="flex mt-16 justify-center p-4">
-    <div class="slider-container relative w-full max-w-[1264px] h-[180px] sm:h-[300px] md:h-[380px] overflow-hidden mx-auto">
-      <div id="sliderTrack" class="slider-track flex transition-transform duration-700 ease-in-out h-full">
-        <!-- Slide 1 -->
-        <div class="slide relative w-full h-full flex-shrink-0">
-          <img src="../Images/Explore.png" class="w-full h-full object-cover" alt="Explore Saudi Arabia" />
-          <div class="absolute left-0 top-1/2 -translate-y-1/2 flex items-center w-[90%] max-w-[1118px] pl-4 sm:pl-6 md:pl-10 text-white">
-            <h2 class="text-2xl sm:text-4xl md:text-5xl lg:text-[60px] font-semibold">Explore<br />Saudi Arabia</h2>
+  <div class="bg-white flex items-center justify-center min-h-screen p-4 md:p-0 dark:bg-black">
+      <div class="slider-container relative w-full max-w-[1264px] h-[180px] sm:h-[300px] md:h-[380px] overflow-hidden mx-auto">
+        <div id="sliderTrack" class="slider-track flex transition-transform duration-700 ease-in-out h-full">
+          <div class="slide relative w-full h-full flex-shrink-0">
+            <img src="../Images/Explore.png" class="w-full h-full object-cover" alt="Explore Saudi Arabia" />
+            <div class="absolute left-0 top-1/2 -translate-y-1/2 flex items-center w-[90%] max-w-[1118px] h-[20%] min-h-[80px] sm:min-h-[100px] md:min-h-[128px] pl-4 sm:pl-6 md:pl-10 text-white">
+              <div class="w-[70%] md:w-[553px] h-full">
+                <h2 class="text-2xl sm:text-4xl md:text-5xl lg:text-[60px] font-semibold leading-[106%] tracking-[-0.01em]">
+                  Explore<br />Saudi Arabia
+                </h2>
+              </div>
+            </div>
+          </div>
+          <div class="slide relative w-full h-full flex-shrink-0">
+            <img src="../Images/Neom.png" class="w-full h-full object-cover" alt="NEOM" />
+            <div class="absolute left-0 top-1/2 -translate-y-1/2 flex items-center w-[90%] max-w-[1118px] h-[20%] min-h-[80px] sm:min-h-[100px] md:min-h-[128px] pl-4 sm:pl-6 md:pl-10 text-white">
+              <h2 class="text-2xl sm:text-4xl md:text-5xl lg:text-[60px] font-semibold leading-[106%] tracking-[-0.01em]">
+                Made To Change<br />NEOM
+              </h2>
+            </div>
+          </div>
+          <div class="slide relative w-full h-full flex-shrink-0">
+            <img src="../Images/KSA.png" class="w-full h-full object-cover" alt="KSA" />
+            <div class="absolute left-0 top-1/2 -translate-y-1/2 flex items-center w-[90%] max-w-[1118px] h-[20%] min-h-[80px] sm:min-h-[100px] md:min-h-[128px] pl-4 sm:pl-6 md:pl-10 text-white">
+              <h2 class="text-2xl sm:text-4xl md:text-5xl lg:text-[60px] font-semibold leading-[106%] tracking-[-0.01em]">
+                Rules of Behaviour<br />KSA
+              </h2>
+            </div>
           </div>
         </div>
-        <!-- Slide 2 -->
-        <div class="slide relative w-full h-full flex-shrink-0">
-          <img src="../Images/NEOM.png" class="w-full h-full object-cover" alt="NEOM" />
-          <div class="absolute left-0 top-1/2 -translate-y-1/2 flex items-center w-[90%] max-w-[1118px] pl-4 sm:pl-6 md:pl-10 text-white">
-            <h2 class="text-2xl sm:text-4xl md:text-5xl lg:text-[60px] font-semibold">Made To Change<br />NEOM</h2>
-          </div>
-        </div>
-        <!-- Slide 3 -->
-        <div class="slide relative w-full h-full flex-shrink-0">
-          <img src="../Images/KSA.png" class="w-full h-full object-cover" alt="KSA" />
-          <div class="absolute left-0 top-1/2 -translate-y-1/2 flex items-center w-[90%] max-w-[1118px] pl-4 sm:pl-6 md:pl-10 text-white">
-            <h2 class="text-2xl sm:text-4xl md:text-5xl lg:text-[60px] font-semibold">Rules of Behaviour<br />KSA</h2>
-          </div>
-        </div>
+        <button onclick="manualNextSlide()" class="absolute right-4 sm:right-8 md:right-[70px] top-1/2 -translate-y-1/2 z-10 w-12 h-12 sm:w-16 sm:h-16 md:w-[120px] md:h-[120px] text-white opacity-100 rotate-0 flex items-center justify-center hover:text-gray-300 transition">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="0.7" stroke="currentColor" class="w-8 h-8 sm:w-12 sm:h-12 md:w-20 md:h-20 cursor-pointer">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+          </svg>
+        </button>
       </div>
-      <!-- Manual Slide Button -->
-      <button onclick="manualNextSlide()" class="absolute right-4 sm:right-8 md:right-[70px] top-1/2 -translate-y-1/2 z-10 text-white hover:text-gray-300">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="0.7" stroke="currentColor" class="w-8 h-8 sm:w-12 sm:h-12 md:w-20 md:h-20">
-          <path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-        </svg>
-      </button>
     </div>
-  </section>
 
   <footer class=" py-10 w-full mt-16 bg-[#222222] px-6">
     <div class="max-w-[1512px] mx-auto flex flex-wrap sm:flex-nowrap justify-start sm:justify-between items-start gap-y-10">
