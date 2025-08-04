@@ -1,37 +1,89 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- displays site properly based on user's device -->
+<html lang="en" class="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicon-32x32.png" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./output.css" />
+    <title>Frontend Mentor | Age calculator app</title>
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+      }
+      @keyframes fade-in-down {
+        0% {
+          opacity: 0;
+          transform: translateY(-30px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes fade-in-up {
+        0% {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .animate-fade-in-down {
+        animation: fade-in-down 0.7s cubic-bezier(0.4, 0, 0.2, 1) both;
+      }
+      .animate-fade-in-up {
+        animation: fade-in-up 0.7s cubic-bezier(0.4, 0, 0.2, 1) both;
+      }
+    </style>
+  </head>
+  <body class="flex justify-center items-center min-h-screen bg-gray-200">
+    <div class="bg-gray-100 p-6 sm:p-10 md:p-16 rounded-2xl shadow-2xl w-full max-w-4xl mx-auto sm:mx-4 animate-fade-in-down">
+      <div class="bg-white p-4 rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.25)] w-full max-w-[440px] rounded-br-[150px] mx-auto animate-fade-in-up">
+        <form id="age-form" class="mb-6 sm:mb-8 transition-all duration-500 hover:scale-[1.01]">
+          <div class="flex gap-2 sm:gap-4 flex-wrap md:flex-nowrap mt-4 mb-6 sm:mb-8 w-full max-w-[600px] md:pr-20">
+            <div class="flex flex-col flex-1 min-w-[80px]">
+              <label for="day" class="text-[8px] sm:text-[10px] tracking-widest uppercase text-gray-500 mb-1">Day</label>
+              <input id="day" name="day" type="number" placeholder="DD" class="text-bold w-full text-base sm:text-xl p-2 border border-gray-300 rounded-md focus:outline-purple-500 transition-all duration-300 focus:scale-105 hover:border-purple-400"/>
+              <p id="day-error" class="text-[8px] sm:text-[10px] text-red-400 mt-1 min-h-[1rem] opacity-0">Must be a valid day</p>
+            </div>
+            <div class="flex flex-col flex-1 min-w-[80px]">
+              <label for="month" class="text-[8px] sm:text-[10px] tracking-widest uppercase text-gray-500 mb-1">Month</label>
+              <input id="month" name="month" type="number" placeholder="MM" class="text-bold w-full text-base sm:text-xl p-2 border border-gray-300 rounded-md focus:outline-purple-500 transition-all duration-300 focus:scale-105 hover:border-purple-400" />
+              <p id="month-error" class="text-[8px] sm:text-[10px] text-red-400 mt-1 min-h-[1rem] opacity-0">Must be a valid month</p>
+            </div>
+            <div class="flex flex-col flex-1 min-w-[100px]">
+              <label for="year" class="text-[8px] sm:text-[10px] tracking-widest uppercase text-gray-500 mb-1">Year</label>
+              <input id="year" name="year" type="number" placeholder="YYYY" class="text-bold w-full text-base sm:text-xl p-2 border border-gray-300 rounded-md focus:outline-purple-500 transition-all duration-300 focus:scale-105 hover:border-purple-400" />
+              <p id="year-error" class="text-[8px] sm:text-[10px] text-red-400 mt-1 min-h-[1rem] opacity-0">Must be in the past</p>
+            </div>
+          </div>
+          <div class="relative w-full md:w-[400px] h-[1px] bg-gray-300 mb-8 flex sm:block items-center justify-center">
+            <button type="submit" id="submit-btn" class="absolute left-1/2 -translate-x-1/2 -top-7 sm:left-auto sm:right-0 sm:translate-x-0 sm:-top-8 bg-purple-500 hover:bg-black transition-all duration-300 text-white p-3 sm:p-4 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-400 cursor-pointer hover:scale-125 active:scale-95 animate-fade-in-up">
+              <img src="./assets/images/icon-arrow.svg" alt="arrow" class="w-5 h-5 sm:w-6 sm:h-6 pointer-events-none"/>
+            </button>
+          </div>
+        </form>
+        <div id="result" class="text-xl sm:text-3xl md:text-5xl font-extrabold leading-tight italic animate-fade-in-up">
+          <div>
+            <span id="years" class="text-purple-500 transition-all duration-300 hover:text-purple-700">--</span>
+            <span class="text-black">years</span>
+          </div>
+          <div>
+            <span id="months" class="text-purple-500 transition-all duration-300 hover:text-purple-700">--</span>
+            <span class="text-black">months</span>
+          </div>
+          <div>
+            <span id="days" class="text-purple-500 transition-all duration-300 hover:text-purple-700">--</span>
+            <span class="text-black">days</span>
+          </div>
+        </div>
+      </div>
+    </div>
 
-  <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicon-32x32.png">
-  
-  <title>Frontend Mentor | Age calculator app</title>
-
-  <!-- Feel free to remove these styles or customise in your own stylesheet 👍 -->
-  <style>
-    .attribution { font-size: 11px; text-align: center; }
-    .attribution a { color: hsl(228, 45%, 44%); }
-  </style>
-</head>
-<body>
-
-  Day
-  DD
-
-  Month
-  MM
-
-  Year
-  YYYY
-
-  -- years
-  -- months
-  -- days
-  
-  <div class="attribution">
-    Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>. 
-    Coded by <a href="#">Your Name Here</a>.
-  </div>
-</body>
+    <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  </body>
 </html>
