@@ -116,6 +116,7 @@
                             </button>
                         </div>
                     </div>
+                    
                     <!-- Results Count -->
                     <div class="flex items-center gap-2">
                         <span class="text-sm text-gray-500 max-[400px]:text-xs transition-all duration-500 ease-in-out" id="results-count">
@@ -273,7 +274,7 @@
 
     <script>
         let isDarkMode = false;
-        let currentFilter = 'all'; // Tracking current filter
+        let currentFilter = 'all'; // Track current filter
 
         function toggleTheme() {
             isDarkMode = !isDarkMode;
@@ -327,6 +328,7 @@
                 markAllReadBtn.className = 'text-gray-600 hover:text-blue-500 font-medium transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-md px-2 py-1 max-[400px]:text-sm max-[400px]:px-1.5 max-[400px]:py-0.5 max-[329px]:text-xs max-[329px]:px-1 max-[329px]:py-[2px] cursor-pointer hover:scale-105 active:scale-95';
             }
 
+            // Update filter buttons
             updateFilterButtonStyles();
 
             // For updating Notifs
@@ -355,6 +357,7 @@
                             item.className = 'notification-item p-4 md:p-6 cursor-pointer transition-all duration-300 ease-in-out hover:bg-slate-100 rounded-lg hover:scale-[1.01] hover:shadow-md';
                         }
                     }
+                    // Preserve data attributes
                     item.setAttribute('data-id', item.getAttribute('data-id'));
                     item.setAttribute('data-read', item.getAttribute('data-read'));
                 }, index * 50);
@@ -416,6 +419,7 @@
             filterButtons.forEach(btn => {
                 const filter = btn.getAttribute('data-filter');
                 if (filter === currentFilter) {
+                    // Active button
                     if (isDarkMode) {
                         btn.className = 'filter-btn px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-300 ease-in-out bg-blue-600 text-white shadow-sm max-[400px]:px-2 max-[400px]:py-1 max-[400px]:text-xs';
                     } else {
@@ -473,6 +477,7 @@
             document.getElementById('visible-count').textContent = visibleCount;
             document.getElementById('total-count').textContent = notifications.length;
 
+            // Update filter button styles
             updateFilterButtonStyles();
         }
 
@@ -580,14 +585,18 @@
                 } else {
                     notificationElement.className = 'notification-item p-4 md:p-6 cursor-pointer transition-all duration-300 ease-in-out hover:bg-slate-100 rounded-lg hover:scale-[1.01] hover:shadow-md';
                 }
+                
+                // Preserve data attributes
                 notificationElement.setAttribute('data-id', id);
                 notificationElement.setAttribute('data-read', 'true');
+                
                 const redDot = notificationElement.querySelector(".w-1\\.5.h-1\\.5.bg-red-500, .w-2.h-2.bg-red-500");
                 if (redDot) {
                     redDot.remove();
                 }
                 updateUnreadCount();
-                // Update filter
+                
+                // Update filter if currently showing unread only
                 if (currentFilter === 'unread') {
                     setTimeout(() => {
                         filterNotifications(currentFilter);
@@ -606,13 +615,17 @@
                     const notificationElement = document.querySelector(`[data-id="${notification.id}"]`);
                     if (notificationElement) {
                         notificationElement.setAttribute('data-read', 'true');
+                        
                         if (isDarkMode) {
                             notificationElement.className = 'notification-item p-4 md:p-6 cursor-pointer transition-all duration-300 ease-in-out hover:bg-gray-700/50 rounded-lg hover:scale-[1.01] hover:shadow-md';
                         } else {
                             notificationElement.className = 'notification-item p-4 md:p-6 cursor-pointer transition-all duration-300 ease-in-out hover:bg-slate-100 rounded-lg hover:scale-[1.01] hover:shadow-md';
                         }
+                        
+                        // Preserve data attributes
                         notificationElement.setAttribute('data-id', notification.id);
                         notificationElement.setAttribute('data-read', 'true');
+                        
                         const redDot = notificationElement.querySelector(".w-1\\.5.h-1\\.5.bg-red-500, .w-2.h-2.bg-red-500");
                         if (redDot) {
                             redDot.remove();
@@ -623,7 +636,8 @@
 
             if (hasChanges) {
                 updateUnreadCount();
-                // Update filter
+                
+                // Update filter if currently showing unread only
                 if (currentFilter === 'unread') {
                     setTimeout(() => {
                         filterNotifications(currentFilter);
@@ -632,9 +646,11 @@
             }
         }
 
+        // Event listeners
         markAllReadButton.addEventListener("click", markAllAsRead);
         themeToggleButton.addEventListener("click", toggleTheme);
 
+        // Filter button event listeners
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const filter = btn.getAttribute('data-filter');
@@ -703,7 +719,7 @@
 
         function init() {
             updateUnreadCount();
-            filterNotifications('all');
+            filterNotifications('all'); // Initialize with all notifications
         }
 
         init();
