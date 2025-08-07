@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./output.css">
+    <title>Document</title>
+    <style>
+        /* Know More About Us Tabs */
+  .tab-button.active {
+  background-color: transparent;
+  color: #FC8A06;
+  border: 2px solid #FC8A06;
+  font-weight: 600;
+}
+
+.tab-button {
+  transition: all 0.3s ease;
+}
+
+.tab-button:hover:not(.active) {
+  color: #FC8A06;
+}
+    </style>
+</head>
+<body>
+    <!-- Responsive Outer Container -->
+<div class="w-full bg-[#D9D9D9] mt-12 mb-16 px-4 py-12">
+  <!-- Centered & Responsive Inner Section -->
+  <div id="know-more-about-us-section" class="w-full max-w-screen-xl mx-auto">
+
+    <!-- Title and Tabs in One Line (Responsive) -->
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-10">
+      <h2 class="text-3xl font-bold text-black">Know more about us!</h2>
+      <div class="flex flex-wrap gap-4">
+        <button class="tab-button active border border-[#FC8A06] text-[#FC8A06] px-6 py-2 rounded-full font-semibold" data-tab="frequent-questions">
+          Frequent Questions
+        </button>
+        <button class="tab-button text-black hover:text-[#FC8A06] px-6 py-2 rounded-full font-medium" data-tab="who-we-are">
+          Who we are?
+        </button>
+        <button class="tab-button text-black hover:text-[#FC8A06] px-6 py-2 rounded-full font-medium" data-tab="partner-program">
+          Partner Program
+        </button>
+        <button class="tab-button text-black hover:text-[#FC8A06] px-6 py-2 rounded-full font-medium" data-tab="help-support">
+          Help & Support
+        </button>
+      </div>
+    </div>
+
+    <!-- Tab Content Area -->
+    <div class="bg-[#0B0B1E] text-white rounded-2xl p-6 lg:p-12">
+      <!-- FREQUENT QUESTIONS TAB -->
+      <div id="frequent-questions" class="tab-content active-tab grid grid-cols-1 lg:grid-cols-2 gap-12">
+
+        <!-- Left Column -->
+        <div class="space-y-5">
+          <button class="bg-[#FC8A06] text-white px-6 py-3 rounded-lg font-semibold text-left w-full">
+            How does Order.UK work?
+          </button>
+          <p class="text-white text-base">What payment methods are accepted?</p>
+          <p class="text-white text-base">Can I track my order in real-time?</p>
+          <p class="text-white text-base">Are there any special discounts or promotions available?</p>
+          <p class="text-white text-base">Is Order.UK available in my area?</p>
+        </div>
+
+        <!-- Right Column: 3 Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="bg-white text-black rounded-xl px-5 py-6 flex flex-col items-center text-center shadow-md w-full">
+            <img src="more1.png" class="w-20 h-20 mb-4" alt="Place Order">
+            <h3 class="font-bold text-lg mb-1">Place an Order!</h3>
+            <p class="text-sm text-gray-600">Place order through our website or Mobile app</p>
+          </div>
+          <div class="bg-white text-black rounded-xl px-5 py-6 flex flex-col items-center text-center shadow-md w-full">
+            <img src="more2.png" class="w-20 h-20 mb-4" alt="Track Progress">
+            <h3 class="font-bold text-lg mb-1">Track Progress</h3>
+            <p class="text-sm text-gray-600">You can track your order status with delivery time</p>
+          </div>
+          <div class="bg-white text-black rounded-xl px-5 py-6 flex flex-col items-center text-center shadow-md w-full">
+            <img src="more3.png" class="w-20 h-20 mb-4" alt="Get Order">
+            <h3 class="font-bold text-lg mb-1">Get your Order!</h3>
+            <p class="text-sm text-gray-600">Receive your order at a lighting fast speed!</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Paragraph -->
+      <p class="text-gray-300 text-center text-sm sm:text-base mt-12 max-w-2xl mx-auto">
+        Order.UK simplifies the food ordering process. Browse through our diverse menu, select your favorite dishes, and proceed to checkout. Your delicious meal will be on its way to your doorstep in no time!
+      </p>
+    </div>
+  </div>
+</div>
+<script>
+    // Tab functionality for "Know more about us!" section
+ 
+  const tabButtons = document.querySelectorAll('#know-more-about-us-section .tab-button');
+  const tabContents = document.querySelectorAll('#know-more-about-us-section .tab-content');
+
+  tabButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      tabButtons.forEach(btn => btn.classList.remove('active'));
+      tabContents.forEach(content => content.classList.add('hidden'));
+
+      button.classList.add('active');
+      const target = button.dataset.tab;
+      document.getElementById(target).classList.remove('hidden');
+    });
+  });
+</script>
+</body>
+</html>

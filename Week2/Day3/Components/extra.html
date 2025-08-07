@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pizza Cart Website</title>
+  <link rel="stylesheet" href="./output.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    @media (min-width: 1024px) and (max-width: 1440px) {
+      .card-1440 {
+        width: calc(33.333% - 16px) !important;
+        max-width: 450px;
+      }
+    }
+    @media (min-width: 1441px) {
+      .card-1440 {
+        width: 496px !important;
+      }
+    }
+    @keyframes slideFade {
+      0% {
+        opacity: 0.6;
+        transform: translateX(30px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(0px);
+      }
+    }
+
+    #slider {
+      transition: transform 0.5s ease-in-out;
+      will-change: transform;
+    }
+
+    .card-animate {
+      animation: slideFade 0.5s ease-in-out;
+    }
+
+    .btn-animate {
+      transition: transform 0.2s ease;
+    }
+    .btn-animate:hover {
+      transform: scale(1.1);
+    }
+    .btn-animate:active {
+      transform: scale(0.95);
+    }
+
+    .plus-btn {
+      transition: transform 0.2s ease;
+    }
+    .plus-btn:hover {
+      transform: scale(1.1);
+    }
+    .plus-btn:active {
+      transform: scale(0.95);
+    }
+
+    .product-card-hover {
+      transition: all 0.3s ease;
+    }
+    .product-card-hover:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    .plus-button-hover {
+      transition: all 0.2s ease;
+    }
+    .plus-button-hover:hover {
+      transform: scale(1.1);
+    }
+    .plus-button-glow-hover:hover {
+      filter: drop-shadow(0 0 8px rgba(252, 138, 6, 0.4));
+    }
+
+    .stagger-animate-child {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: staggerFadeIn 0.6s ease forwards;
+    }
+
+    @keyframes staggerFadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+<body class="font-[Poppins] bg-white min-h-screen">
+  <div class="w-full max-w-[1491px] mx-auto">
+    <div class="w-full max-w-[1200px] mx-auto px-4">
+      
+      <header class="w-full bg-transparent py-4">
+        <div class="flex items-center justify-between">
+          <div class="flex-shrink-0">
+            <img Src="./images/Logo.png" alt="Order UK"
+              class="object-contain w-20 sm:w-24 md:w-28 lg:w-32 xl:w-40 h-auto ml-2"
+            />
+          </div>
+
+          <button aria-label="button" id="menu-btn" class="sm:hidden focus:outline-none z-50 relative p-3">
+            <div class="w-4 h-4 flex flex-col justify-center items-center space-y-0.5">
+              <span id="line1" class="block w-4 h-0.5 bg-black transition-all duration-300 ease-in-out origin-center"></span>
+              <span id="line2" class="block w-4 h-0.5 bg-black transition-all duration-300 ease-in-out"></span>
+              <span id="line3" class="block w-4 h-0.5 bg-black transition-all duration-300 ease-in-out origin-center"></span>
+            </div>
+          </button>
+
+          <nav id="menu" class="hidden sm:flex items-center space-x-0 md:space-x-2 lg:space-x-4 xl:space-x-6"></nav>
+
+          <div class="hidden sm:flex items-center flex-shrink-0 mr-4 lg:mr-6">
+            <div class="relative">
+              <img id="desktop-cart" src="./images/Cart.png" alt="cart" class="w-16 lg:w-20 xl:w-24 h-16 lg:h-20 xl:h-24 object-contain cursor-pointer">
+              <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold hidden">0</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="mobile-menu" class="sm:hidden transition-all duration-300 ease-in-out transform origin-top scale-y-0 opacity-0 max-h-0 overflow-hidden mt-4 bg-white shadow-lg rounded-xl border">
+          <nav id="mobile-nav" class="flex flex-col p-4 space-y-2"></nav>
+          <div class="flex justify-center pb-4">
+            <div class="relative">
+              <img id="mobile-cart" src="./images/Cart.png" alt="cart" class="w-20 h-20 object-contain cursor-pointer">
+              <span id="mobile-cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold hidden">0</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div id="hero-section" class="w-full flex items-center justify-center py-4">
+        <div class="w-full">
+          <div class="relative rounded-2xl overflow-hidden h-[400px] w-full">
+            <img 
+                src="./Images/heroBurger.png" 
+                alt="Background" 
+                class="absolute inset-0 w-full h-full object-cover"
+            />
+            
+            <div class="absolute inset-0 bg-[#03081FE5] opacity-100"></div>
+            
+            <div class="relative flex flex-col sm:flex-row h-full">
+                
+                <div class="flex-1 pb-0 pt-[15px] p-6 sm:p-6 lg:p-12 text-white flex flex-col justify-center lg:justify-end lg:pb-16">
+                    <p class="text-sm text-gray-300 mb-4">I'm lovin' it!</p>
+                    
+                    <h1 class="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold mb-6 lg:mb-8 leading-tight">
+                        McDonald's East London
+                    </h1>
+                    
+                    <div class="flex flex-col sm:flex-row gap-3 lg:gap-4 mb-6 lg:mb-8">
+                        <div class="flex items-center gap-3 border border-gray-600 rounded-full px-4 lg:px-5 py-2 lg:py-3">
+                            <div class="w-5 h-5 lg:w-6 lg:h-6 flex items-center justify-center flex-shrink-0">
+                                <img 
+                                    src="./Images/minOrder.png" 
+                                    alt="Order" 
+                                    class="w-5 h-5 lg:w-6 lg:h-6 object-contain"
+                                />
+                            </div>
+                            <span class="text-xs lg:text-sm font-medium">Minimum Order: 12 GBP</span>
+                        </div>
+                        
+                        <div class="flex items-center gap-3 border border-gray-600 rounded-full px-4 lg:px-5 py-2 lg:py-3">
+                            <div class="w-5 h-5 lg:w-6 lg:h-6 flex items-center justify-center flex-shrink-0">
+                                <img 
+                                    src="./Images/bike.png" 
+                                    alt="Delivery" 
+                                    class="w-5 h-5 lg:w-6 lg:h-6 object-contain"
+                                />
+                            </div>
+                            <span class="text-xs lg:text-sm font-medium">Delivery in 20-25 Minutes</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex-1 relative flex items-center justify-center pt-0 pb-10 md:p-8">
+                    <div class="relative">
+                        <div class="absolute -bottom-2 -left-4 lg:-bottom-4 lg:-left-6 z-10">
+                            <img 
+                                src="./Images/3.4Image.png" 
+                                alt="3.4 rating review" 
+                                class="w-16 lg:w-24 h-auto object-contain"
+                            />
+                        </div>
+                        
+                        <img 
+                            src="./Images/heroBurger.png" 
+                            alt="McDonald's Big Mac with fries and drink" 
+                            class="w-48 lg:w-80 xl:w-96 h-auto object-contain relative z-0"
+                        />
+                    </div>
+                </div>
+            </div>
+          </div>
+          
+          <div class="relative">
+            <div class="absolute -top-4 lg:-top-6 left-4 lg:left-8">
+                <div class="bg-orange-500 text-white px-4 lg:px-6 py-2 lg:py-3 rounded-lg flex items-center gap-2 shadow-lg">
+                    <img 
+                        src="./Images/clock.png" 
+                        alt="Clock" 
+                        class="w-3 h-3 lg:w-4 lg:h-4 object-contain"
+                    />
+                    <span class="text-xs lg:text-sm font-bold">Open until 3:00 AM</span>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="w-full bg-white py-6 lg:py-8 mt-4 lg:mt-8 rounded-lg">
+        <div class="px-4">
+          <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 lg:gap-6">
+              
+              <div class="flex-1">
+                  <h2 class="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-gray-900">
+                      All Offers from McDonald's East London
+                  </h2>
+              </div>
+              
+              <div class="flex-shrink-0 w-full lg:w-80">
+                  <div class="relative">
+                      <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                          <img 
+                              src="./Images/search.png" 
+                              alt="Search" 
+                              class="w-4 h-4 lg:w-5 lg:h-5 object-contain"
+                          />
+                      </div>
+                      <input 
+                          type="text" 
+                          placeholder="Search from menu..." 
+                          class="w-full pl-10 lg:pl-12 pr-4 py-2 lg:py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-700 placeholder-gray-400 text-xs lg:text-sm placeholder:text-xs lg:placeholder:text-sm"
+                      />
+                  </div>
+              </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="navigation-bar" class="w-full bg-[#FC8A06] mt-2">
+    <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="flex flex-wrap gap-3 justify-start">
+        <a href="#offers" class="px-4 py-2 rounded-full bg-black text-white text-sm font-semibold transition-colors duration-200">
+          Offers
+        </a>
+        <a href="#burger" class="px-4 py-2 rounded-full text-white text-sm font-semibold hover:bg-black/20 transition-colors duration-200">
+          Burgers
+        </a>
+        <a href="#fries" class="px-4 py-2 rounded-full text-white text-sm font-semibold hover:bg-black/20 transition-colors duration-200">
+          Fries
+        </a>
+        <a href="#snacks" class="px-4 py-2 rounded-full text-white text-sm font-semibold hover:bg-black/20 transition-colors duration-200">
+          Snacks
+        </a>
+        <a href="#salads" class="px-4 py-2 rounded-full text-white text-sm font-semibold hover:bg-black/20 transition-colors duration-200">
+          Salads
+        </a>
+        <a href="#drinks" class="px-4 py-2 rounded-full text-white text-sm font-semibold hover:bg-black/20 transition-colors duration-200">
+          Cold drinks
+        </a>
+        <a href="#happy-meal" class="px-4 py-2 rounded-full text-white text-sm font-semibold hover:bg-black/20 transition-colors duration-200">
+          Happy Meal®
+        </a>
+        <a href="#desserts" class="px-4 py-2 rounded-full text-white text-sm font-semibold hover:bg-black/20 transition-colors duration-200">
+          Desserts
+        </a>
+        <a href="#hot-drinks" class="px-4 py-2 rounded-full text-white text-sm font-semibold hover:bg-black/20 transition-colors duration-200">
+          Hot drinks
+        </a>
+        <a href="#sauces" class="px-4 py-2 rounded-full text-white text-sm font-semibold hover:bg-black/20 transition-colors duration-200">
+          Sauces
+        </a>
+        <a href="#orbit" class="px-4 py-2 rounded-full text-white text-sm font-semibold hover:bg-black/20 transition-colors duration-200">
+          Orbit®
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-[1200px] mx-auto px-4 min-w-0 mt-6">
+    <div id="burger" class="mt-4"></div>
+    <h2 class="text-3xl font-bold text-black mb-8 mt-8">Burgers</h2>
+    <div id="burger-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    </div>
+    
+    <div id="fries" class="mt-8"></div>
+    <h2 class="text-3xl font-bold text-[#FC8A06] mb-8 mt-8">Fries</h2>
+    <div id="fries-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    </div>
+    
+    <div id="drinks" class="mt-8"></div>
+    <h2 class="text-3xl font-bold text-[#FC8A06] mb-8 mt-8">Cold Drinks</h2>
+    <div id="drinks-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    </div>
+  </div>
+
+  <div class="relative mt-12">
+    <div class="w-full bg-[#D9D9D9] py-10 sm:py-12 lg:py-14">
+      <div class="mx-auto max-w-[1200px] min-w-[320px] px-4 relative">
+        <div class="flex justify-between items-center mb-6 sm:mb-8">
+          <h2 class="text-2xl sm:text-3xl lg:text-[44px] font-bold leading-[100%]">Customer Reviews</h2>
+          <div class="flex gap-2 sm:gap-4">
+            <button id="prev" class="btn-animate">
+              <img src="./Images/leftArrow.png" alt="leftArrow" class="cursor-pointer w-8 h-8 sm:w-10 sm:h-10 lg:w-auto lg:h-auto">
+            </button>
+            <button id="next" class="btn-animate">
+              <img src="./Images/rightArrow.png" alt="rightArrow" class="cursor-pointer w-8 h-8 sm:w-10 sm:h-10 lg:w-auto lg:h-auto">
+            </button>
+          </div>
+        </div>
+        <div class="relative overflow-hidden">
+          <div
+            id="slider"
+            class="flex transition-transform duration-500 gap-2 sm:gap-4 lg:gap-6 w-full mb-10"
+          >
+            <div class="bg-white w-full sm:w-[calc(50%-8px)] lg:w-[calc(33.333%-16px)] card-1440 h-[200px] sm:h-[240px] lg:h-[274px] p-4 sm:p-5 lg:p-6 rounded shadow flex-shrink-0">
+              <img src="./Images/SliderCard.png" alt="card" class="w-full h-full object-contain">
+            </div>
+            <div class="bg-white w-full sm:w-[calc(50%-8px)] lg:w-[calc(33.333%-16px)] card-1440 h-[200px] sm:h-[240px] lg:h-[274px] p-4 sm:p-5 lg:p-6 rounded shadow flex-shrink-0">
+              <img src="./Images/SliderCard.png" alt="card" class="w-full h-full object-contain">
+            </div>
+            <div class="bg-white w-full sm:w-[calc(50%-8px)] lg:w-[calc(33.333%-16px)] card-1440 h-[200px] sm:h-[240px] lg:h-[274px] p-4 sm:p-5 lg:p-6 rounded shadow flex-shrink-0">
+              <img src="./Images/SliderCard.png" alt="card" class="w-full h-full object-contain">
+            </div>
+            <div class="bg-white w-full sm:w-[calc(50%-8px)] lg:w-[calc(33.333%-16px)] card-1440 h-[200px] sm:h-[240px] lg:h-[274px] p-4 sm:p-5 lg:p-6 rounded shadow flex-shrink-0">
+              <img src="./Images/SliderCard.png" alt="card" class="w-full h-full object-contain">
+            </div>
+            <div class="bg-white w-full sm:w-[calc(50%-8px)] lg:w-[calc(33.333%-16px)] card-1440 h-[200px] sm:h-[240px] lg:h-[274px] p-4 sm:p-5 lg:p-6 rounded shadow flex-shrink-0">
+              <img src="./Images/SliderCard.png" alt="card" class="w-full h-full object-contain">
+            </div>
+            <div class="bg-white w-full sm:w-[calc(50%-8px)] lg:w-[calc(33.333%-16px)] card-1440 h-[200px] sm:h-[240px] lg:h-[274px] p-4 sm:p-5 lg:p-6 rounded shadow flex-shrink-0">
+              <img src="./Images/SliderCard.png" alt="card" class="w-full h-full object-contain">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
+      <img src="./Images/3.4image.png" alt="Decorative Food Icon" class="w-24 h-24 lg:w-32 lg:h-32 shadow-lg">
+    </div>
+
+    <div id="similar-restaurants" class="max-w-[1200px] mx-auto px-4 pt-12 mt-10">
+      <h2 class="text-lg xs:text-xl sm:text-2xl md:text-3xl font-bold text-black mb-6">Similar Restaurants</h2>
+      <div class="grid grid-cols-2 gap-2 xs:gap-3 sm:gap-4 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-6 md:gap-4 lg:gap-6">
+        
+        <div class="restaurant-card bg-white rounded-lg xs:rounded-xl sm:rounded-2xl overflow-hidden shadow-md cursor-pointer transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl">
+          <div class="aspect-[3/2] xs:aspect-[4/3] sm:aspect-[5/4] md:aspect-[4/3] logo-container overflow-hidden transition-transform duration-300 ease-in-out hover:scale-105">
+            <img src="./Images/mcdonaldsLogo.png" 
+                 alt="McDonald's Logo" 
+                 class="w-full h-full object-cover transition-transform duration-300 ease-in-out hover:scale-110">
+          </div>
+          <div class="px-2 py-1.5 xs:px-3 xs:py-2 sm:px-4 sm:py-3 bg-[#FC8A06]">
+            <p class="text-white font-semibold text-[10px] xs:text-xs sm:text-sm text-center leading-tight">McDonald's London</p>
+          </div>
+        </div>
+
+        <div class="restaurant-card bg-white rounded-lg xs:rounded-xl sm:rounded-2xl overflow-hidden shadow-md cursor-pointer transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl">
+          <div class="aspect-[3/2] xs:aspect-[4/3] sm:aspect-[5/4] md:aspect-[4/3] logo-container overflow-hidden transition-transform duration-300 ease-in-out hover:scale-105">
+            <img src="./Images/papaJohnslogo.png" 
+                 alt="Papa Johns Logo" 
+                 class="w-full h-full object-cover transition-transform duration-300 ease-in-out hover:scale-110">
+          </div>
+          <div class="px-2 py-1.5 xs:px-3 xs:py-2 sm:px-4 sm:py-3 bg-[#FC8A06]">
+            <p class="text-white font-semibold text-[10px] xs:text-xs sm:text-sm text-center leading-tight">Papa Johns</p>
+          </div>
+        </div>
+
+        <div class="restaurant-card bg-white rounded-lg xs:rounded-xl sm:rounded-2xl overflow-hidden shadow-md cursor-pointer transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl">
+          <div class="aspect-[3/2] xs:aspect-[4/3] sm:aspect-[5/4] md:aspect-[4/3] logo-container overflow-hidden transition-transform duration-300 ease-in-out hover:scale-105">
+            <img src="./Images/kfc logo.png" 
+                 alt="KFC Logo" 
+                 class="w-full h-full object-cover transition-transform duration-300 ease-in-out hover:scale-110">
+          </div>
+          <div class="px-2 py-1.5 xs:px-3 xs:py-2 sm:px-4 sm:py-3 bg-[#FC8A06]">
+            <p class="text-white font-semibold text-[10px] xs:text-xs sm:text-sm text-center leading-tight">KFC West London</p>
+          </div>
+        </div>
+
+        <div class="restaurant-card bg-white rounded-lg xs:rounded-xl sm:rounded-2xl overflow-hidden shadow-md cursor-pointer transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl">
+          <div class="aspect-[3/2] xs:aspect-[4/3] sm:aspect-[5/4] md:aspect-[4/3] logo-container overflow-hidden transition-transform duration-300 ease-in-out hover:scale-105">
+            <img src="./Images/TCLogo.png" 
+                 alt="Texas Chicken Logo" 
+                 class="w-full h-full object-cover transition-transform duration-300 ease-in-out hover:scale-110">
+          </div>
+          <div class="px-2 py-1.5 xs:px-3 xs:py-2 sm:px-4 sm:py-3 bg-[#FC8A06]">
+            <p class="text-white font-semibold text-[10px] xs:text-xs sm:text-sm text-center leading-tight">Texas Chicken</p>
+          </div>
+        </div>
+
+        <div class="restaurant-card bg-white rounded-lg xs:rounded-xl sm:rounded-2xl overflow-hidden shadow-md cursor-pointer transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl">
+          <div class="aspect-[3/2] xs:aspect-[4/3] sm:aspect-[5/4] md:aspect-[4/3] logo-container overflow-hidden transition-transform duration-300 ease-in-out hover:scale-105">
+            <img src="./Images/burgerKingLogo.png"
+                 alt="Burger King Logo" 
+                 class="w-full h-full object-cover transition-transform duration-300 ease-in-out hover:scale-110">
+          </div>
+          <div class="px-2 py-1.5 xs:px-3 xs:py-2 sm:px-4 sm:py-3 bg-[#FC8A06]">
+            <p class="text-white font-semibold text-[10px] xs:text-xs sm:text-sm text-center leading-tight">Burger King</p>
+          </div>
+        </div>
+
+        <div class="restaurant-card bg-white rounded-lg xs:rounded-xl sm:rounded-2xl overflow-hidden shadow-md cursor-pointer transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl">
+          <div class="aspect-[3/2] xs:aspect-[4/3] sm:aspect-[5/4] md:aspect-[4/3] logo-container overflow-hidden transition-transform duration-300 ease-in-out hover:scale-105 flex items-center justify-center">
+            <img src="./Images/shaurmaLogo.png" 
+                 alt="Shaurma 1 Logo" 
+                 class="transition-transform duration-300 ease-in-out hover:scale-110 object-contain max-w-full max-h-full w-[120px] h-[103px] xs:w-[140px] xs:h-[120px] sm:w-[180px] sm:h-[154px] md:w-[220px] md:h-[188px]">
+          </div>
+          <div class="px-2 py-1.5 xs:px-3 xs:py-2 sm:px-4 sm:py-3 bg-[#FC8A06]">
+            <p class="text-white font-semibold text-[10px] xs:text-xs sm:text-sm text-center leading-tight">Shaurma 1</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <footer class="bg-[#F5F5F5] text-[#1e1e1e] font-sans mt-16">
+    <div class="max-w-screen-xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-4 gap-10 items-start">
+
+      <div class="space-y-4">
+        <img src="./Images/logofooter.png" alt="OrderUK Logo" class="w-32">
+        <img src="./Images/getItOn.png" alt="Store Badges" class="w-40">
+        <p class="text-sm text-gray-600 pt-2">
+          Company # 490039-445, Registered with House of companies.
+        </p>
+      </div>
+
+      <div class="space-y-4">
+        <h3 class="font-semibold">Get Exclusive Deals in your Inbox</h3>
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center w-full max-w-md bg-gray-300 rounded-full overflow-hidden">
+          <input type="email" placeholder="youremail@gmail.com" class="flex-grow bg-transparent focus:outline-none text-gray-700 placeholder-gray-600 text-sm px-5 py-3 sm:py-0 sm:h-12 min-w-0" />
+          <button class="bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm px-4 sm:px-5 py-3 sm:py-0 sm:h-12 rounded-full sm:rounded-l-none transition-colors duration-200 flex-shrink-0">
+              Subscribe
+          </button>
+        </div>
+
+        <p class="text-xs text-gray-600">we won't spam, read our <a href="#" class="underline">email policy</a></p>
+
+        <div class="flex space-x-4 pt-2">
+          <img src="./Images/fb.png" alt="Facebook" class="w-5 h-5">
+          <img src="./Images/insta.png" alt="Instagram" class="w-5 h-5">
+          <img src="./Images/tiktok.png" alt="TikTok" class="w-5 h-5">
+          <img src="./Images/snap.png" alt="Snapchat" class="w-5 h-5">
+        </div>
+      </div>
+
+      <div class="space-y-2">
+        <h3 class="font-semibold">Legal Pages</h3>
+        <ul class="text-sm space-y-1">
+          <li><a href="#" class="hover:underline">Terms and conditions</a></li>
+          <li><a href="#" class="hover:underline">Privacy</a></li>
+          <li><a href="#" class="hover:underline">Cookies</a></li>
+          <li><a href="#" class="hover:underline">Modern Slavery Statement</a></li>
+        </ul>
+      </div>
+
+      <div class="space-y-2">
+        <h3 class="font-semibold">Important Links</h3>
+        <ul class="text-sm space-y-1">
+          <li><a href="#" class="hover:underline">Get help</a></li>
+          <li><a href="#" class="hover:underline">Add your restaurant</a></li>
+          <li><a href="#" class="hover:underline">Sign up to deliver</a></li>
+          <li><a href="#" class="hover:underline">Create a business account</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="bg-[#0B0B1E] text-gray-300 text-xs md:text-sm py-4 px-4">
+      <div class="max-w-screen-xl mx-auto flex flex-col md:flex-row justify-between items-center gap-2 text-center">
+        <p>Order.uk Copyright 2025, All Rights Reserved.</p>
+        <div class="flex flex-wrap justify-center md:justify-end gap-4">
+          <a href="#" class="hover:underline">Privacy Policy</a>
+          <a href="#" class="hover:underline">Terms</a>
+          <a href="#" class="hover:underline">Pricing</a>
+          <a href="#" class="hover:underline">Do not sell or share my personal information</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <div id="cartModal" class="fixed inset-0 z-50 hidden transition-all duration-600 ease-in-out">
+      <div id="modalOverlay" class="absolute inset-0 bg-black bg-opacity-10 transition-opacity duration-600 ease-in-out opacity-40"></div>
+
+      <div id="modalContent" class="relative flex items-center justify-center min-h-screen p-2 sm:p-4 transition-all duration-300 ease-in-out transform scale-95 opacity-0">
+          <div class="relative">
+              <button id="closeModal" aria-label="Close" class="absolute -top-2 -right-2 sm:-top-3 sm:-right-3 bg-orange-500 text-white rounded-full w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 flex items-center justify-center hover:bg-orange-600 transition-colors z-20">
+                  <i class="fas fa-times text-xs sm:text-sm"></i>
+              </button>
+              
+              <div class="bg-white rounded-lg shadow-xl relative overflow-hidden w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-2xl 2xl:max-w-4xl" style="height: min(1841px, 90vh, 600px);">
+
+              <div class="relative h-20 sm:h-24 md:h-32">
+                  <img src="./Images/cartPizza.png" alt="Pizza" class="w-full h-full object-cover">
+              </div>
+
+              <div class="flex-1 overflow-y-auto p-2 sm:p-0 md:p-4 pb-8 sm:pb-10 md:pb-12" style="height: calc(100% - 200px);">
+                  <div id="cartItems">
+                  </div>
+              </div>
+
+              <div class="absolute bottom-0 left-0 right-0 p-4 sm:p-6 md:p-8 bg-white">
+                  <div class="flex items-center justify-between mb-6">
+                      <button id="addToPayBtn" class="bg-[#FC8A06CC] text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors text-sm sm:text-base">
+                          Total to pay <span id="totalPrice" class="font-bold">£0.00</span>
+                      </button>
+                      <p class="text-gray-600 text-xs sm:text-sm ml-4">Delivery & Tax will be calculated in the next step</p>
+                  </div>
+                  
+                  <div class="flex gap-4 justify-end items-center">
+                      <button id="takeBackBtn" class="text-gray-800 hover:text-gray-600 transition-colors text-sm sm:text-base font-medium underline">Take me back</button>
+                      <button id="nextStepBtn" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors text-sm sm:text-base font-semibold flex items-center">
+                          <div class="w-6 h-6 bg-white rounded-full flex items-center justify-center mr-3">
+                              <i class="fas fa-arrow-right text-green-600 text-xs"></i>
+                          </div>
+                          Next Step
+                      </button>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <script>
+    // Navigation items and functionality
+    const navItems = [
+      { name: 'Home', target: 'hero-section' },
+      { name: 'Special Offers', target: 'navigation-bar' },
+      { name: 'Restaurants', target: 'similar-restaurants' },
+      { name: 'Track Order', target: '#' }
+    ];
+    
+    const menu = document.getElementById('menu');
+    const mobileNav = document.getElementById('mobile-nav');
+    const menuBtn = document.getElementById('menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const line1 = document.getElementById('line1');
+    const line2 = document.getElementById('line2');
+    const line3 = document.getElementById('line3');
+    let selected = 'Home';
+    let isMenuOpen = false;
+
+    // Cart functionality
+    let cart = {};
+    let cartCount = 0;
+
+    const desktopCart = document.getElementById('desktop-cart');
+    const mobileCart = document.getElementById('mobile-cart');
+    const cartModal = document.getElementById('cartModal');
+    const modalOverlay = document.getElementById('modalOverlay');
+    const modalContent = document.getElementById('modalContent');
+    const closeModal = document.getElementById('closeModal');
+    const takeBackBtn = document.getElementById('takeBackBtn');
+    const nextStepBtn = document.getElementById('nextStepBtn');
+    const addToPayBtn = document.getElementById('addToPayBtn');
+    const totalPrice = document.getElementById('totalPrice');
+    const cartCountElement = document.getElementById('cart-count');
+    const mobileCartCountElement = document.getElementById('mobile-cart-count');
+
+    // Product data with prices
+    const BurgerData = [
+          {
+              id: 'burger-1',
+              title: 'Royal Cheese Burger with extra Fries',
+              description: '1 McChicken, 1 Big Mac™, 1 Royal burger, 3 medium sized French Fries, 3 cold drinks',
+              price: 23.10,
+              image: './Images/burgers.png',
+          },
+          {
+              id: 'burger-2',
+              title: 'The classics for 3',
+              description: '1 McChicken, 1 Big Mac™, 1 Royal burger, 3 medium sized French Fries, 3 cold drinks',
+              price: 23.10,
+              image: './Images/burgers.png',
+          },
+          {
+              id: 'burger-3',
+              title: 'Big Mac Deluxe',
+              description: '1 McChicken, 1 Big Mac™, 1 Royal burger, 3 medium sized French Fries, 3 cold drinks',
+              price: 18.50,
+              image: './Images/burgers.png',
+          },
+          {
+              id: 'burger-4',
+              title: 'Quarter Pounder Special',
+              description: '1 McChicken, 1 Big Mac™, 1 Royal burger, 3 medium sized French Fries, 3 cold drinks',
+              price: 21.75,
+              image: './Images/burgers2.png',
+          },
+          {
+              id: 'burger-5',
+              title: 'Chicken Combo',
+              description: '1 McChicken, 1 Big Mac, 1 Royal burger, 3 medium sized French Fries, 3 cold drinks',
+              price: 16.90,
+              image: './Images/burgers.png',
+          },
+          {
+              id: 'burger-6',
+              title: 'Double Burger',
+              description: '1 McChicken, 1 Big Mac, 1 Royal burger, 3 medium sized French Fries, 3 cold drinks',
+              price: 19.25,
+              image: './Images/burgers3.png',
+          },
+      ];
+
+      const friesData = [
+          {
+              id: 'fries-1',
+              title: 'Large French Fries',
+              description: 'Crispy golden fries made from premium potatoes, seasoned to perfection',
+              price: 4.50,
+              image: './Images/fries.png',
+          },
+          {
+              id: 'fries-2',
+              title: 'Curly Fries Special',
+              description: 'Seasoned curly fries with special herbs and spices',
+              price: 5.25,
+              image: './Images/fries2.png',
+          },
+          {
+              id: 'fries-3',
+              title: 'Sweet Potato Fries',
+              description: 'Crispy sweet potato fries with a hint of cinnamon',
+              price: 5.75,
+              image: './Images/fries3.png',
+          },
+          {
+              id: 'fries-4',
+              title: 'Loaded Cheese Fries',
+              description: 'French fries topped with melted cheese and bacon bits',
+              price: 7.90,
+              image: './Images/fries4.png',
+          },
+          {
+              id: 'fries-5',
+              title: 'Spicy Wedges',
+              description: 'Potato wedges with spicy seasoning and dipping sauce',
+              price: 6.50,
+              image: './Images/fries4.png',
+          },
+          {
+              id: 'fries-6',
+              title: 'Onion Rings',
+              description: 'Crispy battered onion rings served with ranch dip',
+              price: 5.95,
+              image: './Images/fries4.png',
+          },
+      ];
+
+      const drinksData = [
+          {
+              id: 'drink-1',
+              title: 'Coca Cola Large',
+              description: 'Refreshing Coca Cola served ice cold in large size',
+              price: 2.50,
+              image: './Images/coldDrink.png',
+          },
+          {
+              id: 'drink-2',
+              title: 'Iced Coffee Frappe',
+              description: 'Rich coffee blended with ice and topped with whipped cream',
+              price: 4.25,
+              image: './Images/iceCup.png',
+          },
+          {
+              id: 'drink-3',
+              title: 'Classic Cola',
+              description: 'Traditional cola drink with that classic taste',
+              price: 2.25,
+              image: './Images/cola.png',
+          },
+          {
+              id: 'drink-4',
+              title: 'Coke Zero Sugar',
+              description: 'All the taste of Coca Cola with zero sugar',
+              price: 2.50,
+              image: './Images/cokeZero.png',
+          },
+          {
+              id: 'drink-5',
+              title: 'Fresh Orange Juice',
+              description: 'Freshly squeezed orange juice packed with vitamin C',
+              price: 3.75,
+              image: './Images/OJ.png',
+          },
+          {
+              id: 'drink-6',
+              title: 'Sprite Lemon Lime',
+              description: 'Crisp lemon-lime flavored soda that refreshes',
+              price: 2.25,
+              image: './Images/cola.png',
+          },
+      ];
+
+    // Slider functionality
+    const slider = document.getElementById("slider");
+    const next = document.getElementById("next");
+    const prev = document.getElementById("prev");
+
+    let index = 0;
+
+    function getVisibleCards() {
+      if (window.innerWidth < 640) return 1;
+      else if (window.innerWidth < 1024) return 2;
+      else return 3;
+    }
+
+    function updateSliderPosition() {
+      const visible = getVisibleCards();
+      const card = slider.children[0];
+      const cardWidth = card.offsetWidth;
+      const gap = parseInt(getComputedStyle(slider).gap) || 0;
+
+      const moveX = index * (cardWidth + gap);
+      slider.style.transform = `translateX(-${moveX}px)`;
+
+      applyAnimationToVisibleCards();
+    }
+
+    function applyAnimationToVisibleCards() {
+      const visible = getVisibleCards();
+      const start = index;
+      const end = index + visible;
+
+      [...slider.children].forEach((card, i) => {
+        card.classList.remove("card-animate");
+        if (i >= start && i < end) {
+          setTimeout(() => card.classList.add("card-animate"), 10);
+        }
+      });
+    }
+
+    function slideTo(i) {
+      const visible = getVisibleCards();
+      const maxIndex = slider.children.length - visible;
+      if (i > maxIndex) index = 0;
+      else if (i < 0) index = maxIndex;
+      else index = i;
+
+      updateSliderPosition();
+    }
+
+    next.addEventListener("click", () => slideTo(index + 1));
+    prev.addEventListener("click", () => slideTo(index - 1));
+
+    window.addEventListener("resize", () => {
+      updateSliderPosition();
+    });
+
+    // Mobile menu functionality
+    menuBtn.addEventListener('click', () => {
+      isMenuOpen = !isMenuOpen;
+      
+      if (isMenuOpen) {
+        mobileMenu.classList.remove('scale-y-0', 'opacity-0', 'max-h-0');
+        mobileMenu.classList.add('scale-y-100', 'opacity-100', 'max-h-96');
+        
+        line1.classList.add('rotate-45', 'translate-y-1');
+        line2.classList.add('opacity-0', 'scale-x-0');
+        line3.classList.add('-rotate-45', '-translate-y-1');
+      } else {
+        mobileMenu.classList.remove('scale-y-100', 'opacity-100', 'max-h-96');
+        mobileMenu.classList.add('scale-y-0', 'opacity-0', 'max-h-0');
+        
+        line1.classList.remove('rotate-45', 'translate-y-1');
+        line2.classList.remove('opacity-0', 'scale-x-0');
+        line3.classList.remove('-rotate-45', '-translate-y-1');
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!menuBtn.contains(e.target) && !mobileMenu.contains(e.target) && isMenuOpen) {
+        isMenuOpen = false;
+        mobileMenu.classList.remove('scale-y-100', 'opacity-100', 'max-h-96');
+        mobileMenu.classList.add('scale-y-0', 'opacity-0', 'max-h-0');
+        
+        line1.classList.remove('rotate-45', 'translate-y-1');
+        line2.classList.remove('opacity-0', 'scale-x-0');
+        line3.classList.remove('-rotate-45', '-translate-y-1');
+      }
+    });
+
+    // Cart functionality
+    desktopCart.addEventListener('click', openCart);
+    mobileCart.addEventListener('click', openCart);
+    closeModal.addEventListener('click', closeCart);
+    takeBackBtn.addEventListener('click', closeCart);
+    
+    cartModal.addEventListener('click', (e) => {
+        if (e.target === cartModal || e.target === modalOverlay) {
+            closeCart();
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !cartModal.classList.contains('hidden')) {
+            closeCart();
+        }
+    });
+
+    addToPayBtn.addEventListener('click', () => {
+        alert('Proceeding to payment...');
+    });
+
+    nextStepBtn.addEventListener('click', () => {
+        alert('Moving to next step...');
+    });
+
+    // Navigation functionality
+    function scrollToSection(targetId) {
+      const element = document.getElementById(targetId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    function createNav(linkContainer, isMobile = false) {
+      linkContainer.innerHTML = '';
+
+      navItems.forEach(item => {
+        const link = document.createElement('a');
+        link.href = '#';
+        link.textContent = item.name;
+        
+        let classes = 'whitespace-nowrap px-3 py-2 rounded-full transition-all duration-300 ease-in-out ';
+        
+        if (isMobile) {
+          classes += 'text-sm font-medium ';
+        } else {
+          classes += 'text-xs sm:text-sm lg:text-base xl:text-lg font-medium ';
+        }
+        
+        if (item.name === selected) {
+          classes += 'bg-[#FC8A06] text-white shadow-md';
+        } else {
+          classes += 'text-black md:hover:text-[#FC8A06] md:hover:bg-orange-50 md:hover:scale-105 active:text-[#FC8A06] active:bg-orange-50 active:scale-105';
+        }
+
+        link.className = classes;
+
+        link.addEventListener('click', e => {
+          e.preventDefault();
+          selected = item.name;
+          
+          if (item.target !== '#') {
+            scrollToSection(item.target);
+          }
+          
+          renderMenus();
+          
+          if (isMobile && isMenuOpen) {
+            isMenuOpen = false;
+            mobileMenu.classList.remove('scale-y-100', 'opacity-100', 'max-h-96');
+            mobileMenu.classList.add('scale-y-0', 'opacity-0', 'max-h-0');
+            
+            line1.classList.remove('rotate-45', 'translate-y-1');
+            line2.classList.remove('opacity-0', 'scale-x-0');
+            line3.classList.remove('-rotate-45', '-translate-y-1');
+          }
+        });
+
+        linkContainer.appendChild(link);
+      });
+    }
+
+    function renderMenus() {
+      createNav(menu);
+      createNav(mobileNav, true);
+    }
+
+    // Cart functions
+    function addToCart(productId, productData) {
+      if (cart[productId]) {
+        cart[productId].quantity += 1;
+      } else {
+        cart[productId] = {
+          ...productData,
+          quantity: 1
+        };
+      }
+      updateCartCount();
+      updateCartDisplay();
+      
+      // Show success feedback
+      showAddToCartFeedback();
+    }
+
+    function showAddToCartFeedback() {
+      // Create a temporary notification
+      const notification = document.createElement('div');
+      notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 transition-all duration-300';
+      notification.textContent = 'Item added to cart!';
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.classList.add('opacity-0');
+        setTimeout(() => {
+          document.body.removeChild(notification);
+        }, 300);
+      }, 2000);
+    }
+
+    function updateCartCount() {
+      cartCount = Object.values(cart).reduce((total, item) => total + item.quantity, 0);
+      
+      if (cartCount > 0) {
+        cartCountElement.textContent = cartCount;
+        mobileCartCountElement.textContent = cartCount;
+        cartCountElement.classList.remove('hidden');
+        mobileCartCountElement.classList.remove('hidden');
+      } else {
+        cartCountElement.classList.add('hidden');
+        mobileCartCountElement.classList.add('hidden');
+      }
+    }
+
+    function updateCartDisplay() {
+      const cartItemsContainer = document.getElementById('cartItems');
+      cartItemsContainer.innerHTML = '';
+      
+      let total = 0;
+      
+      Object.entries(cart).forEach(([productId, item]) => {
+        total += item.price * item.quantity;
+        
+        const cartItem = document.createElement('div');
+        cartItem.className = 'flex items-center justify-between p-2 sm:p-3 mb-2 sm:mb-3 bg-gray-100 rounded-lg transition-colors';
+        cartItem.innerHTML = `
+          <div class="flex items-center space-x-2 sm:space-x-3">
+            <div class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-orange-200 flex items-center justify-center overflow-hidden">
+              <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover">
+            </div>
+            <span class="font-medium text-gray-800 text-xs sm:text-sm md:text-base">${item.title}</span>
+          </div>
+          <div class="flex items-center space-x-2 sm:space-x-3">
+            <button onclick="updateCartQuantity('${productId}', -1)" class="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full border-2 border-gray-400 flex items-center justify-center hover:bg-gray-200 transition-colors">
+              <i class="fas fa-minus text-xs text-gray-600"></i>
+            </button>
+            <span class="w-6 sm:w-7 md:w-8 text-center font-semibold text-gray-800 text-xs sm:text-sm md:text-base">${item.quantity}</span>
+            <button onclick="updateCartQuantity('${productId}', 1)" class="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full border-2 border-gray-400 flex items-center justify-center hover:bg-gray-200 transition-colors">
+              <i class="fas fa-plus text-xs text-gray-600"></i>
+            </button>
+          </div>
+        `;
+        cartItemsContainer.appendChild(cartItem);
+      });
+      
+      totalPrice.textContent = `£${total.toFixed(2)}`;
+    }
+
+    function updateCartQuantity(productId, change) {
+      if (cart[productId]) {
+        cart[productId].quantity += change;
+        
+        if (cart[productId].quantity <= 0) {
+          delete cart[productId];
+        }
+        
+        updateCartCount();
+        updateCartDisplay();
+      }
+    }
+
+    // Make updateCartQuantity global so it can be called from HTML
+    window.updateCartQuantity = updateCartQuantity;
+
+    function openCart() {
+        cartModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        
+        setTimeout(() => {
+            modalOverlay.classList.remove('opacity-0');
+            modalOverlay.classList.add('opacity-100');
+            modalContent.classList.remove('scale-95', 'opacity-0');
+            modalContent.classList.add('scale-100', 'opacity-100');
+        }, 10);
+        
+        updateCartDisplay();
+    }
+
+    function closeCart() {
+        modalOverlay.classList.remove('opacity-100');
+        modalOverlay.classList.add('opacity-0');
+        modalContent.classList.remove('scale-100', 'opacity-100');
+        modalContent.classList.add('scale-95', 'opacity-0');
+        
+        setTimeout(() => {
+            cartModal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }, 300);
+    }
+
+    // Product rendering functions - Updated with responsive layout from extra2.html
+    function renderProducts(data, containerId) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      
+      container.innerHTML = data.map(product => `
+        <div class="relative bg-white rounded-xl shadow-md p-4 flex items-center justify-between border border-gray-100 product-card-hover stagger-animate-child">
+          <div class="flex flex-col pr-4">
+            <h3 class="text-lg font-bold text-gray-900 mb-1 leading-tight">
+              ${product.title}
+            </h3>
+            <p class="text-sm text-gray-600 mb-4 leading-snug">
+              ${product.description}
+            </p>
+            <span class="text-lg font-bold text-gray-900">
+              £${product.price.toFixed(2)}
+            </span>
+          </div>
+          <div class="relative flex-shrink-0">
+            <img
+              src="${product.image}"
+              alt="${product.title}"
+              width="150"
+              height="150"
+              class="rounded-lg object-cover"
+            />
+            <div class="absolute -bottom-2 -right-2 w-18 h-18 plus-button-hover plus-button-glow-hover cursor-pointer" onclick="addToCart('${product.id}', ${JSON.stringify(product).replace(/"/g, '&quot;')})">
+              <div class="relative w-full h-full">
+                <img
+                  src="./Images/bgPlus.png"
+                  alt="Circle background"
+                  class="w-full h-full object-contain"
+                />
+                <img
+                  src="./Images/plus.png"
+                  alt="Plus icon"
+                  class="absolute top-1/2 left-1/2 w-10 h-10 -translate-x-1/2 -translate-y-1/2"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Make addToCart global so it can be called from HTML
+    window.addToCart = addToCart;
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 768 && isMenuOpen) {
+        isMenuOpen = false;
+        mobileMenu.classList.remove('scale-y-100', 'opacity-100', 'max-h-96');
+        mobileMenu.classList.add('scale-y-0', 'opacity-0', 'max-h-0');
+        line1.classList.remove('rotate-45', 'translate-y-1');
+        line2.classList.remove('opacity-0', 'scale-x-0');
+        line3.classList.remove('-rotate-45', '-translate-y-1');
+      }
+    });
+
+    // Initialize everything when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        renderMenus();
+        renderProducts(BurgerData, 'burger-container');
+        renderProducts(friesData, 'fries-container');
+        renderProducts(drinksData, 'drinks-container');
+        updateSliderPosition();
+        updateCartCount();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,256 @@
+// Render product cards
+        const burgerContainer = document.getElementById('burger-container');
+        if (burgerContainer) {
+            burgerContainer.innerHTML = BurgerData.map(product => `
+                <div class="relative bg-white rounded-xl shadow-md p-4 flex items-center justify-between border border-gray-100 product-card-hover stagger-animate-child">
+                    <div class="flex flex-col pr-4">
+                        <h3 class="text-lg font-bold text-gray-900 mb-1 leading-tight">
+                            ${product.title}
+                        </h3>
+                        <p class="text-sm text-gray-600 mb-4 leading-snug">
+                            ${product.description}
+                        </p>
+                        <span class="text-lg font-bold text-gray-900">
+                            ${product.price}
+                        </span>
+                    </div>
+                    <div class="relative flex-shrink-0">
+                        <img
+                            src="${product.image}"
+                            alt="${product.title}"
+                            width="150"
+                            height="150"
+                            class="rounded-lg object-cover"
+                        />
+                        <div class="absolute -bottom-2 -right-2 w-18 h-18 plus-button-hover plus-button-glow-hover"
+                            onclick="event.stopPropagation(); addItemToCart('${product.id}', '${product.title}', '${product.price}', '${product.image}')">
+                            <div class="relative w-full h-full">
+                                <img
+                                    src="./plusbg.png"
+                                    alt="Circle background"
+                                    class="w-full h-full object-contain"
+                                />
+                                <img
+                                    src="./Plus.png"
+                                    alt="Plus icon"
+                                    class="absolute top-1/2 left-1/2 w-10 h-10 -translate-x-1/2 -translate-y-1/2"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        const friesContainer = document.getElementById('fries-container');
+        if (friesContainer) {
+            friesContainer.innerHTML = friesData.map(product => `
+                <div class="relative bg-white rounded-xl shadow-md p-4 flex items-center justify-between border border-gray-100 product-card-hover stagger-animate-child">
+                    <div class="flex flex-col pr-4">
+                        <h3 class="text-lg font-bold text-gray-900 mb-1 leading-tight">
+                            ${product.title}
+                        </h3>
+                        <p class="text-sm text-gray-600 mb-4 leading-snug">
+                            ${product.description}
+                        </p>
+                        <span class="text-lg font-bold text-gray-900">
+                            ${product.price}
+                        </span>
+                    </div>
+                    <div class="relative flex-shrink-0">
+                        <img
+                            src="${product.image}"
+                            alt="${product.title}"
+                            width="150"
+                            height="150"
+                            class="rounded-lg object-cover"
+                        />
+                        <div class="absolute -bottom-2 -right-2 w-18 h-18 plus-button-hover plus-button-glow-hover"
+                            onclick="event.stopPropagation(); addItemToCart('${product.id}', '${product.title}', '${product.price}', '${product.image}')">
+                            <div class="relative w-full h-full">
+                                <img
+                                    src="./plusbg.png"
+                                    alt="Circle background"
+                                    class="w-full h-full object-contain"
+                                />
+                                <img
+                                    src="./Plus.png"
+                                    alt="Plus icon"
+                                    class="absolute top-1/2 left-1/2 w-10 h-10 -translate-x-1/2 -translate-y-1/2"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        const drinksContainer = document.getElementById('drinks-container');
+        if (drinksContainer) {
+            drinksContainer.innerHTML = drinksData.map(product => `
+                <div class="relative bg-white rounded-xl shadow-md p-4 flex items-center justify-between border border-gray-100 product-card-hover stagger-animate-child">
+                    <div class="flex flex-col pr-4">
+                        <h3 class="text-lg font-bold text-gray-900 mb-1 leading-tight">
+                            ${product.title}
+                        </h3>
+                        <p class="text-sm text-gray-600 mb-4 leading-snug">
+                            ${product.description}
+                        </p>
+                        <span class="text-lg font-bold text-gray-900">
+                            ${product.price}
+                        </span>
+                    </div>
+                    <div class="relative flex-shrink-0">
+                        <img
+                            src="${product.image}"
+                            alt="${product.title}"
+                            width="150"
+                            height="150"
+                            class="rounded-lg object-cover"
+                        />
+                        <div class="absolute -bottom-2 -right-2 w-18 h-18 plus-button-hover plus-button-glow-hover"
+                            onclick="event.stopPropagation(); addItemToCart('${product.id}', '${product.title}', '${product.price}', '${product.image}')">
+                            <div class="relative w-full h-full">
+                                <img
+                                    src="./plusbg.png"
+                                    alt="Circle background"
+                                    class="w-full h-full object-contain"
+                                />
+                                <img
+                                    src="./Plus.png"
+                                    alt="Plus icon"
+                                    class="absolute top-1/2 left-1/2 w-10 h-10 -translate-x-1/2 -translate-y-1/2"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+
+        // Render product cards
+        const burgerContainer = document.getElementById('burger-container');
+        if (burgerContainer) {
+            burgerContainer.innerHTML = BurgerData.map(product => `
+                <div class="relative bg-white rounded-xl shadow-md p-4 flex items-center justify-between border border-gray-100 product-card-hover stagger-animate-child">
+                    <div class="flex flex-col pr-4">
+                        <h3 class="text-lg font-bold text-gray-900 mb-1 leading-tight">
+                            ${product.title}
+                        </h3>
+                        <p class="text-sm text-gray-600 mb-4 leading-snug">
+                            ${product.description}
+                        </p>
+                        <span class="text-lg font-bold text-gray-900">
+                            ${product.price}
+                        </span>
+                    </div>
+                    <div class="relative flex-shrink-0">
+                        <img
+                            src="${product.image}"
+                            alt="${product.title}"
+                            width="150"
+                            height="150"
+                            class="rounded-lg object-cover"
+                        />
+                        <div class="absolute -bottom-2 -right-2 w-18 h-18 plus-button-hover plus-button-glow-hover"
+                            onclick="event.stopPropagation(); addItemToCart('${product.id}', '${product.title}', '${product.price}', '${product.image}')">
+                            <div class="relative w-full h-full">
+                                <img
+                                    src="./plusbg.png"
+                                    alt="Circle background"
+                                    class="w-full h-full object-contain"
+                                />
+                                <img
+                                    src="./Plus.png"
+                                    alt="Plus icon"
+                                    class="absolute top-1/2 left-1/2 w-10 h-10 -translate-x-1/2 -translate-y-1/2"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        const friesContainer = document.getElementById('fries-container');
+        if (friesContainer) {
+            friesContainer.innerHTML = friesData.map(product => `
+                <div class="relative bg-white rounded-xl shadow-md p-4 flex items-center justify-between border border-gray-100 product-card-hover stagger-animate-child">
+                    <div class="flex flex-col pr-4">
+                        <h3 class="text-lg font-bold text-gray-900 mb-1 leading-tight">
+                            ${product.title}
+                        </h3>
+                        <p class="text-sm text-gray-600 mb-4 leading-snug">
+                            ${product.description}
+                        </p>
+                        <span class="text-lg font-bold text-gray-900">
+                            ${product.price}
+                        </span>
+                    </div>
+                    <div class="relative flex-shrink-0">
+                        <img
+                            src="${product.image}"
+                            alt="${product.title}"
+                            width="150"
+                            height="150"
+                            class="rounded-lg object-cover"
+                        />
+                        <div class="absolute -bottom-2 -right-2 w-18 h-18 plus-button-hover plus-button-glow-hover"
+                            onclick="event.stopPropagation(); addItemToCart('${product.id}', '${product.title}', '${product.price}', '${product.image}')">
+                            <div class="relative w-full h-full">
+                                <img
+                                    src="./plusbg.png"
+                                    alt="Circle background"
+                                    class="w-full h-full object-contain"
+                                />
+                                <img
+                                    src="./Plus.png"
+                                    alt="Plus icon"
+                                    class="absolute top-1/2 left-1/2 w-10 h-10 -translate-x-1/2 -translate-y-1/2"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        const drinksContainer = document.getElementById('drinks-container');
+        if (drinksContainer) {
+            drinksContainer.innerHTML = drinksData.map(product => `
+                <div class="relative bg-white rounded-xl shadow-md p-4 flex items-center justify-between border border-gray-100 product-card-hover stagger-animate-child">
+                    <div class="flex flex-col pr-4">
+                        <h3 class="text-lg font-bold text-gray-900 mb-1 leading-tight">
+                            ${product.title}
+                        </h3>
+                        <p class="text-sm text-gray-600 mb-4 leading-snug">
+                            ${product.description}
+                        </p>
+                        <span class="text-lg font-bold text-gray-900">
+                            ${product.price}
+                        </span>
+                    </div>
+                    <div class="relative flex-shrink-0">
+                        <img
+                            src="${product.image}"
+                            alt="${product.title}"
+                            width="150"
+                            height="150"
+                            class="rounded-lg object-cover"
+                        />
+                        <div class="absolute -bottom-2 -right-2 w-18 h-18 plus-button-hover plus-button-glow-hover"
+                            onclick="event.stopPropagation(); addItemToCart('${product.id}', '${product.title}', '${product.price}', '${product.image}')">
+                            <div class="relative w-full h-full">
+                                <img
+                                    src="./plusbg.png"
+                                    alt="Circle background"
+                                    class="w-full h-full object-contain"
+                                />
+                                <img
+                                    src="./Plus.png"
+                                    alt="Plus icon"
+                                    class="absolute top-1/2 left-1/2 w-10 h-10 -translate-x-1/2 -translate-y-1/2"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }

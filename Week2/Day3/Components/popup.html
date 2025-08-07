@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizza Cart Modal</title>
+    <link rel="stylesheet" href="./output.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+
+    <!-- Demo Button to Open Cart -->
+    <button id="openCartBtn" class="bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors">
+        <i class="fas fa-shopping-cart mr-2"></i>
+        Open Cart Modal
+    </button>
+
+    <!-- Cart Modal -->
+    <div id="cartModal" class="fixed inset-0 z-50 hidden">
+        <!-- Dark Overlay -->
+        <div class="absolute inset-0 bg-black bg-opacity-10"></div>
+
+        <!-- Modal Content -->
+        <div class="relative flex items-center justify-center min-h-screen p-2 sm:p-4">
+            <div class="relative">
+                <!-- Close Button - Positioned relative to popup -->
+                <button id="closeModal" aria-label="Close" class="absolute -top-2 -right-2 sm:-top-3 sm:-right-3 bg-orange-500 text-white rounded-full w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 flex items-center justify-center hover:bg-orange-600 transition-colors z-20">
+                    <i class="fas fa-times text-xs sm:text-sm"></i>
+                </button>
+                
+                <div class="bg-white rounded-lg shadow-xl relative overflow-hidden w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-2xl 2xl:max-w-4xl" style="height: min(1841px, 90vh, 600px);">
+
+                <!-- Modal Header with Pizza Image -->
+                <div class="relative h-20 sm:h-24 md:h-32">
+                    <img src="./Images/cartPizza.png" alt="Pizza" class="w-full h-full object-cover">
+                </div>
+
+                <!-- Cart Items -->
+                <div class="flex-1 overflow-y-auto p-2 sm:p-0 md:p-4 pb-8 sm:pb-10 md:pb-12" style="height: calc(100% - 200px);">
+                    <div id="cartItems">
+                        <!-- Margherita -->
+                        <div id="margherita-item" class="flex items-center justify-between p-2 sm:p-3 mb-2 sm:mb-3 bg-gray-100 rounded-lg transition-colors cursor-pointer cart-item" onclick="toggleItemSelection('margherita')">
+                            <div class="flex items-center space-x-2 sm:space-x-3">
+                                <div class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-orange-200 flex items-center justify-center overflow-hidden">
+                                    <img src="./Images/margherita.png" alt="Margherita" class="w-full h-full object-cover">
+                                </div>
+                                <span class="font-medium text-gray-800 text-xs sm:text-sm md:text-base">Margherita</span>
+                            </div>
+                            <div class="flex items-center space-x-2 sm:space-x-3">
+                                <button aria-label="Pizza" onclick="event.stopPropagation(); updateQuantity('margherita', -1)" class="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full border-2 border-gray-400 flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                    <i class="fas fa-minus text-xs text-gray-600"></i>
+                                </button>
+                                <span id="margherita-qty" class="w-6 sm:w-7 md:w-8 text-center font-semibold text-gray-800 text-xs sm:text-sm md:text-base">1</span>
+                                <button aria-label="Pizza" onclick="event.stopPropagation(); updateQuantity('margherita', 1)" class="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full border-2 border-gray-400 flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                    <i class="fas fa-plus text-xs text-gray-600"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Polo -->
+                        <div id="polo-item" class="flex items-center justify-between p-2 sm:p-3 mb-2 sm:mb-3 bg-gray-100 rounded-lg transition-colors cursor-pointer cart-item" onclick="toggleItemSelection('polo')">
+                            <div class="flex items-center space-x-2 sm:space-x-3">
+                                <div class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-red-200 flex items-center justify-center overflow-hidden">
+                                    <img src="./Images/polo.png" alt="Polo" class="w-full h-full object-cover">
+                                </div>
+                                <span class="font-medium text-gray-800 text-xs sm:text-sm md:text-base">Polo</span>
+                            </div>
+                            <div class="flex items-center space-x-2 sm:space-x-3">
+                                <button aria-label="Pizza" onclick="event.stopPropagation(); updateQuantity('polo', -1)" class="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full border-2 border-gray-400 flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                    <i class="fas fa-minus text-xs text-gray-600"></i>
+                                </button>
+                                <span id="polo-qty" class="w-6 sm:w-7 md:w-8 text-center font-semibold text-gray-800 text-xs sm:text-sm md:text-base">1</span>
+                                <button aria-label="Pizza" onclick="event.stopPropagation(); updateQuantity('polo', 1)" class="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full border-2 border-gray-400 flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                    <i class="fas fa-plus text-xs text-gray-600"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Meat Fiesta -->
+                        <div id="meatfiesta-item" class="flex items-center justify-between p-2 sm:p-3 mb-2 sm:mb-3 bg-gray-100 rounded-lg transition-colors cursor-pointer cart-item" onclick="toggleItemSelection('meatfiesta')">
+                            <div class="flex items-center space-x-2 sm:space-x-3">
+                                <div class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-yellow-200 flex items-center justify-center overflow-hidden">
+                                    <img src="./Images/meatFiest.png" alt="Meat Fiesta" class="w-full h-full object-cover">
+                                </div>
+                                <span class="font-medium text-gray-800 text-xs sm:text-sm md:text-base">Meat Fiesta</span>
+                            </div>
+                            <div class="flex items-center space-x-2 sm:space-x-3">
+                                <button aria-label="Pizza" onclick="event.stopPropagation(); updateQuantity('meatfiesta', -1)" class="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full border-2 border-gray-400 flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                    <i class="fas fa-minus text-xs text-gray-600"></i>
+                                </button>
+                                <span id="meatfiesta-qty" class="w-6 sm:w-7 md:w-8 text-center font-semibold text-gray-800 text-xs sm:text-sm md:text-base">1</span>
+                                <button aria-label="Pizza" onclick="event.stopPropagation(); updateQuantity('meatfiesta', 1)" class="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full border-2 border-gray-400 flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                    <i class="fas fa-plus text-xs text-gray-600"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Hawaiian -->
+                        <div id="hawaiian-item" class="flex items-center justify-between p-2 sm:p-3 mb-2 sm:mb-3 bg-gray-100 rounded-lg transition-colors cursor-pointer cart-item" onclick="toggleItemSelection('hawaiian')">
+                            <div class="flex items-center space-x-2 sm:space-x-3">
+                                <div class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:w-12 rounded-full bg-orange-200 flex items-center justify-center overflow-hidden">
+                                    <img src="./Images/hawaiian.png" alt="Hawaiian" class="w-full h-full object-cover">
+                                </div>
+                                <span class="font-medium text-gray-800 text-xs sm:text-sm md:text-base">Hawaiian</span>
+                            </div>
+                            <div class="flex items-center space-x-2 sm:space-x-3">
+                                <button aria-label="Pizza" onclick="event.stopPropagation(); updateQuantity('hawaiian', -1)" class="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full border-2 border-gray-400 flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                    <i class="fas fa-minus text-xs text-gray-600"></i>
+                                </button>
+                                <span id="hawaiian-qty" class="w-6 sm:w-7 md:w-8 text-center font-semibold text-gray-800 text-xs sm:text-sm md:text-base">2</span>
+                                <button aria-label="Pizza" onclick="event.stopPropagation(); updateQuantity('hawaiian', 1)" class="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full border-2 border-gray-400 flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                    <i class="fas fa-plus text-xs text-gray-600"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Toscana -->
+                        <div id="toscana1-item" class="flex items-center justify-between p-2 sm:p-3 mb-2 sm:mb-3 bg-gray-100 rounded-lg transition-colors cursor-pointer cart-item" onclick="toggleItemSelection('toscana1')">
+                            <div class="flex items-center space-x-2 sm:space-x-3">
+                                <div class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:w-12 rounded-full bg-green-200 flex items-center justify-center overflow-hidden">
+                                    <img src="./Images/toscana.png" alt="Toscana" class="w-full h-full object-cover">
+                                </div>
+                                <span class="font-medium text-gray-800 text-xs sm:text-sm md:text-base">Toscana</span>
+                            </div>
+                            <div class="flex items-center space-x-2 sm:space-x-3">
+                                <button aria-label="Pizza" onclick="event.stopPropagation(); updateQuantity('toscana1', -1)" class="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full border-2 border-gray-400 flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                    <i class="fas fa-minus text-xs text-gray-600"></i>
+                                </button>
+                                <span id="toscana1-qty" class="w-6 sm:w-7 md:w-8 text-center font-semibold text-gray-800 text-xs sm:text-sm md:text-base">1</span>
+                                <button aria-label="Pizza" onclick="event.stopPropagation(); updateQuantity('toscana1', 1)" class="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full border-2 border-gray-400 flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                    <i class="fas fa-plus text-xs text-gray-600"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Toscana (Second) -->
+                        <div id="toscana2-item" class="flex items-center justify-between p-2 sm:p-3 mb-2 sm:mb-3 bg-gray-100 rounded-lg transition-colors cursor-pointer cart-item" onclick="toggleItemSelection('toscana2')">
+                            <div class="flex items-center space-x-2 sm:space-x-3">
+                                <div class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:w-12 rounded-full bg-green-200 flex items-center justify-center overflow-hidden">
+                                    <img src="./Images/toscana.png" alt="Toscana" class="w-full h-full object-cover">
+                                </div>
+                                <span class="font-medium text-gray-800 text-xs sm:text-sm md:text-base">Toscana</span>
+                            </div>
+                            <div class="flex items-center space-x-2 sm:space-x-3">
+                                <button aria-label="Pizza" onclick="event.stopPropagation(); updateQuantity('toscana2', -1)" class="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full border-2 border-gray-400 flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                    <i class="fas fa-minus text-xs text-gray-600"></i>
+                                </button>
+                                <span id="toscana2-qty" class="w-6 sm:w-7 md:w-8 text-center font-semibold text-gray-800 text-xs sm:text-sm md:text-base">1</span>
+                                <button aria-label="Pizza" onclick="event.stopPropagation(); updateQuantity('toscana2', 1)" class="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full border-2 border-gray-400 flex items-center justify-center hover:bg-gray-200 transition-colors">
+                                    <i class="fas fa-plus text-xs text-gray-600"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Footer - Updated to match your image -->
+                <div class="absolute bottom-0 left-0 right-0 p-4 sm:p-6 md:p-8 bg-white">
+                    <!-- Top row: Total button and tax text -->
+                    <div class="flex items-center justify-between mb-6">
+                        <button id="addToPayBtn" class="bg-[#FC8A06CC] text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors text-sm sm:text-base">
+                            Total to pay <span id="totalPrice" class="font-bold">£127.90</span>
+                        </button>
+                        <p class="text-gray-600 text-xs sm:text-sm ml-4">Delivery & Tax will be calculated in the next step</p>
+                    </div>
+                    
+                    <!-- Bottom row: Take me back and Next Step -->
+                    <div class="flex gap-4 justify-end items-center">
+                        <button id="takeBackBtn" class="text-gray-800 hover:text-gray-600 transition-colors text-sm sm:text-base font-medium underline">Take me back</button>
+                        <button id="nextStepBtn" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors text-sm sm:text-base font-semibold flex items-center">
+                            <div class="w-6 h-6 bg-white rounded-full flex items-center justify-center mr-3">
+                                <i class="fas fa-arrow-right text-green-600 text-xs"></i>
+                            </div>
+                            Next Step
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Cart data matching the image
+        const cartData = {
+            margherita: { qty: 1, price: 15.99 },
+            polo: { qty: 1, price: 18.99 },
+            meatfiesta: { qty: 1, price: 22.99 },
+            hawaiian: { qty: 2, price: 19.99 },
+            toscana1: { qty: 1, price: 24.99 },
+            toscana2: { qty: 1, price: 24.99 }
+        };
+
+        let selectedItem = null;
+
+        // DOM Elements
+        const openCartBtn = document.getElementById('openCartBtn');
+        const cartModal = document.getElementById('cartModal');
+        const closeModal = document.getElementById('closeModal');
+        const takeBackBtn = document.getElementById('takeBackBtn');
+        const nextStepBtn = document.getElementById('nextStepBtn');
+        const addToPayBtn = document.getElementById('addToPayBtn');
+        const totalPrice = document.getElementById('totalPrice');
+
+        // Event Listeners
+        openCartBtn.addEventListener('click', openCart);
+        closeModal.addEventListener('click', closeCart);
+        takeBackBtn.addEventListener('click', closeCart);
+        
+        // Close modal when clicking outside
+        cartModal.addEventListener('click', (e) => {
+            if (e.target === cartModal) {
+                closeCart();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !cartModal.classList.contains('hidden')) {
+                closeCart();
+            }
+        });
+
+        // Button actions
+        addToPayBtn.addEventListener('click', () => {
+            alert('Proceeding to payment...');
+        });
+
+        nextStepBtn.addEventListener('click', () => {
+            alert('Moving to next step...');
+        });
+
+        // Functions
+        function openCart() {
+            cartModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            setupHoverListeners();
+        }
+
+        function closeCart() {
+            cartModal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function setupHoverListeners() {
+            const cartItems = document.querySelectorAll('.cart-item');
+            
+            cartItems.forEach(item => {
+                item.addEventListener('mouseenter', function() {
+                    // Only add hover effect if item is not selected
+                    if (!this.classList.contains('selected')) {
+                        this.classList.remove('bg-gray-100');
+                        this.classList.add('bg-gray-200');
+                    }
+                });
+                
+                item.addEventListener('mouseleave', function() {
+                    // Only remove hover effect if item is not selected
+                    if (!this.classList.contains('selected')) {
+                        this.classList.remove('bg-gray-200');
+                        this.classList.add('bg-gray-100');
+                    }
+                });
+            });
+        }
+
+        function toggleItemSelection(itemId) {
+            // Clear previous selection
+            if (selectedItem) {
+                const prevItem = document.getElementById(selectedItem + '-item');
+                prevItem.classList.remove('bg-gray-800', 'text-white', 'selected');
+                prevItem.classList.add('bg-gray-100');
+                
+                // Reset text colors
+                const prevSpan = prevItem.querySelector('span');
+                prevSpan.classList.remove('text-orange-300');
+                prevSpan.classList.add('text-gray-800');
+                
+                // Reset button styles
+                const prevButtons = prevItem.querySelectorAll('button');
+                prevButtons.forEach(btn => {
+                    btn.classList.remove('border-gray-500', 'hover:bg-gray-700');
+                    btn.classList.add('border-gray-400', 'hover:bg-gray-200');
+                    
+                    const icon = btn.querySelector('i');
+                    if (icon) {
+                        icon.classList.remove('text-gray-300');
+                        icon.classList.add('text-gray-600');
+                    }
+                });
+                
+                // Reset quantity text
+                const prevQty = prevItem.querySelector('[id$="-qty"]');
+                prevQty.classList.remove('text-white');
+                prevQty.classList.add('text-gray-800');
+            }
+            
+            // Set new selection
+            selectedItem = itemId;
+            const item = document.getElementById(itemId + '-item');
+            item.classList.remove('bg-gray-100', 'bg-gray-200'); // Remove both normal and hover states
+            item.classList.add('bg-gray-800', 'text-white', 'selected');
+            
+            // Update text colors
+            const span = item.querySelector('span');
+            span.classList.remove('text-gray-800');
+            span.classList.add('text-orange-300');
+            
+            // Update button styles
+            const buttons = item.querySelectorAll('button');
+            buttons.forEach(btn => {
+                btn.classList.remove('border-gray-400', 'hover:bg-gray-200');
+                btn.classList.add('border-gray-500', 'hover:bg-gray-700');
+                
+                const icon = btn.querySelector('i');
+                if (icon) {
+                    icon.classList.remove('text-gray-600');
+                    icon.classList.add('text-gray-300');
+                }
+            });
+            
+            // Update quantity text
+            const qty = item.querySelector('[id$="-qty"]');
+            qty.classList.remove('text-gray-800');
+            qty.classList.add('text-white');
+        }
+
+        function updateQuantity(itemId, change) {
+            const currentQty = parseInt(document.getElementById(itemId + '-qty').textContent);
+            const newQty = Math.max(0, currentQty + change);
+            
+            if (newQty === 0) {
+                // Remove item from cart
+                const itemElement = document.getElementById(itemId + '-item');
+                itemElement.style.transition = 'opacity 0.3s ease-out';
+                itemElement.style.opacity = '0';
+                
+                setTimeout(() => {
+                    itemElement.remove();
+                    delete cartData[itemId];
+                    
+                    // Clear selection if this item was selected
+                    if (selectedItem === itemId) {
+                        selectedItem = null;
+                    }
+                    
+                    updateTotal();
+                    // Re-setup hover listeners for remaining items
+                    setupHoverListeners();
+                }, 300);
+                return;
+            }
+            
+            document.getElementById(itemId + '-qty').textContent = newQty;
+            cartData[itemId].qty = newQty;
+            
+            // Update total price
+            updateTotal();
+        }
+
+        function updateTotal() {
+            let total = 0;
+            Object.keys(cartData).forEach(itemId => {
+                const qtyElement = document.getElementById(itemId + '-qty');
+                if (qtyElement) {
+                    const qty = parseInt(qtyElement.textContent);
+                    total += qty * cartData[itemId].price;
+                }
+            });
+            
+            totalPrice.textContent = `£${total.toFixed(2)}`;
+        }
+
+        // Initialize with the total from image
+        document.addEventListener('DOMContentLoaded', function() {
+            // Keep the original total from the image
+            totalPrice.textContent = '£127.90';
+        });
+    </script>
+</body>
+</html>

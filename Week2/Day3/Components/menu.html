@@ -1,0 +1,311 @@
+
+
+<div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 min-w-0">
+
+<div id="burger"  class="mt-10"></div>
+    <!-- burger Section -->
+    <h2 class="text-3xl font-bold text-black mb-8 mt-12">Burgers</h2>
+    <div id="burger-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- burger cards injected here -->
+    </div>
+<div id="fries"></div>
+    <!-- Fries Section -->
+    <h2 class="text-3xl font-bold text-[#FC8A06] mb-8 mt-12">Fries</h2>
+    <div id="fries-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Fries cards injected here -->
+    </div>
+<div id="drinks"></div>
+    <!-- Drinks Section -->
+    <h2 class="text-3xl font-bold text-[#FC8A06] mb-8 mt-12">Cold Drinks</h2>
+    <div id="drinks-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Drinks cards injected here -->
+    </div>
+
+  </div>
+
+<script>
+       const BurgerData = [
+            {
+                id: '1',
+                title: 'Royal Cheese Burger with extra Fries',
+                description: '1 McChicken™, 1 Big Mac™, 1 Royal Cheeseburger, 3 medium sized French Fries, 3 cold drinks',
+                price: 'GBP 23.10',
+                image: './burger1.png',
+            },
+            {
+                id: '2',
+                title: 'The classics for 3',
+                description: '1 McChicken™, 1 Big Mac™, 1 Royal Cheeseburger, 3 medium sized French Fries, 3 cold drinks',
+                price: 'GBP 23.10',
+                image: './burger2.png',
+            },
+            {
+                id: '3',
+                title: 'The classics for 3',
+                description: '1 McChicken™, 1 Big Mac™, 1 Royal Cheeseburger, 3 medium sized French Fries, 3 cold drinks',
+                price: 'GBP 23.10',
+                image: 'burger3.png',
+            },
+            {
+                id: '4',
+                title: 'The classics for 3',
+                description: '1 McChicken™, 1 Big Mac™, 1 Royal Cheeseburger, 3 medium sized French Fries, 3 cold drinks',
+                price: 'GBP 23.10',
+                image: './burger4.png',
+            },
+            {
+                id: '5',
+                title: 'The classics for 3',
+                description: '1 McChicken™, 1 Big Mac™, 1 Royal Cheeseburger, 3 medium sized French Fries, 3 cold drinks',
+                price: 'GBP 23.10',
+                image: './burger5.png',
+            },
+            {
+                id: '6',
+                title: 'The classics for 3',
+                description: '1 McChicken™, 1 Big Mac™, 1 Royal Cheeseburger, 3 medium sized French Fries, 3 cold drinks',
+                price: 'GBP 23.10',
+                image: './burger6.png',
+            },
+        ];
+
+
+
+
+
+        const friesData = [
+            {
+                id: '1',
+                title: 'Royal Cheese Burger with extra Fries',
+                description: '1 McChicken™, 1 Big Mac™, 1 Royal Cheeseburger, 3 medium sized French Fries, 3 cold drinks',
+                price: 'GBP 23.10',
+                image: './fries1.png',
+            },
+            {
+                id: '2',
+                title: 'The classics for 3',
+                description: '1 McChicken™, 1 Big Mac™, 1 Royal Cheeseburger, 3 medium sized French Fries, 3 cold drinks',
+                price: 'GBP 23.10',
+                image: './fries2.png',
+            },
+            {
+                id: '3',
+                title: 'The classics for 3',
+                description: '1 McChicken™, 1 Big Mac™, 1 Royal Cheeseburger, 3 medium sized French Fries, 3 cold drinks',
+                price: 'GBP 23.10',
+                image: 'fries3.png',
+            },
+            {
+                id: '4',
+                title: 'The classics for 3',
+                description: '1 McChicken™, 1 Big Mac™, 1 Royal Cheeseburger, 3 medium sized French Fries, 3 cold drinks',
+                price: 'GBP 23.10',
+                image: './fries4.png',
+            },
+            {
+                id: '5',
+                title: 'The classics for 3',
+                description: '1 McChicken™, 1 Big Mac™, 1 Royal Cheeseburger, 3 medium sized French Fries, 3 cold drinks',
+                price: 'GBP 23.10',
+                image: './fries5.png',
+            },
+            {
+                id: '6',
+                title: 'The classics for 3',
+                description: '1 McChicken™, 1 Big Mac™, 1 Royal Cheeseburger, 3 medium sized French Fries, 3 cold drinks',
+                price: 'GBP 23.10',
+                image: './fries6.png',
+            },
+        ];
+
+
+        const drinksData = [
+            {
+                id: '1',
+                title: 'Royal Cheese Burger with extra Fries',
+                description: '1 McChicken™, 1 Big Mac™, 1 Royal Cheeseburger, 3 medium sized French Fries, 3 cold drinks',
+                price: 'GBP 23.10',
+                image: './drink1.png',
+            },
+            {
+                id: '2',
+                title: 'The classics for 3',
+                description: '1 McChicken™, 1 Big Mac™, 1 Royal Cheeseburger, 3 medium sized French Fries, 3 cold drinks',
+                price: 'GBP 23.10',
+                image: './drink2.png',
+            },
+            {
+                id: '3',
+                title: 'The classics for 3',
+                description: '1 McChicken™, 1 Big Mac™, 1 Royal Cheeseburger, 3 medium sized French Fries, 3 cold drinks',
+                price: 'GBP 23.10',
+                image: 'drink3.png',
+            },
+            {
+                id: '4',
+                title: 'The classics for 3',
+                description: '1 McChicken™, 1 Big Mac™, 1 Royal Cheeseburger, 3 medium sized French Fries, 3 cold drinks',
+                price: 'GBP 23.10',
+                image: './drink4.png',
+            },
+            {
+                id: '5',
+                title: 'The classics for 3',
+                description: '1 McChicken™, 1 Big Mac™, 1 Royal Cheeseburger, 3 medium sized French Fries, 3 cold drinks',
+                price: 'GBP 23.10',
+                image: './drink5.png',
+            },
+            {
+                id: '6',
+                title: 'The classics for 3',
+                description: '1 McChicken™, 1 Big Mac™, 1 Royal Cheeseburger, 3 medium sized French Fries, 3 cold drinks',
+                price: 'GBP 23.10',
+                image: './drink6.png',
+            },
+        ];
+
+
+
+
+        const burgerContainer = document.getElementById('burger-container');
+
+        if (burgerContainer) {
+            burgerContainer.innerHTML = BurgerData.map(product => `
+                <div class="relative bg-white rounded-xl shadow-md p-4 flex items-center justify-between border border-gray-100">
+                    <div class="flex flex-col pr-4">
+                        <h3 class="text-lg font-bold text-gray-900 mb-1 leading-tight">
+                            ${product.title}
+                        </h3>
+                        <p class="text-sm text-gray-600 mb-4 leading-snug">
+                            ${product.description}
+                        </p>
+                        <span class="text-lg font-bold text-gray-900">
+                            ${product.price}
+                        </span>
+                    </div>
+                    <div class="relative flex-shrink-0">
+                        <img
+                            src="${product.image}"
+                            alt="${product.title}"
+                            width="150"
+                            height="150"
+                            class="rounded-lg object-cover"
+                        />
+                    
+<div class="absolute -bottom-2 -right-2 w-18 h-18">
+  <div class="relative w-full h-full">
+    <img
+      src="./plusbg.png"
+      alt="Circle background"
+      class="w-full h-full object-contain"
+    />
+    <img
+      src="./Plus.png"
+      alt="Plus icon"
+      class="absolute top-1/2 left-1/2 w-10 h-10 -translate-x-1/2 -translate-y-1/2"
+    />
+  </div>
+</div>
+
+                    </div>
+                </div>
+            `).join('');
+        }
+
+
+
+                
+
+        const friesContainer = document.getElementById('fries-container');
+
+        if (friesContainer) {
+            friesContainer.innerHTML = friesData.map(product => `
+                <div class="relative bg-white rounded-xl shadow-md p-4 flex items-center justify-between border border-gray-100">
+                    <div class="flex flex-col pr-4">
+                        <h3 class="text-lg font-bold text-gray-900 mb-1 leading-tight">
+                            ${product.title}
+                        </h3>
+                        <p class="text-sm text-gray-600 mb-4 leading-snug">
+                            ${product.description}
+                        </p>
+                        <span class="text-lg font-bold text-gray-900">
+                            ${product.price}
+                        </span>
+                    </div>
+                    <div class="relative flex-shrink-0">
+                        <img
+                            src="${product.image}"
+                            alt="${product.title}"
+                            width="150"
+                            height="150"
+                            class="rounded-lg object-cover"
+                        />
+                    
+<div class="absolute -bottom-2 -right-2 w-18 h-18">
+  <div class="relative w-full h-full">
+    <img
+      src="./plusbg.png"
+      alt="Circle background"
+      class="w-full h-full object-contain"
+    />
+    <img
+      src="./Plus.png"
+      alt="Plus icon"
+      class="absolute top-1/2 left-1/2 w-10 h-10 -translate-x-1/2 -translate-y-1/2"
+    />
+  </div>
+</div>
+
+                    </div>
+                </div>
+            `).join('');
+        }
+
+
+        const drinksContainer = document.getElementById('drinks-container');
+
+        if (drinksContainer) {
+            drinksContainer.innerHTML = drinksData.map(product => `
+                <div class="relative bg-white rounded-xl shadow-md p-4 flex items-center justify-between border border-gray-100">
+                    <div class="flex flex-col pr-4">
+                        <h3 class="text-lg font-bold text-gray-900 mb-1 leading-tight">
+                            ${product.title}
+                        </h3>
+                        <p class="text-sm text-gray-600 mb-4 leading-snug">
+                            ${product.description}
+                        </p>
+                        <span class="text-lg font-bold text-gray-900">
+                            ${product.price}
+                        </span>
+                    </div>
+                    <div class="relative flex-shrink-0">
+                        <img
+                            src="${product.image}"
+                            alt="${product.title}"
+                            width="150"
+                            height="150"
+                            class="rounded-lg object-cover"
+                        />
+                    
+<div class="absolute -bottom-2 -right-2 w-18 h-18">
+  <div class="relative w-full h-full">
+    <img
+      src="./plusbg.png"
+      alt="Circle background"
+      class="w-full h-full object-contain"
+    />
+    <img
+      src="./Plus.png"
+      alt="Plus icon"
+      class="absolute top-1/2 left-1/2 w-10 h-10 -translate-x-1/2 -translate-y-1/2"
+    />
+  </div>
+</div>
+
+                    </div>
+                </div>
+            `).join('');
+        }
+
+
+    </script>
