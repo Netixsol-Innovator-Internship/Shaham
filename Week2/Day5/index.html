@@ -3,9 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>QuizMaster - Test Your Knowledge</title>
+    <link rel="stylesheet" href="./output.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563eb',
+                        secondary: '#f3f4f6',
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body>
-    
+<body class="bg-gray-50 min-h-screen">
+
+    <nav id="navbar" class="bg-white shadow-sm border-b hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <div class="w-6 h-6mr-2"><img src="./Images/logoImg.png" alt=""></div>
+                        <span class="font-bold text-xl">QuizMaster</span>
+                    </div>
+                </div>
+
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#" id="nav-home" class="text-gray-900 hover:text-primary px-3 py-2 text-sm font-medium transition-all duration-300 hover:scale-105 hover:bg-primary/10 hover:text-primary active:scale-95 active:bg-primary/20 relative">Home</a>
+                        <a href="#" id="nav-quizzes" class="text-gray-500 hover:text-primary px-3 py-2 text-sm font-medium transition-all duration-300 hover:scale-105 hover:bg-primary/10 hover:text-primary active:scale-95 active:text-black">Quizzes</a>
+                        <a href="#" id="nav-leaderboard" class="text-gray-500 hover:text-primary px-3 py-2 text-sm font-medium transition-all duration-300 hover:scale-105 hover:bg-primary/10 hover:text-primary active:scale-95 active:bg-primary/20">Leaderboard</a>
+                        <a href="#" id="nav-profile" class="text-gray-500 hover:text-primary px-3 py-2 text-sm font-medium transition-all duration-300 hover:scale-105 hover:bg-primary/10 hover:text-primary active:scale-95 active:bg-primary/20">Profile</a>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <button id="notifications-btn" class="p-2 rounded-md text-gray-400 hover:text-gray-500">
+                        <img src="./Images/bell.png" alt="icon" class="h-5 w-5">
+                    </button>
+                    <div class="flex items-center">
+                        <img id="user-avatar" class="h-8 w-8 rounded-full" src="./Images/profile.png" alt="User avatar">
+                    </div>
+
+                    <div class="md:hidden">
+                        <button id="mobile-menu-btn" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100">
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="mobile-menu" class="md:hidden hidden">
+                <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t">
+                    <a href="#" id="mobile-nav-home" class="text-gray-900 hover:text-primary block px-3 py-2 text-base font-medium transition-all duration-300 active:scale-95 active:bg-primary/20 relative">Home</a>
+                    <a href="#" id="mobile-nav-quizzes" class="text-gray-500 hover:text-primary block px-3 py-2 text-base font-medium transition-all duration-300 active:scale-95 active:bg-primary/20">Quizzes</a>
+                    <a href="#" id="mobile-nav-leaderboard" class="text-gray-500 hover:text-primary block px-3 py-2 text-base font-medium transition-all duration-300 active:scale-95 active:bg-primary/20">Leaderboard</a>
+                    <a href="#" id="mobile-nav-profile" class="text-gray-500 hover:text-primary block px-3 py-2 text-base font-medium transition-all duration-300 active:scale-95 active:text-black">Profile</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main id="main-content" class="min-h-screen">
+        <!-- Content will be dynamically inserted here -->
+    </main>
+
+    <script src="quiz-data.js"></script>
+    <script src="auth.js"></script>
+    <script src="quiz-app.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
