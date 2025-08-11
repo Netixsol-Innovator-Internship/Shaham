@@ -1,0 +1,65 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap");
+
+.nav-link {
+  position: relative;
+  padding-bottom: 4px;
+  transition: color .18s ease, transform .18s ease;
+  font-size: clamp(0.8rem, 1vw, 1rem);
+}
+
+.nav-link.active,
+.nav-link:hover {
+  color: #000;
+}
+
+.dark .nav-link.active,
+.dark .nav-link:hover {
+  color: white;
+}
+
+.nav-link.active::after,
+.nav-link:hover::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  width: 100%;
+  background: linear-gradient(to right, #0165d1, #00d0d0);
+}
+
+#mobile-menu.menu-open {
+  max-height: 600px;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#mobile-menu svg {
+  transform-origin: center;
+}
+
+/* Theme toggle animations */
+#theme-toggle svg,
+#mobile-theme-toggle svg {
+  transition: transform 0.3s ease;
+}
+
+#theme-toggle:hover svg,
+#mobile-theme-toggle:hover svg {
+  transform: rotate(15deg);
+}
+
+/* Fixed global transition to exclude display/visibility properties that interfere with dark mode icon switching */
+* {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+/* Ensure theme toggle icons switch instantly without transition delays */
+#sun-icon,
+#moon-icon,
+#mobile-sun-icon,
+#mobile-moon-icon {
+  transition: none !important;
+}
