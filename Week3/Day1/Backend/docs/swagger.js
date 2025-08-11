@@ -21,7 +21,7 @@ const options = {
     ]
   },
   // Look for JSDoc comments in controllers for endpoints and schemas
-  apis: [path.join(__dirname, '../controllers/*.js')]
+  apis: [path.join(process.cwd(), 'controllers/*.js')]
 };
 
 const swaggerSpec = swaggerJsdoc(options);
