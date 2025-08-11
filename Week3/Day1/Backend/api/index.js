@@ -27,4 +27,4 @@ app.use((req, res) => {
 // Global error handler
 app.use(errorHandler);
 
-module.exports = app; // ✅ Required for Vercel
+module.exports = app;
