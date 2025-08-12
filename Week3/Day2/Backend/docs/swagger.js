@@ -20,7 +20,7 @@ const options = {
     },
     servers: [
       {
-        url: "http://localhost:5000",
+        host: "shahamweek3day2backend.vercel.app",
         description: "Development server",
       },
       {
