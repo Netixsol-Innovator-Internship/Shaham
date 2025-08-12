@@ -1,10 +1,11 @@
 const express = require('express');
 const swaggerUi = require('swagger-ui-express');
-const swaggerSpec = require('../docs/swagger');
-const taskRoutes = require('../routes/taskRoutes');
-const errorHandler = require('../middleware/errorHandler');
+const swaggerSpec = require('./docs/swagger');
+const taskRoutes = require('./routes/taskRoutes');
+const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
+const PORT = process.env.PORT || 5000;
 
 // JSON parser
 app.use(express.json());
@@ -16,7 +17,7 @@ app.use('/api/tasks', taskRoutes);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // 404 for unknown routes (consistent response format)
-app.use((req, res) => {
+app.use((req, res, next) => {
   res.status(404).json({
     success: false,
     data: null,
@@ -27,4 +28,7 @@ app.use((req, res) => {
 // Global error handler
 app.use(errorHandler);
 
-module.exports = app;
+app.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
+  console.log(`Swagger docs available at http://localhost:${PORT}/api-docs`);
+});
