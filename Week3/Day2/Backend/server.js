@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
-const { specs, swaggerUi } = require("./docs/swagger"); // Import specs + swaggerUi
+const { specs, swaggerUi } = require("./docs/swagger");
 
 // Load environment variables
 dotenv.config();
@@ -47,7 +47,7 @@ app.get("/health", (req, res) => {
 // API Routes
 app.use("/api/users", authRoutes);
 app.use("/api/tasks", taskRoutes);
-app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(specs));
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 // Root endpoint
 app.get("/", (req, res) => {
