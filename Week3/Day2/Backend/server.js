@@ -2,6 +2,7 @@ const express = require("express")
 const cors = require("cors")
 const dotenv = require("dotenv")
 const connectDB = require("./config/db")
+const swaggerUi = require("swagger-ui-express");
 
 // Load environment variables
 dotenv.config()
@@ -9,7 +10,7 @@ dotenv.config()
 // Import routes
 const authRoutes = require("./routes/authRoutes")
 const taskRoutes = require("./routes/taskRoutes")
-const swaggerRoutes = require("./routes/swaggerRoutes")
+const swaggerSpec = require("./docs/swagger");
 
 // Initialize Express app
 const app = express()
@@ -47,7 +48,7 @@ app.get("/health", (req, res) => {
 // API Routes
 app.use("/api/users", authRoutes)
 app.use("/api/tasks", taskRoutes)
-app.use("/api/docs", swaggerRoutes)
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Root endpoint
 app.get("/", (req, res) => {

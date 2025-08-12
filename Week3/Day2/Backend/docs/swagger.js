@@ -1,6 +1,8 @@
 const swaggerJsdoc = require("swagger-jsdoc")
 const swaggerUi = require("swagger-ui-express")
 
+const path = require("path");
+
 const options = {
   definition: {
     openapi: "3.0.0",
@@ -293,9 +295,23 @@ const options = {
 
 }
 
-const specs = swaggerJsdoc(options)
+let specs;
+try {
+  specs = swaggerJsdoc(options);
+} catch (err) {
+  console.error("Swagger generation failed:", err);
+  specs = {};
+}
 
 module.exports = {
   specs,
   swaggerUi,
-}
+};
+
+
+// const specs = swaggerJsdoc(options)
+
+// module.exports = {
+//   specs,
+//   swaggerUi,
+// }
