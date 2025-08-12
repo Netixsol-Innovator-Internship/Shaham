@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Designer</title>
+    <link href="./output.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="./styles.css" rel="stylesheet">
+</head>
+<body class="bg-white dark:bg-black text-black dark:text-white transition-all duration-500 min-h-screen" style="font-family: 'Inter', sans-serif;">
+    <!-- Navigation -->
+    <nav class="flex items-center justify-between p-2 lg:px-12 animate-slide-in-up">
+        <!-- Logo -->
+        <div class="pl-4 flex items-center transition-all duration-300 hover:scale-105 active:scale-95">
+            <div class="w-16 h-16 dark:hidden rounded-sm flex items-center justify-center">
+                <img src="./Images/logoBlack.png" alt="Logo" class="mr-2 transition-all duration-300">
+            </div>
+            <div class="w-16 h-16 hidden dark:flex rounded-sm items-center justify-center">
+                <img src="./Images/logoWhite.png" alt="Logo" class="mr-2 transition-all duration-300">
+            </div>
+        </div>
+
+        <!-- Desktop Navigation -->
+        <div class="hidden lg:flex items-center space-x-8">
+            <a href="#" class="text-sm transition-all duration-300 hover:text-purple-500 hover:scale-110 active:scale-95 relative group">
+                Home
+                <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-purple-500 transition-all duration-300 group-hover:w-full"></span>
+            </a>
+            <a href="#" class="text-sm transition-all duration-300 hover:text-purple-500 hover:scale-110 active:scale-95 relative group">
+                Portfolio
+                <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-purple-500 transition-all duration-300 group-hover:w-full"></span>
+            </a>
+            <a href="#" class="text-sm transition-all duration-300 hover:text-purple-500 hover:scale-110 active:scale-95 relative group">
+                Skills
+                <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-purple-500 transition-all duration-300 group-hover:w-full"></span>
+            </a>
+            <a href="#" class="text-sm transition-all duration-300 hover:text-purple-500 hover:scale-110 active:scale-95 relative group">
+                About Me
+                <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-purple-500 transition-all duration-300 group-hover:w-full"></span>
+            </a>
+        </div>
+
+        <!-- Desktop Dark Mode Toggle & Button -->
+        <div class="hidden lg:flex items-center space-x-4">
+            <!-- Dark Mode Toggle -->
+            <button id="theme-toggle" class="relative inline-flex h-6 w-11 items-center rounded-full bg-[#051724] dark:bg-[#FFEC70] transition-all duration-300 hover:scale-110 active:scale-95 hover:shadow-lg">
+                <span class="sr-only">Toggle dark mode</span>
+                <span id="toggle-dot" class="inline-block h-4 w-4 transform rounded-full bg-white transition-all duration-300 dark:translate-x-6 translate-x-1 hover:scale-110"></span>
+            </button>
+            <button class="bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-white px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:scale-105 active:scale-95 hover:shadow-lg transform">
+                Contact Me
+            </button>
+        </div>
+
+        <div class="lg:hidden flex items-center space-x-3">
+            <!-- Mobile Theme Toggle -->
+            <button id="mobile-theme-toggle" class="relative inline-flex h-6 w-11 items-center rounded-full bg-[#051724] dark:bg-[#FFEC70] transition-all duration-300 hover:scale-110 active:scale-95">
+                <span class="sr-only">Toggle dark mode</span>
+                <span id="mobile-toggle-dot" class="inline-block h-4 w-4 transform rounded-full bg-white transition-all duration-300 dark:translate-x-6 translate-x-1"></span>
+            </button>
+            
+            <!-- Hamburger Menu Button -->
+            <button id="mobile-menu-btn" class="flex flex-col space-y-1 p-2 transition-all duration-300 hover:scale-110 active:scale-95">
+                <span class="w-6 h-0.5 bg-black dark:bg-white transition-all duration-300"></span>
+                <span class="w-6 h-0.5 bg-black dark:bg-white transition-all duration-300"></span>
+                <span class="w-6 h-0.5 bg-black dark:bg-white transition-all duration-300"></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="lg:hidden fixed inset-0 bg-white dark:bg-black z-50 transform translate-x-full transition-all duration-500">
+        <div class="flex items-center justify-between p-6">
+            <div class="flex items-center space-x-2">
+                <div class="pl-2 flex items-center justify-center">
+                    <div class="w-16 h-16 dark:hidden rounded-sm flex items-center justify-center">
+                        <img src="./Images/logoBlack.png" alt="Logo" class="mr-2">
+                    </div>
+                    <div class="w-16 h-16 hidden dark:flex rounded-sm items-center justify-center">
+                        <img src="./Images/logoWhite.png" alt="Logo" class="mr-2">
+                    </div>
+                </div>
+            </div>
+            <button id="mobile-menu-close" class="text-2xl transition-all duration-300 hover:scale-125 active:scale-95 hover:rotate-90">&times;</button>
+        </div>
+        <div class="flex flex-col space-y-8 px-6 mt-12">
+            <a href="#" class="text-lg font-medium transition-all duration-300 hover:text-purple-500 hover:translate-x-2 active:scale-95">Home</a>
+            <a href="#" class="text-lg font-medium transition-all duration-300 hover:text-purple-500 hover:translate-x-2 active:scale-95">Portfolio</a>
+            <a href="#" class="text-lg font-medium transition-all duration-300 hover:text-purple-500 hover:translate-x-2 active:scale-95">Skills</a>
+            <a href="#" class="text-lg font-medium transition-all duration-300 hover:text-purple-500 hover:translate-x-2 active:scale-95">About Me</a>
+            <div class="flex items-center space-x-4 mt-8">
+                <button class="bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-white px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:scale-105 active:scale-95">
+                    Contact Me
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="px-4 sm:px-6 xl:px-12 relative overflow-x-hidden">
+        <div class="absolute top-[30%] md:top-[35%] left-[45%] md:left-[49%] transform -translate-x-1/2 -translate-y-1/2 z-10 hidden lg:block animate-bounce-gentle">
+            <img src="./Images/startBlack.png" alt="Star"
+                class="w-16 sm:w-20 md:w-24 lg:w-28 xl:w-32 h-auto dark:hidden transition-all duration-300 hover:scale-125 hover:rotate-12">
+            <img src="./Images/starwhite.png" alt="Star"
+                class="w-16 sm:w-20 md:w-24 lg:w-28 xl:w-32 h-auto hidden dark:block transition-all duration-300 hover:scale-125 hover:rotate-12">
+        </div>
+
+        <div class="max-w-8xl mx-auto">
+            <div class="grid mt-8 lg:grid-cols-2 gap-8 lg:gap-16 items-center min-h-[calc(100vh-120px)]">
+                <div class="xl:space-y-8 text-center lg:text-left overflow-hidden animate-slide-in-left">
+                    <div class="max-w-full">
+                        <h1 class="product-designer-text tracking-tight leading-none break-words transition-all duration-500 hover:scale-105">
+                            PRODUCT<br class="lg:hidden">
+                            DESIGNER
+                        </h1>
+                        <h2 class="cristian-munoz-text tracking-tight leading-none mt-2 break-words transition-all duration-500 hover:scale-105">
+                            <span class="bg-gradient-to-r from-pink-500 to-orange-400 bg-clip-text text-transparent hover:from-purple-500 hover:to-pink-500 transition-all duration-500">
+                                CRISTIAN MUÑOZ
+                            </span>
+                        </h2>
+                    </div>
+
+                    <!-- Social Icons -->
+                    <div class="flex items-center justify-center lg:justify-start space-x-4 xl:space-x-[36px] mt-8 xl:mt-12 animate-slide-in-up" style="animation-delay: 0.2s;">
+                        <a href="#" class="w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-125 hover:-translate-y-2 active:scale-95 hover:shadow-lg hover:bg-purple-100 dark:hover:bg-purple-900">
+                            <img src="./Images/instaBlack.png" alt="Instagram" class="dark:hidden transition-all duration-300">
+                            <img src="./Images/insta.png" alt="Instagram" class="hidden dark:block transition-all duration-300">
+                        </a>
+                        <a href="#" class="w-10 h-10/12 rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-125 hover:-translate-y-2 active:scale-95 hover:shadow-lg hover:bg-purple-100 dark:hover:bg-purple-900">
+                            <img src="./Images/figmaBlack.png" alt="Figma" class="dark:hidden transition-all duration-300">
+                            <img src="./Images/figma.png" alt="Figma" class="hidden dark:block transition-all duration-300">
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-125 hover:-translate-y-2 active:scale-95 hover:shadow-lg hover:bg-purple-100 dark:hover:bg-purple-900">
+                            <img src="./Images/linkedinBlack.png" alt="LinkedIn" class="dark:hidden transition-all duration-300">
+                            <img src="./Images/linkedin.png" alt="LinkedIn" class="hidden dark:block transition-all duration-300">
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-125 hover:-translate-y-2 active:scale-95 hover:shadow-lg hover:bg-purple-100 dark:hover:bg-purple-900">
+                            <img src="./Images/telegramBlack.png" alt="Telegram" class="dark:hidden transition-all duration-300">
+                            <img src="./Images/telegram.png" alt="Telegram" class="hidden dark:block transition-all duration-300">
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-125 hover:-translate-y-2 active:scale-95 hover:shadow-lg hover:bg-purple-100 dark:hover:bg-purple-900">
+                            <img src="./Images/twitterBlack.png" alt="Twitter" class="dark:hidden transition-all duration-300">
+                            <img src="./Images/twitter.png" alt="Twitter" class="hidden dark:block transition-all duration-300">
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-125 hover:-translate-y-2 active:scale-95 hover:shadow-lg hover:bg-purple-100 dark:hover:bg-purple-900">
+                            <img src="./Images/mediumBlack.png" alt="Medium" class="dark:hidden transition-all duration-300">
+                            <img src="./Images/medium.png" alt="Medium" class="hidden dark:block transition-all duration-300">
+                        </a>
+                    </div>
+
+                    <button class="w-full sm:w-[85%] md:w-[70%] max-w-md mx-auto lg:mx-0 bg-black dark:bg-[#292929] text-white px-4 sm:px-6 md:px-8 py-4 font-medium transition-all duration-300 hover:scale-105 active:scale-95 hover:shadow-xl hover:bg-gray-800 dark:hover:bg-gray-700 flex items-center justify-center space-x-2 mt-8 xl:mt-12 animate-slide-in-up group" style="animation-delay: 0.4s;">
+                        <span class="text-xs sm:text-sm md:text-base transition-all duration-300">Download Curriculum Vitae</span>
+                        <img src="./Images/arrow.png" alt="Arrow" class="w-4 h-4 transition-all duration-300 group-hover:translate-x-2">
+                    </button>
+                </div>
+
+                <div class="hidden lg:block animate-slide-in-right">
+                    <div class="relative">
+                        <img src="./Images/main.png" alt="Creative artistic composition" class="xl:w-[600px] 2xl:w-[694px] 2xl:h-[750px] lg:w-full h-auto lg:h-[75vh] transition-all duration-500 hover:scale-95">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="./script.js"></script>
+</body>
+</html>
