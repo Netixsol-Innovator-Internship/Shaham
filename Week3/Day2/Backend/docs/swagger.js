@@ -151,7 +151,10 @@ const options = {
   },
   apis: [
     path.resolve(__dirname, "../routes/*.js"),
-    path.resolve(__dirname, "../controllers/*.js")
+    path.resolve(__dirname, "../controllers/*.js"),
+    path.resolve(__dirname, "../models/*.js"),
+    path.resolve(__dirname, "../middlewares/*.js"),
+    path.resolve(__dirname, "../config/*.js")
   ],
 };
 
