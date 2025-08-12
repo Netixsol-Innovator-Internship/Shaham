@@ -287,8 +287,8 @@ const options = {
     ],
   },
   apis: [
-    path.join(__dirname, "../routes/*.js"),
-    path.join(__dirname, "../controllers/*.js")
+    path.resolve(__dirname, "../routes/*.js"),
+    path.resolve(__dirname, "../controllers/*.js")
   ]
 
 }
