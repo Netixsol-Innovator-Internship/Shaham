@@ -47,7 +47,7 @@ app.get("/health", (req, res) => {
 // API Routes
 app.use("/api/users", authRoutes);
 app.use("/api/tasks", taskRoutes);
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 // Root endpoint
 app.get("/", (req, res) => {
