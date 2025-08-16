@@ -1,0 +1,573 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* Updated color tokens for fun, colorful theme */
+:root {
+  --background: #ffffff;
+  --foreground: #4b5563;
+  --card: #f9fafb;
+  --card-foreground: #4b5563;
+  --popover: #ffffff;
+  --popover-foreground: #4b5563;
+  --primary: #0891b2;
+  --primary-foreground: #ffffff;
+  --secondary: #ec4899;
+  --secondary-foreground: #ffffff;
+  --muted: #f9fafb;
+  --muted-foreground: #4b5563;
+  --accent: #ec4899;
+  --accent-foreground: #ffffff;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: #e5e7eb;
+  --input: #f9fafb;
+  --ring: rgba(8, 145, 178, 0.5);
+  --chart-1: #0891b2;
+  --chart-2: #ec4899;
+  --chart-3: #f59e0b;
+  --chart-4: #dc2626;
+  --chart-5: #4b5563;
+  --radius: 0.75rem;
+  --sidebar: #f9fafb;
+  --sidebar-foreground: #4b5563;
+  --sidebar-primary: #0891b2;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #ec4899;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #e5e7eb;
+  --sidebar-ring: rgba(8, 145, 178, 0.5);
+}
+
+.dark {
+  --background: #1f2937;
+  --foreground: #f9fafb;
+  --card: #374151;
+  --card-foreground: #f9fafb;
+  --popover: #374151;
+  --popover-foreground: #f9fafb;
+  --primary: #06b6d4;
+  --primary-foreground: #1f2937;
+  --secondary: #f472b6;
+  --secondary-foreground: #1f2937;
+  --muted: #374151;
+  --muted-foreground: #9ca3af;
+  --accent: #f472b6;
+  --accent-foreground: #1f2937;
+  --destructive: #ef4444;
+  --destructive-foreground: #f9fafb;
+  --border: #4b5563;
+  --input: #374151;
+  --ring: rgba(6, 182, 212, 0.5);
+  --chart-1: #06b6d4;
+  --chart-2: #f472b6;
+  --chart-3: #fbbf24;
+  --chart-4: #ef4444;
+  --chart-5: #9ca3af;
+  --radius: 0.75rem;
+  --sidebar: #374151;
+  --sidebar-foreground: #f9fafb;
+  --sidebar-primary: #06b6d4;
+  --sidebar-primary-foreground: #1f2937;
+  --sidebar-accent: #f472b6;
+  --sidebar-accent-foreground: #1f2937;
+  --sidebar-border: #4b5563;
+  --sidebar-ring: rgba(6, 182, 212, 0.5);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+}
+
+/* Fun, colorful styling for all components */
+.container {
+  max-width: 500px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: linear-gradient(135deg, rgba(8, 145, 178, 0.1), rgba(236, 72, 153, 0.1));
+  border: 2px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.container:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Centered theme toggle with fun animations */
+.theme-toggle-container {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+}
+
+.theme-toggle {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  border: none;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1) rotate(15deg);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+}
+
+.theme-toggle:active {
+  transform: scale(0.95) rotate(-15deg);
+}
+
+/* Colorful auth toggle buttons */
+.auth-toggle {
+  display: flex;
+  margin-bottom: 2rem;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.auth-toggle button {
+  flex: 1;
+  padding: 1rem;
+  border: none;
+  background: var(--muted);
+  color: var(--muted-foreground);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.auth-toggle button:hover {
+  background: var(--accent);
+  color: var(--accent-foreground);
+  transform: translateY(-1px);
+}
+
+.auth-toggle button.active {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Enhanced form styling */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+input,
+textarea,
+select {
+  padding: 1rem;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--input);
+  color: var(--foreground);
+  transition: all 0.3s ease;
+  font-size: 16px;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--ring);
+  transform: translateY(-1px);
+}
+
+input:hover,
+textarea:hover,
+select:hover {
+  border-color: var(--accent);
+}
+
+/* Colorful button styling */
+button[type="submit"],
+.logout-btn,
+.link-button {
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  border: none;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px rgba(8, 145, 178, 0.4);
+}
+
+button[type="submit"]:hover,
+.logout-btn:hover,
+.link-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(8, 145, 178, 0.6);
+}
+
+button[type="submit"]:active,
+.logout-btn:active,
+.link-button:active {
+  transform: translateY(0);
+}
+
+button[type="submit"]:disabled {
+  background: var(--muted);
+  color: var(--muted-foreground);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.link-button {
+  background: none;
+  color: var(--primary);
+  text-decoration: underline;
+  padding: 0;
+  box-shadow: none;
+}
+
+.link-button:hover {
+  color: var(--secondary);
+  transform: none;
+  box-shadow: none;
+}
+
+/* Enhanced error styling */
+.error {
+  color: var(--destructive);
+  font-size: 0.875rem;
+  padding: 0.75rem;
+  background: rgba(220, 38, 38, 0.1);
+  border: 1px solid var(--destructive);
+  border-radius: var(--radius-md);
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+/* Dashboard styling */
+.dashboard {
+  min-height: 100vh;
+  background: linear-gradient(135deg, rgba(8, 145, 178, 0.05), rgba(236, 72, 153, 0.05));
+  padding: 80px 20px 20px;
+}
+
+.dashboard-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding: 2rem;
+  background: var(--card);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-header h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem;
+}
+
+.header-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+/* Task styling */
+.task-form,
+.task-list {
+  background: var(--card);
+  padding: 2rem;
+  border-radius: var(--radius-xl);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.task-form h3,
+.task-list h3 {
+  color: var(--primary);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+.task-item {
+  background: linear-gradient(135deg, rgba(8, 145, 178, 0.05), rgba(236, 72, 153, 0.05));
+  border: 2px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+}
+
+.task-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  border-color: var(--primary);
+}
+
+.task-item.completed {
+  opacity: 0.7;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(168, 85, 247, 0.1));
+}
+
+.task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.task-header h4 {
+  color: var(--foreground);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.task-badges {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.status,
+.priority {
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-md);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+.status-in-progress {
+  background: #dbeafe;
+  color: #1e40af;
+}
+.status-completed {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.priority-low {
+  background: #f3f4f6;
+  color: #374151;
+}
+.priority-medium {
+  background: #fef3c7;
+  color: #92400e;
+}
+.priority-high {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.task-actions {
+  display: flex;
+  gap: 1rem; /* Increased from 0.5rem to 1rem for better spacing */
+  flex-wrap: wrap;
+  margin-top: 1.5rem; /* Increased from 1rem to 1.5rem */
+}
+
+.task-actions button {
+  padding: 0.75rem 1.25rem; /* Increased padding for better touch targets */
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  min-width: 120px; /* Added minimum width for consistency */
+}
+
+.mark-complete,
+.mark-incomplete {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.mark-complete:hover,
+.mark-incomplete:hover {
+  background: var(--secondary);
+  transform: translateY(-1px);
+}
+
+.delete-btn {
+  background: var(--destructive);
+  color: var(--destructive-foreground);
+}
+
+.delete-btn:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+}
+
+/* Auth page styling */
+.login-page,
+.signup-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(8, 145, 178, 0.1), rgba(236, 72, 153, 0.1));
+  padding: 80px 20px 20px;
+}
+
+.login-container,
+.signup-container {
+  background: var(--card);
+  padding: 3rem;
+  border-radius: var(--radius-xl);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 500px;
+}
+
+.login-container h1,
+.signup-container h1 {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 2rem;
+}
+
+.auth-switch {
+  text-align: center;
+  margin-top: 1.5rem;
+  color: var(--muted-foreground);
+}
+
+.password-requirements {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  background: var(--muted);
+  padding: 0.75rem;
+  border-radius: var(--radius-md);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.loading,
+.no-tasks {
+  text-align: center;
+  padding: 2rem;
+  color: var(--muted-foreground);
+  font-size: 1.125rem;
+}
+
+@media (max-width: 768px) {
+  .container,
+  .login-container,
+  .signup-container {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+
+  .dashboard {
+    padding: 80px 10px 10px;
+  }
+
+  .dashboard-header h1 {
+    font-size: 2rem;
+  }
+
+  .task-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .task-actions button {
+    width: 100%;
+    min-width: auto;
+  }
+
+  .theme-toggle {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+  }
+
+  .form-group {
+    margin-bottom: 1.25rem;
+  }
+}
