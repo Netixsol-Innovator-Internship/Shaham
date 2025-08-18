@@ -3,6 +3,8 @@ import { Link } from "react-router-dom"
 import { useCart } from "../context/CartContext"
 import { useEffect, useRef } from "react"
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api"
+
 const CartPopup = ({ onClose }) => {
   const { cartItems, cartCount, getCartTotal, updateQuantity, removeFromCart } = useCart()
   const deliveryFee = 3.95
@@ -84,7 +86,7 @@ const CartPopup = ({ onClose }) => {
           {cartItems.map((item) => (
             <div key={item.product._id} className="flex items-start justify-between gap-3">
               <img
-                src={`http://localhost:5000${item.product.image}`}
+                src={`${API_BASE_URL}${item.product.image}`}
                 alt={item.product.name}
                 className="w-12 h-12 sm:w-16 sm:h-16 object-cover rounded"
               />
