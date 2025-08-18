@@ -209,7 +209,7 @@ const CartPage = () => {
 
         {/* Related Products */}
         <div className="my-16">
-          <h2 className="text-2xl font-semibold text-center mb-12 text-gray-900 dark:text-white">
+          <h2 className="text-2xl font-semibold text-center mb-12 text-gray-900 dark:text-white font-prosto">
             Popular this season
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 lg:gap-12 max-w-7xl mx-auto">

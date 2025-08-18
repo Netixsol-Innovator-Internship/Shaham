@@ -125,7 +125,7 @@ const ProductPage = () => {
               {product.collection?.toUpperCase()}
             </Link>
             <span className="mx-2 text-gray-600 dark:text-gray-400">/</span>
-            <span className="text-gray-800 dark:text-gray-200 uppercase">{product.name}</span>
+            <span className="text-gray-800 dark:text-gray-200 uppercase font-prosto">{product.name}</span>
           </nav>
         </div>
       </div>
@@ -174,7 +174,7 @@ const ProductPage = () => {
                 </div>
               </div>
 
-              <div className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-4 mt-10">
+              <div className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-4 mt-10 font-prosto">
                 €{product.price.toFixed(2)}
               </div>
             </div>
@@ -332,7 +332,7 @@ const ProductPage = () => {
 
       {/* Related Products */}
       <div className="py-16 bg-white dark:bg-gray-900">
-        <h2 className="text-2xl font-semibold text-center mb-12 text-gray-900 dark:text-white">You may also like</h2>
+        <h2 className="text-2xl font-semibold text-center mb-12 text-gray-900 dark:text-white font-prosto">You may also like</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 lg:gap-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Product 1 */}
           <div className="text-center">

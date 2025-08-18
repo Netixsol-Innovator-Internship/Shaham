@@ -42,7 +42,7 @@ const Navbar = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
             <img src="/images/Logo.png" alt="Logo" className="w-8 h-8 p-1 dark:bg-white" />
-            <span className="text-xl font-semibold text-gray-800 dark:text-gray-200">Brand Name</span>
+            <span className="text-xl font-semibold text-gray-800 dark:text-gray-200 font-prosto">Brand Name</span>
           </Link>
 
           {/* Desktop Navigation Links */}
