@@ -15,7 +15,7 @@ const options = {
     },
     servers: [
       {
-        url: "https://shahamweek3day5backend.vercel.app",
+        url: "https://shahamweek3day5backend-two.vercel.app",
         description: "Development server",
       },
     ],
