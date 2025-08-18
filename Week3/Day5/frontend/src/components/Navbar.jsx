@@ -79,8 +79,8 @@ const Navbar = () => {
             <ThemeToggle />
 
             {/* Search */}
-            <button className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 transition-colors">
-              <img src="/images/Search.png" alt="Search" className="w-5 h-5 dark:invert" />
+            <button className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 transition-colors cursor-pointer">
+              <img src="/images/Search.png" alt="Search" className="w-5 h-5 dark:invert cursor-pointer" />
             </button>
 
             {/* User Account */}
@@ -88,9 +88,9 @@ const Navbar = () => {
               <div className="relative" ref={userMenuRef}>
                 <button
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                  className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 transition-colors"
+                  className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 transition-colors cursor-pointer"
                 >
-                  <img src="/images/Person.png" alt="User" className="w-5 h-5 dark:invert" />
+                  <img src="/images/Person.png" alt="User" className="w-5 h-5 dark:invert cursor-pointer" />
                 </button>
 
                 { (isUserMenuOpen || true) && (
@@ -116,7 +116,7 @@ const Navbar = () => {
                 to="/login"
                 className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 transition-colors"
               >
-                <img src="/images/Person.png" alt="Login" className="w-5 h-5 dark:invert" />
+                <img src="/images/Person.png" alt="Login" className="w-5 h-5 dark:invert cursor-pointer" />
               </Link>
             )}
 
@@ -126,7 +126,7 @@ const Navbar = () => {
                 onClick={() => setShowCartPopup(!showCartPopup)}
                 className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 relative transition-colors"
               >
-                <img src="/images/Cart.png" alt="Cart" className="w-5 h-5 mt-1 dark:invert" />
+                <img src="/images/Cart.png" alt="Cart" className="w-5 h-5 mt-1 dark:invert cursor-pointer" />
                 {cartCount > 0 && (
                   <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                     {cartCount}
