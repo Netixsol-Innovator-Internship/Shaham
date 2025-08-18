@@ -39,38 +39,42 @@ export const CartProvider = ({ children }) => {
   }, [user])
 
   const fetchCart = async () => {
-    if (!user) return
+    if (!user) return;
 
     try {
-      setLoading(true)
-      ensureAuthHeaders()
-      const response = await axios.get(`${API_BASE_URL}/cart`)
+      setLoading(true);
+      const token = localStorage.getItem("token");
+      if (!token) return;
 
-      console.log(" Cart fetch response:", response.data)
+      const response = await axios.get(`${API_BASE_URL}/cart`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
 
-      // Try different response structures to match backend
-      let items = []
+      console.log("Cart fetch response:", response.data);
+
+      let items = [];
       if (response.data.data?.cart?.items) {
-        items = response.data.data.cart.items
+        items = response.data.data.cart.items;
       } else if (response.data.cart?.items) {
-        items = response.data.cart.items
+        items = response.data.cart.items;
       } else if (response.data.data?.items) {
-        items = response.data.data.items
+        items = response.data.data.items;
       } else if (response.data.items) {
-        items = response.data.items
+        items = response.data.items;
       }
 
-      console.log(" Processed cart items:", items)
-      setCartItems(items)
-      setCartCount(items.reduce((total, item) => total + item.quantity, 0))
+      console.log("Processed cart items:", items);
+      setCartItems(items);
+      setCartCount(items.reduce((total, item) => total + item.quantity, 0));
     } catch (error) {
-      console.error("Error fetching cart:", error)
-      setCartItems([])
-      setCartCount(0)
+      console.error("Error fetching cart:", error);
+      setCartItems([]);
+      setCartCount(0);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
+
 
   const addToCart = async (productId, quantity = 1) => {
     if (!user) {
