@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
   )
 
   const API_BASE_URL =
-    import.meta.env.VITE_API_URL || "http://localhost:5000/api"
+    import.meta.env.VITE_API_URL || "shahamweek3day5backend.vercel.app"
 
   useEffect(() => {
     const token = localStorage.getItem("token")
