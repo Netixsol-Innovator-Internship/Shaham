@@ -1,22 +1,15 @@
-import type { Task } from "../types/task"
+import type { Task, UpdateTaskRequest } from "../types/task.ts"
 
 class TaskStore {
   private tasks: Task[] = []
   private nextId = 1
 
   getAllTasks(): Task[] {
-    return this.tasks.sort((a, b) => {
-      if (a.completed === b.completed) {
-        // If both have same completion status, sort by creation date (newest first)
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      }
-      // Incomplete tasks (false) come before completed tasks (true)
-      return a.completed ? 1 : -1
-    })
+    return this.tasks
   }
 
   getTaskById(id: string): Task | undefined {
-    return this.tasks.find((task) => task.id === id)
+    return this.tasks.find(task => task.id === id)
   }
 
   createTask(title: string): Task {
@@ -25,33 +18,34 @@ class TaskStore {
       title,
       completed: false,
       createdAt: new Date(),
-      updatedAt: new Date(),
+      updatedAt: new Date()
     }
-
+    
     this.tasks.push(task)
     this.nextId++
     return task
   }
 
-  updateTask(id: string, updates: Partial<Pick<Task, "title" | "completed">>): Task | null {
-    const taskIndex = this.tasks.findIndex((task) => task.id === id)
-
+  updateTask(id: string, updates: UpdateTaskRequest): Task | null {
+    const taskIndex = this.tasks.findIndex(task => task.id === id)
+    
     if (taskIndex === -1) {
       return null
     }
 
-    this.tasks[taskIndex] = {
+    const updatedTask = {
       ...this.tasks[taskIndex],
       ...updates,
-      updatedAt: new Date(),
+      updatedAt: new Date()
     }
 
-    return this.tasks[taskIndex]
+    this.tasks[taskIndex] = updatedTask
+    return updatedTask
   }
 
   deleteTask(id: string): boolean {
-    const taskIndex = this.tasks.findIndex((task) => task.id === id)
-
+    const taskIndex = this.tasks.findIndex(task => task.id === id)
+    
     if (taskIndex === -1) {
       return false
     }
@@ -62,10 +56,14 @@ class TaskStore {
 
   getStats() {
     const total = this.tasks.length
-    const completed = this.tasks.filter((task) => task.completed).length
+    const completed = this.tasks.filter(task => task.completed).length
     const pending = total - completed
 
-    return { total, completed, pending }
+    return {
+      total,
+      completed,
+      pending
+    }
   }
 }
 

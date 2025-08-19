@@ -1,6 +1,5 @@
 import swaggerJsdoc from "swagger-jsdoc"
 import swaggerUi from "swagger-ui-express"
-import path from "path"
 
 const servers =
   process.env.NODE_ENV === "production"
@@ -110,8 +109,9 @@ const options = {
       },
     },
   },
-  apis: [path.join(__dirname, "../routes/*.{ts,js}")],
+  apis: ["./src/routes/*.ts", "./src/routes/*.js"],
 }
 
 const specs = swaggerJsdoc(options)
+
 export { specs, swaggerUi }
