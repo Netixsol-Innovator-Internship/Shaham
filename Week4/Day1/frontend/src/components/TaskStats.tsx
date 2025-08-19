@@ -1,6 +1,13 @@
 import { Card } from "./ui/Card"
 import { CheckCircle, Clock, Target } from "lucide-react"
-import type { Task } from "../types/task"
+
+interface Task {
+  id: string
+  title: string
+  completed: boolean
+  createdAt: string
+  updatedAt: string
+}
 
 interface TaskStatsProps {
   tasks: Task[]

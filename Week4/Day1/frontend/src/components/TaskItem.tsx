@@ -3,7 +3,14 @@ import { Button } from "./ui/Button"
 import { Checkbox } from "./ui/Checkbox"
 import { Card } from "./ui/Card"
 import { Trash2, Calendar } from "lucide-react"
-import type { Task } from "../types/task"
+
+interface Task {
+  id: string
+  title: string
+  completed: boolean
+  createdAt: string
+  updatedAt: string
+}
 
 interface TaskItemProps {
   task: Task
