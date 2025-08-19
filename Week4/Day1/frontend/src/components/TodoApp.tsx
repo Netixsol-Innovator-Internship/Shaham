@@ -12,7 +12,7 @@ import { CheckSquare, Sparkles } from "lucide-react"
 
 const TodoApp: React.FC = () => {
   console.log("TodoApp component rendering")
-  const { tasks, stats, loading, error, addTask, updateTask, deleteTask, toggleTask } = useTasks()
+  const { tasks, stats, loading, error, addTask, deleteTask, toggleTask } = useTasks()
   console.log("useTasks hook returned:", { tasks, stats, loading, error })
 
   if (loading) {

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import type { Task } from "../types/task"
 
 interface TaskStats {
@@ -9,30 +9,26 @@ interface TaskStats {
   pending: number
 }
 
-interface UseTasksReturn {
-  tasks: Task[]
-  stats: TaskStats
-  loading: boolean
-  error: string | null
-  addTask: (title: string) => void
-  updateTask: (id: string, updates: Partial<Task>) => void
-  deleteTask: (id: string) => void
-  toggleTask: (id: string) => void
-}
+export function useTasks() {
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("tasks")
+      return saved ? JSON.parse(saved) : []
+    }
+    return []
+  })
 
-export function useTasks(): UseTasksReturn {
-  const [tasks, setTasks] = useState<Task[]>([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  // keep tasks in sync with localStorage
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks))
+  }, [tasks])
 
-  // Calculate stats
   const stats: TaskStats = {
     total: tasks.length,
-    completed: tasks.filter((task) => task.completed).length,
-    pending: tasks.filter((task) => !task.completed).length,
+    completed: tasks.filter((t) => t.completed).length,
+    pending: tasks.filter((t) => !t.completed).length,
   }
 
-  // Add task function
   const addTask = (title: string) => {
     const newTask: Task = {
       id: Date.now().toString(),
@@ -43,29 +39,17 @@ export function useTasks(): UseTasksReturn {
     setTasks((prev) => [...prev, newTask])
   }
 
-  // Update task function
   const updateTask = (id: string, updates: Partial<Task>) => {
-    setTasks((prev) => prev.map((task) => (task.id === id ? { ...task, ...updates } : task)))
+    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, ...updates } : t)))
   }
 
-  // Delete task function
   const deleteTask = (id: string) => {
-    setTasks((prev) => prev.filter((task) => task.id !== id))
+    setTasks((prev) => prev.filter((t) => t.id !== id))
   }
 
-  // Toggle task completion
   const toggleTask = (id: string) => {
-    setTasks((prev) => prev.map((task) => (task.id === id ? { ...task, completed: !task.completed } : task)))
+    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t)))
   }
 
-  return {
-    tasks,
-    stats,
-    loading,
-    error,
-    addTask,
-    updateTask,
-    deleteTask,
-    toggleTask,
-  }
+  return { tasks, stats, addTask, updateTask, deleteTask, toggleTask }
 }
