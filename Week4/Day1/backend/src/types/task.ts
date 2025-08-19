@@ -1,8 +1,23 @@
 import { Router, type Request, type Response } from "express"
 import { taskStore } from "../data/taskStore"
-import type { CreateTaskRequest } from "../types/task"
+// import type { CreateTaskRequest } from "../types/task"
 
 const router = Router()
+
+export interface CreateTaskRequest {
+  title: string
+}
+export interface UpdateTaskRequest {
+  title?: string
+}
+
+export interface Task {
+  id: string
+  title: string
+  completed: boolean
+  createdAt: Date
+  updatedAt: Date
+}
 
 router.get("/", (req: Request, res: Response) => {
   const tasks = taskStore.getAllTasks()
