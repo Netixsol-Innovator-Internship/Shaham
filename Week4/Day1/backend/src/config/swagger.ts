@@ -11,10 +11,15 @@ const options = {
     },
     servers: [
       {
+        url: "http://localhost:5000",
+        description: "Local server",
+      },
+      {
         url: "https://shahamweek4day1backend.vercel.app",
-        description: "Development server",
+        description: "Production server",
       },
     ],
+
     components: {
       schemas: {
         Task: {
