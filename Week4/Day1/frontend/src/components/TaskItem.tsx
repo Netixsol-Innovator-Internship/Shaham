@@ -19,8 +19,10 @@ export function TaskItem({ task, onToggle, onDelete, isLoading }: TaskItemProps)
 
       <div className="flex-1 min-w-0">
         <span
-          className={`block text-base transition-all duration-200 ${
-            task.completed ? "line-through text-gray-500 dark:text-gray-400" : "text-gray-900 dark:text-gray-100"
+          className={`block text-base transition-all duration-200 break-words overflow-hidden ${
+            task.completed
+              ? "line-through text-gray-500 dark:text-gray-400"
+              : "text-gray-900 dark:text-gray-100"
           }`}
         >
           {task.title}
