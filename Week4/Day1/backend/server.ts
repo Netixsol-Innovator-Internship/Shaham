@@ -21,11 +21,13 @@ app.get("/health", (req, res) => {
   res.json({ status: "OK", timestamp: new Date().toISOString() })
 })
 
-export default app
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+  console.log(`Swagger docs at http://localhost:${PORT}/api-docs`);
+});
 
 if (process.env.NODE_ENV !== "production") {
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`)
-    console.log(`Swagger docs at http://localhost:${PORT}/api-docs`)
-  })
+  console.log(`Swagger docs at http://localhost:${PORT}/api-docs`);
 }
+export default app
+

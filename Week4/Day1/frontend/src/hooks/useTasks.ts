@@ -35,6 +35,7 @@ export function useTasks() {
       title,
       completed: false,
       createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     }
     setTasks((prev) => [...prev, newTask])
   }
