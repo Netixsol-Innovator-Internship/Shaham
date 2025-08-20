@@ -286,6 +286,4 @@ const JobCard = ({ job }) => {
   )
 }
 
-export default JobCard
-
 export default JobApplication
