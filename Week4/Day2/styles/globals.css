@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-neutral-100 text-neutral-800 dark:bg-neutral-900 dark:text-neutral-100 transition-colors duration-200;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+}
+
+@layer components {
+  .filter-pill {
+    @apply bg-primary-100 text-primary-700 font-medium px-3 py-1 rounded-md hover:bg-primary-500 hover:text-white transition-colors cursor-pointer dark:bg-neutral-700 dark:text-neutral-200 dark:hover:bg-primary-600;
+  }
+  
+  .active-filter {
+    @apply bg-primary-500 text-white dark:bg-primary-600;
+  }
+  
+  .job-card {
+    @apply bg-white rounded-md shadow-md p-6 border-l-4 border-transparent hover:border-primary-500 hover:shadow-lg transition-all duration-200 dark:bg-neutral-800;
+  }
+  
+  .job-card:hover {
+    @apply dark:border-blue-400;
+  }
+}
