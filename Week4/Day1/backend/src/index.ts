@@ -91,7 +91,13 @@ app.use((_req, res) => {
   res.status(404).json({ error: "Route not found" });
 });
 
-const port = process.env.PORT ? Number(process.env.PORT) : 4000;
-app.listen(port, () => {
-  console.log(`Task API listening on :${port}`);
-});
+// Export the Express app as a serverless function for Vercel
+export default app;
+
+// For local development, keep the server listening
+if (require.main === module) {
+  const port = process.env.PORT ? Number(process.env.PORT) : 4000;
+  app.listen(port, () => {
+    console.log(`Task API listening on :${port}`);
+  });
+}
