@@ -12,7 +12,6 @@
     "strict": true,
     "skipLibCheck": true,
     "noEmit": true,
-    "allowJs": false,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "esModuleInterop": true

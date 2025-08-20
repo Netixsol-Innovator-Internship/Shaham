@@ -1,56 +1,63 @@
 "use client"
-import { Button } from "./ui/Button"
-import { Checkbox } from "./ui/Checkbox"
-import { Card } from "./ui/Card"
-import { Trash2, Calendar } from "lucide-react"
 
-interface Task {
-  id: string
-  title: string
-  completed: boolean
-  createdAt: string
-  updatedAt: string
-}
+import type { Task } from "../types"
+import { TaskAPI } from "../api"
 
-interface TaskItemProps {
+interface Props {
   task: Task
-  onToggle: (id: string) => void
-  onDelete: (id: string) => void
-  isLoading?: boolean
+  onUpdated(task: Task): void
+  onDeleted(id: string): void
+  setError(msg: string | null): void
 }
 
-export function TaskItem({ task, onToggle, onDelete, isLoading }: TaskItemProps) {
-  return (
-    <Card className="p-5 flex items-center gap-4 hover:shadow-lg transition-all duration-200 group border-l-4 border-l-transparent hover:border-l-blue-500">
-      <Checkbox checked={task.completed} onCheckedChange={() => onToggle(task.id)} disabled={isLoading} />
+export default function TaskItem({ task, onUpdated, onDeleted, setError }: Props) {
+  async function toggle() {
+    try {
+      const updated = await TaskAPI.update(task.id, { completed: !task.completed })
+      onUpdated(updated)
+    } catch (e: any) {
+      setError(e?.response?.data?.error ?? e.message ?? "Failed to update task")
+    }
+  }
 
-      <div className="flex-1 min-w-0">
+  async function remove() {
+    try {
+      await TaskAPI.remove(task.id)
+      onDeleted(task.id)
+    } catch (e: any) {
+      setError(e?.response?.data?.error ?? e.message ?? "Failed to delete task")
+    }
+  }
+
+  return (
+    <li className="group flex items-start gap-3 rounded-lg border border-transparent p-3 transition-colors hover:border-gray-200/50 hover:bg-gray-50/50 dark:hover:border-gray-700/50 dark:hover:bg-gray-800/30">
+      <div className="flex-shrink-0 pt-0.5">
+        <input
+          type="checkbox"
+          checked={task.completed}
+          onChange={toggle}
+          className="checkbox"
+          aria-label={task.completed ? "Mark incomplete" : "Mark complete"}
+        />
+      </div>
+      <div className="min-w-0 flex-1">
         <span
-          className={`block text-base transition-all duration-200 break-words overflow-hidden ${
-            task.completed
-              ? "line-through text-gray-500 dark:text-gray-400"
-              : "text-gray-900 dark:text-gray-100"
+          className={`block break-words text-sm leading-relaxed ${
+            task.completed ? "line-through text-gray-500 dark:text-gray-400" : "text-gray-900 dark:text-gray-100"
           }`}
         >
           {task.title}
         </span>
-        {task.completed && (
-          <div className="flex items-center gap-1 mt-1 text-xs text-green-600 dark:text-green-400">
-            <Calendar className="h-3 w-3" />
-            <span>Completed</span>
-          </div>
-        )}
       </div>
-
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => onDelete(task.id)}
-        disabled={isLoading}
-        className="text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 opacity-0 group-hover:opacity-100 transition-all duration-200"
-      >
-        <Trash2 className="h-4 w-4" />
-      </Button>
-    </Card>
+      <div className="flex-shrink-0">
+        <button
+          onClick={remove}
+          className="btn-ghost text-xs text-red-600 dark:text-red-400 border-red-200/30 dark:border-red-900/30 opacity-0 group-hover:opacity-100 transition-opacity px-2 py-1"
+          aria-label="Delete task"
+        >
+          Delete
+        </button>
+      </div>
+    </li>
   )
 }

@@ -2,6 +2,6 @@ export interface Task {
   id: string;
   title: string;
   completed: boolean;
-  createdAt: string; // ISO
-  updatedAt: string; // ISO
+  createdAt?: string;
+  updatedAt?: string;
 }

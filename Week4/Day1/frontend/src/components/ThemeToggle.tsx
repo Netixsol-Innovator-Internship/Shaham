@@ -1,31 +1,41 @@
-import React from 'react';
-import { Moon, Sun, Palette } from 'lucide-react';
-import { useTheme } from './ThemeProvider';
+"use client"
 
-export function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+import { useTheme } from "../hooks/useTheme"
 
-  const toggleTheme = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light');
-  };
-
+export default function ThemeToggle() {
+  const { theme, setTheme } = useTheme()
+  const isDark = theme === "dark"
   return (
-    <div className="relative group">
-      <div className="absolute inset-0 bg-gradient-to-r from-violet-500 to-pink-500 rounded-2xl blur-lg opacity-20 group-hover:opacity-40 transition-opacity duration-300"></div>
-      <button
-        onClick={toggleTheme}
-        className="relative p-4 rounded-2xl bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border border-white/20 dark:border-gray-700/20 hover:bg-white dark:hover:bg-gray-700 transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 group"
-        title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-      >
-        <div className="relative">
-          {theme === 'light' ? (
-            <Moon className="w-6 h-6 text-violet-600 group-hover:text-pink-600 transition-colors duration-300" />
-          ) : (
-            <Sun className="w-6 h-6 text-yellow-500 group-hover:text-orange-500 transition-colors duration-300" />
-          )}
-          <div className="absolute inset-0 bg-gradient-to-r from-violet-400 to-pink-400 rounded-full blur-md opacity-0 group-hover:opacity-30 transition-opacity duration-300"></div>
-        </div>
-      </button>
-    </div>
-  );
+    <button
+      className="btn-ghost rounded-full p-2"
+      aria-label="Toggle theme"
+      onClick={() => setTheme(isDark ? "light" : "dark")}
+      title={isDark ? "Switch to light" : "Switch to dark"}
+    >
+      {isDark ? (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          className="h-5 w-5"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <path d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.36 6.36-1.42-1.42M7.05 7.05 5.64 5.64m12.72 0-1.41 1.41M7.05 16.95l-1.41 1.41" />
+          <circle cx="12" cy="12" r="4" />
+        </svg>
+      ) : (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          className="h-5 w-5"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        </svg>
+      )}
+    </button>
+  )
 }
