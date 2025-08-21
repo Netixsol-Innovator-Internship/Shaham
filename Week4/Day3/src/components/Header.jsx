@@ -19,12 +19,14 @@ export function Header() {
               <div key={idx} className="relative group flex h-full">
                 <a
                   href="#"
-                  className="text-gray-300 text-sm group-hover:text-white transition-colors flex items-center h-full px-4"
+                  className="relative text-gray-300 text-sm group-hover:text-white transition-colors flex items-center h-full px-4"
                 >
-                  {item}
+                  <span className="relative">
+                    {item}
+                    {/* underline only under text */}
+                    <span className="absolute left-0 right-0 bottom-[-4px] h-[3px] bg-[#007AFF] scale-x-0 group-hover:scale-x-100 origin-left transition-transform"></span>
+                  </span>
                 </a>
-                {/* Blue underline touching navbar bottom and edges */}
-                <div className="absolute left-0 right-0 bottom-0 h-[2px] bg-[#007AFF] scale-x-0 group-hover:scale-x-100 origin-left transition-transform"></div>
               </div>
             ))}
           </nav>
