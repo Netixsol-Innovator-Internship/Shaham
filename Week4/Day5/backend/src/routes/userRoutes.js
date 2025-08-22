@@ -1,6 +1,13 @@
 const express = require("express")
 const { protect, authorizeRoles } = require("../middleware/auth")
-const { getAllUsers, blockUser, unblockUser, changeUserRole } = require("../controllers/userController")
+const {
+  getAllUsers,
+  blockUser,
+  unblockUser,
+  changeUserRole,
+  getCustomers,
+  getAdmins,
+} = require("../controllers/userController")
 
 const router = express.Router()
 
@@ -21,6 +28,42 @@ const router = express.Router()
  *         description: Access denied
  */
 router.get("/", protect, authorizeRoles("admin", "superadmin"), getAllUsers)
+
+/**
+ * @swagger
+ * /api/users/customers:
+ *   get:
+ *     summary: Get all customers
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of all customers
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Access denied
+ */
+router.get("/customers", protect, authorizeRoles("admin", "superadmin"), getCustomers)
+
+/**
+ * @swagger
+ * /api/users/admins:
+ *   get:
+ *     summary: Get all admins (superadmin only)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of all admins
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Access denied
+ */
+router.get("/admins", protect, authorizeRoles("superadmin"), getAdmins)
 
 /**
  * @swagger

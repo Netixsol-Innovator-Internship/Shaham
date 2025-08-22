@@ -15,31 +15,37 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
+  const [token, setToken] = useState(null) // <-- add token state
   const [loading, setLoading] = useState(true)
   const [redirectAfterLogin, setRedirectAfterLogin] = useState(
     () => localStorage.getItem("redirectAfterLogin") || null
   )
 
   const API_BASE_URL =
-    import.meta.env.VITE_API_URL || "shahamweek3day5backend.vercel.app"
+    import.meta.env.VITE_API_URL || "http://localhost:5000/api"
 
   useEffect(() => {
-    const token = localStorage.getItem("token")
-    if (token) {
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`
-      checkAuthStatus()
+    const storedToken = localStorage.getItem("token")
+    if (storedToken) {
+      setToken(storedToken) // <-- set token state
+      axios.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`
+      checkAuthStatus(storedToken)
     } else {
       setLoading(false)
     }
   }, [])
 
-  const checkAuthStatus = async () => {
+  const checkAuthStatus = async (storedToken) => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/auth/profile`)
+      const response = await axios.get(`${API_BASE_URL}/auth/profile`, {
+        headers: { Authorization: `Bearer ${storedToken}` },
+      })
       setUser(response.data.data.user)
     } catch (error) {
       localStorage.removeItem("token")
       delete axios.defaults.headers.common["Authorization"]
+      setToken(null)
+      setUser(null)
     } finally {
       setLoading(false)
     }
@@ -52,10 +58,11 @@ export const AuthProvider = ({ children }) => {
         password,
       })
 
-      const { token, user } = response.data.data
-      localStorage.setItem("token", token)
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`
-      setUser(user)
+      const { token: newToken, user: newUser } = response.data.data
+      localStorage.setItem("token", newToken)
+      axios.defaults.headers.common["Authorization"] = `Bearer ${newToken}`
+      setUser(newUser)
+      setToken(newToken)
 
       return { success: true }
     } catch (error) {
@@ -74,10 +81,11 @@ export const AuthProvider = ({ children }) => {
         password,
       })
 
-      const { token, user } = response.data.data
-      localStorage.setItem("token", token)
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`
-      setUser(user)
+      const { token: newToken, user: newUser } = response.data.data
+      localStorage.setItem("token", newToken)
+      axios.defaults.headers.common["Authorization"] = `Bearer ${newToken}`
+      setUser(newUser)
+      setToken(newToken)
 
       return { success: true }
     } catch (error) {
@@ -93,6 +101,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("redirectAfterLogin")
     delete axios.defaults.headers.common["Authorization"]
     setUser(null)
+    setToken(null)
     setRedirectAfterLogin(null)
   }
 
@@ -110,6 +119,7 @@ export const AuthProvider = ({ children }) => {
 
   const value = {
     user,
+    token,
     login,
     register,
     logout,

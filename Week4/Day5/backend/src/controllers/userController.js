@@ -86,7 +86,7 @@ exports.changeUserRole = async (req, res) => {
       }
     }
 
-    // Update role
+    // Update role ONLY, do NOT touch password
     targetUser.role = role
     await targetUser.save()
 
@@ -95,6 +95,30 @@ exports.changeUserRole = async (req, res) => {
       message: "User role updated successfully",
       data: targetUser,
     })
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message })
+  }
+}
+
+
+// Get all customers
+exports.getCustomers = async (req, res) => {
+  try {
+    const customers = await User.find({ role: "customer" }).select("-password")
+    res.status(200).json(customers) // send array directly for frontend
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message })
+  }
+}
+
+// Get all admins (only superadmin can access)
+exports.getAdmins = async (req, res) => {
+  try {
+    if (req.user.role !== "superadmin") {
+      return res.status(403).json({ success: false, message: "Access denied" })
+    }
+    const admins = await User.find({ role: "admin" }).select("-password")
+    res.status(200).json(admins)
   } catch (err) {
     res.status(500).json({ success: false, message: err.message })
   }

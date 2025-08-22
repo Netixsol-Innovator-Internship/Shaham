@@ -1,5 +1,4 @@
 const jwt = require("jsonwebtoken")
-const bcrypt = require("bcryptjs")
 const User = require("../models/User")
 
 // Generate JWT token
@@ -23,11 +22,9 @@ const register = async (req, res) => {
       })
     }
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10)
-
     // Create new user as customer by default
-    const user = new User({ name, email, password: hashedPassword, role: "customer" })
+    // Password will be hashed automatically by the pre-save hook
+    const user = new User({ name, email, password, role: "customer" })
     await user.save()
 
     // Generate token
@@ -60,8 +57,8 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body
 
-    // Find user by email
-    const user = await User.findOne({ email })
+    // Find user by email (case-insensitive)
+    const user = await User.findOne({ email: new RegExp(`^${email.trim()}$`, "i") })
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -77,8 +74,8 @@ const login = async (req, res) => {
       })
     }
 
-    // Compare password
-    const isPasswordValid = await bcrypt.compare(password, user.password)
+    // Compare password (using model method)
+    const isPasswordValid = await user.comparePassword(password)
     if (!isPasswordValid) {
       return res.status(401).json({
         success: false,

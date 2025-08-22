@@ -23,7 +23,6 @@ const Navbar = () => {
         setIsUserMenuOpen(false)
       }
     }
-
     document.addEventListener("mousedown", handleClickOutside)
     return () => {
       document.removeEventListener("mousedown", handleClickOutside)
@@ -47,35 +46,32 @@ const Navbar = () => {
 
           {/* Desktop Navigation Links */}
           <div className="hidden lg:flex items-center space-x-8">
-            <Link
-              to="/collections"
-              className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 font-medium transition-colors"
-            >
+            <Link to="/collections" className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 font-medium transition-colors">
               TEA COLLECTIONS
             </Link>
-            <Link
-              to="/accessories"
-              className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 font-medium transition-colors"
-            >
+            <Link to="/accessories" className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 font-medium transition-colors">
               ACCESSORIES
             </Link>
-            <Link
-              to="/blog"
-              className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 font-medium transition-colors"
-            >
+            <Link to="/blog" className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 font-medium transition-colors">
               BLOG
             </Link>
-            <Link
-              to="/contact"
-              className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 font-medium transition-colors"
-            >
+            <Link to="/contact" className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 font-medium transition-colors">
               CONTACT US
             </Link>
+
+            {/* Users link visible only to admin/superadmin */}
+            {(user?.role === "admin" || user?.role === "superadmin") && (
+              <Link
+                to={user.role === "superadmin" ? "/users" : "/users/customers"}
+                className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 font-medium transition-colors"
+              >
+                USERS
+              </Link>
+            )}
           </div>
 
           {/* Right side icons */}
           <div className="flex items-center space-x-4 lg:space-x-6">
-            {/* Theme Toggle */}
             <ThemeToggle />
 
             {/* Search */}
@@ -86,14 +82,11 @@ const Navbar = () => {
             {/* User Account */}
             {user ? (
               <div className="relative" ref={userMenuRef}>
-                <button
-                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                  className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 transition-colors cursor-pointer"
-                >
+                <button onClick={() => setIsUserMenuOpen(!isUserMenuOpen)} className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 transition-colors cursor-pointer">
                   <img src="/images/Person.png" alt="User" className="w-5 h-5 dark:invert cursor-pointer" />
                 </button>
 
-                { (isUserMenuOpen || true) && (
+                {(isUserMenuOpen || true) && (
                   <div
                     className={`absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50 border dark:border-gray-700 
                     transition-all duration-200 
@@ -112,10 +105,7 @@ const Navbar = () => {
                 )}
               </div>
             ) : (
-              <Link
-                to="/login"
-                className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 transition-colors"
-              >
+              <Link to="/login" className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 transition-colors">
                 <img src="/images/Person.png" alt="Login" className="w-5 h-5 dark:invert cursor-pointer" />
               </Link>
             )}
@@ -153,34 +143,29 @@ const Navbar = () => {
         {isMobileMenuOpen && (
           <div className="lg:hidden border-t border-gray-200 dark:border-gray-700 py-4">
             <div className="flex flex-col space-y-4">
-              <Link
-                to="/collections"
-                className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 font-medium transition-colors"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
+              <Link to="/collections" className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 font-medium transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
                 TEA COLLECTIONS
               </Link>
-              <Link
-                to="/accessories"
-                className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 font-medium transition-colors"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
+              <Link to="/accessories" className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 font-medium transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
                 ACCESSORIES
               </Link>
-              <Link
-                to="/blog"
-                className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 font-medium transition-colors"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
+              <Link to="/blog" className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 font-medium transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
                 BLOG
               </Link>
-              <Link
-                to="/contact"
-                className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 font-medium transition-colors"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
+              <Link to="/contact" className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 font-medium transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
                 CONTACT US
               </Link>
+
+              {/* Users link for mobile menu */}
+              {(user?.role === "admin" || user?.role === "superadmin") && (
+                <Link
+                  to={user.role === "superadmin" ? "/users" : "/users/customers"}
+                  className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 font-medium transition-colors"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  USERS
+                </Link>
+              )}
             </div>
           </div>
         )}
