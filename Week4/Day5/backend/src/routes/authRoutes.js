@@ -1,7 +1,7 @@
 const express = require("express")
 const { body } = require("express-validator")
 const { register, login, getProfile } = require("../controllers/authController")
-const { auth } = require("../middleware/auth")
+const { protect } = require("../middleware/auth")
 const validateRequest = require("../middleware/validateRequest")
 
 const router = express.Router()
@@ -96,6 +96,6 @@ router.post("/login", loginValidation, validateRequest, login)
  *       401:
  *         description: Unauthorized
  */
-router.get("/profile", auth, getProfile)
+router.get("/profile", protect, getProfile)
 
 module.exports = router

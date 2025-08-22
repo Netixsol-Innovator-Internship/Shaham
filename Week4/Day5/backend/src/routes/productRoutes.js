@@ -7,7 +7,7 @@ const {
   updateProduct,
   deleteProduct,
 } = require("../controllers/productController")
-const { auth } = require("../middleware/auth")
+const { protect } = require("../middleware/auth")
 const validateRequest = require("../middleware/validateRequest")
 
 const router = express.Router()
@@ -131,7 +131,7 @@ router.get("/:id", idValidation, validateRequest, getProductById)
  *       401:
  *         description: Unauthorized
  */
-router.post("/", auth, productValidation, validateRequest, createProduct)
+router.post("/", protect, productValidation, validateRequest, createProduct)
 
 /**
  * @swagger
@@ -213,7 +213,7 @@ router.post("/", auth, productValidation, validateRequest, createProduct)
  *       404:
  *         description: Product not found
  */
-router.put("/:id", auth, idValidation, productValidation, validateRequest, updateProduct)
+router.put("/:id", protect, idValidation, productValidation, validateRequest, updateProduct)
 
 /**
  * @swagger
@@ -235,6 +235,6 @@ router.put("/:id", auth, idValidation, productValidation, validateRequest, updat
  *       404:
  *         description: Product not found
  */
-router.delete("/:id", auth, idValidation, validateRequest, deleteProduct)
+router.delete("/:id", protect, idValidation, validateRequest, deleteProduct)
 
 module.exports = router

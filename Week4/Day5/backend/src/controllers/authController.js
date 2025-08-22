@@ -2,8 +2,8 @@ const jwt = require("jsonwebtoken")
 const User = require("../models/User")
 
 // Generate JWT token
-const generateToken = (userId) => {
-  return jwt.sign({ userId }, process.env.JWT_SECRET, {
+const generateToken = (userId, role) => {
+  return jwt.sign({ userId, role }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN || "7d",
   })
 }
@@ -22,12 +22,12 @@ const register = async (req, res) => {
       })
     }
 
-    // Create new user
-    const user = new User({ name, email, password })
+    // Create new user as customer by default
+    const user = new User({ name, email, password, role: "customer" })
     await user.save()
 
     // Generate token
-    const token = generateToken(user._id)
+    const token = generateToken(user._id, user.role)
 
     res.status(201).json({
       success: true,
@@ -65,6 +65,14 @@ const login = async (req, res) => {
       })
     }
 
+    // Check if blocked
+    if (user.blocked) {
+      return res.status(403).json({
+        success: false,
+        message: "Your account is blocked",
+      })
+    }
+
     // Check password
     const isPasswordValid = await user.comparePassword(password)
     if (!isPasswordValid) {
@@ -75,7 +83,7 @@ const login = async (req, res) => {
     }
 
     // Generate token
-    const token = generateToken(user._id)
+    const token = generateToken(user._id, user.role)
 
     res.status(200).json({
       success: true,

@@ -1,13 +1,13 @@
 const express = require("express")
 const { body, param } = require("express-validator")
 const { getCart, addToCart, updateCartItem, removeFromCart, clearCart } = require("../controllers/cartController")
-const { auth } = require("../middleware/auth")
+const { protect } = require("../middleware/auth")
 const validateRequest = require("../middleware/validateRequest")
 
 const router = express.Router()
 
 // All cart routes require authentication
-router.use(auth)
+router.use(protect)
 
 // Validation rules
 const addToCartValidation = [
