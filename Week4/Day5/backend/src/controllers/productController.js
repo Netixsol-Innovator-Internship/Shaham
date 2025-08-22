@@ -96,20 +96,17 @@ const getProductById = async (req, res) => {
 // Create new product (Admin only)
 const createProduct = async (req, res) => {
   try {
-    const product = new Product(req.body)
-    await product.save()
+    const { name, description, price, category, origin, stock } = req.body
+    const image = req.file ? `/images/${req.file.filename}` : null
 
-    res.status(201).json({
-      success: true,
-      message: "Product created successfully",
-      data: { product },
-    })
+    if (!image) {
+      return res.status(400).json({ success: false, message: "Product image is required" })
+    }
+
+    const product = await Product.create({ name, description, price, image, category, origin, stock })
+    res.status(201).json({ success: true, data: product })
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Failed to create product",
-      error: error.message,
-    })
+    res.status(500).json({ success: false, message: error.message })
   }
 }
 

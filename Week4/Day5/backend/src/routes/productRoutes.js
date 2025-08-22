@@ -1,5 +1,6 @@
 const express = require("express")
-const { body, param, query } = require("express-validator")
+const { body, param } = require("express-validator")
+const multer = require("multer")
 const {
   getProducts,
   getProductById,
@@ -12,15 +13,24 @@ const validateRequest = require("../middleware/validateRequest")
 
 const router = express.Router()
 
+// Configure multer storage
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "images/") // Save uploaded files to the "images" folder
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9)
+    const ext = file.originalname.split(".").pop()
+    cb(null, `${file.fieldname}-${uniqueSuffix}.${ext}`)
+  },
+})
+const upload = multer({ storage })
+
 // Validation rules
 const productValidation = [
   body("name").trim().isLength({ min: 2, max: 100 }).withMessage("Product name must be between 2 and 100 characters"),
-  body("description")
-    .trim()
-    .isLength({ min: 10, max: 500 })
-    .withMessage("Description must be between 10 and 500 characters"),
+  body("description").trim().isLength({ min: 10, max: 500 }).withMessage("Description must be between 10 and 500 characters"),
   body("price").isFloat({ min: 0 }).withMessage("Price must be a positive number"),
-  body("image").isURL().withMessage("Image must be a valid URL"),
   body("category").trim().notEmpty().withMessage("Category is required"),
   body("origin").trim().notEmpty().withMessage("Origin is required"),
   body("stock").isInt({ min: 0 }).withMessage("Stock must be a non-negative integer"),
@@ -91,7 +101,7 @@ router.get("/:id", idValidation, validateRequest, getProductById)
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             required:
@@ -111,20 +121,13 @@ router.get("/:id", idValidation, validateRequest, getProductById)
  *                 type: number
  *               image:
  *                 type: string
+ *                 format: binary
  *               category:
  *                 type: string
  *               origin:
  *                 type: string
  *               stock:
  *                 type: integer
- *             example:
- *               name: "Premium Green Tea"
- *               description: "High-quality organic green tea from Japan"
- *               price: 12.99
- *               image: "https://example.com/images/green-tea.jpg"
- *               category: "Beverages"
- *               origin: "Japan"
- *               stock: 50
  *     responses:
  *       201:
  *         description: Product created successfully
@@ -133,7 +136,15 @@ router.get("/:id", idValidation, validateRequest, getProductById)
  *       403:
  *         description: Forbidden (Insufficient privileges)
  */
-router.post("/", protect, authorizeRoles("admin", "superadmin"), productValidation, validateRequest, createProduct)
+router.post(
+  "/",
+  protect,
+  authorizeRoles("admin", "superadmin"),
+  upload.single("image"),
+  productValidation,
+  validateRequest,
+  createProduct
+)
 
 /**
  * @swagger
@@ -147,13 +158,12 @@ router.post("/", protect, authorizeRoles("admin", "superadmin"), productValidati
  *       - in: path
  *         name: id
  *         required: true
- *         description: The ID of the product to update
  *         schema:
  *           type: string
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
@@ -165,20 +175,13 @@ router.post("/", protect, authorizeRoles("admin", "superadmin"), productValidati
  *                 type: number
  *               image:
  *                 type: string
+ *                 format: binary
  *               category:
  *                 type: string
  *               origin:
  *                 type: string
  *               stock:
  *                 type: integer
- *             example:
- *               name: "Jasmine Green Tea"
- *               description: "A fragrant blend of premium green tea leaves with jasmine aroma."
- *               price: 10.99
- *               image: "https://example.com/images/jasmine-green-tea.jpg"
- *               category: "Green Tea"
- *               origin: "China"
- *               stock: 120
  *     responses:
  *       200:
  *         description: Product updated successfully
@@ -189,7 +192,16 @@ router.post("/", protect, authorizeRoles("admin", "superadmin"), productValidati
  *       404:
  *         description: Product not found
  */
-router.put("/:id", protect, authorizeRoles("admin", "superadmin"), idValidation, productValidation, validateRequest, updateProduct)
+router.put(
+  "/:id",
+  protect,
+  authorizeRoles("admin", "superadmin"),
+  upload.single("image"),
+  idValidation,
+  productValidation,
+  validateRequest,
+  updateProduct
+)
 
 /**
  * @swagger
@@ -215,6 +227,13 @@ router.put("/:id", protect, authorizeRoles("admin", "superadmin"), idValidation,
  *       404:
  *         description: Product not found
  */
-router.delete("/:id", protect, authorizeRoles("superadmin"), idValidation, validateRequest, deleteProduct)
+router.delete(
+  "/:id",
+  protect,
+  authorizeRoles("superadmin"),
+  idValidation,
+  validateRequest,
+  deleteProduct
+)
 
 module.exports = router
