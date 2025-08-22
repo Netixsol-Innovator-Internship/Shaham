@@ -7,7 +7,7 @@ const {
   updateProduct,
   deleteProduct,
 } = require("../controllers/productController")
-const { protect } = require("../middleware/auth")
+const { protect, authorizeRoles } = require("../middleware/auth")
 const validateRequest = require("../middleware/validateRequest")
 
 const router = express.Router()
@@ -84,7 +84,7 @@ router.get("/:id", idValidation, validateRequest, getProductById)
  * @swagger
  * /api/products:
  *   post:
- *     summary: Create new product (Authenticated users)
+ *     summary: Create new product (Admin or Superadmin)
  *     tags: [Products]
  *     security:
  *       - bearerAuth: []
@@ -130,14 +130,16 @@ router.get("/:id", idValidation, validateRequest, getProductById)
  *         description: Product created successfully
  *       401:
  *         description: Unauthorized
+ *       403:
+ *         description: Forbidden (Insufficient privileges)
  */
-router.post("/", protect, productValidation, validateRequest, createProduct)
+router.post("/", protect, authorizeRoles("admin", "superadmin"), productValidation, validateRequest, createProduct)
 
 /**
  * @swagger
  * /api/products/{id}:
  *   put:
- *     summary: Update product (Authenticated users)
+ *     summary: Update product (Admin or Superadmin)
  *     tags: [Products]
  *     security:
  *       - bearerAuth: []
@@ -179,47 +181,21 @@ router.post("/", protect, productValidation, validateRequest, createProduct)
  *               stock: 120
  *     responses:
  *       200:
- *         description: Product data fetched successfully (ready for edit) and updated
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 _id:
- *                   type: string
- *                 name:
- *                   type: string
- *                 description:
- *                   type: string
- *                 price:
- *                   type: number
- *                 image:
- *                   type: string
- *                 category:
- *                   type: string
- *                 origin:
- *                   type: string
- *                 stock:
- *                   type: integer
- *             example:
- *               _id: "66b9f7e2e3f3a6c4b09e2d12"
- *               name: "Jasmine Green Tea"
- *               description: "A fragrant blend of premium green tea leaves with jasmine aroma."
- *               price: 10.99
- *               image: "https://example.com/images/jasmine-green-tea.jpg"
- *               category: "Green Tea"
- *               origin: "China"
- *               stock: 120
+ *         description: Product updated successfully
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden (Insufficient privileges)
  *       404:
  *         description: Product not found
  */
-router.put("/:id", protect, idValidation, productValidation, validateRequest, updateProduct)
+router.put("/:id", protect, authorizeRoles("admin", "superadmin"), idValidation, productValidation, validateRequest, updateProduct)
 
 /**
  * @swagger
  * /api/products/{id}:
  *   delete:
- *     summary: Delete product (Authenticated users)
+ *     summary: Delete product (Superadmin only)
  *     tags: [Products]
  *     security:
  *       - bearerAuth: []
@@ -232,9 +208,13 @@ router.put("/:id", protect, idValidation, productValidation, validateRequest, up
  *     responses:
  *       200:
  *         description: Product deleted successfully
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden (Insufficient privileges)
  *       404:
  *         description: Product not found
  */
-router.delete("/:id", protect, idValidation, validateRequest, deleteProduct)
+router.delete("/:id", protect, authorizeRoles("superadmin"), idValidation, validateRequest, deleteProduct)
 
 module.exports = router
