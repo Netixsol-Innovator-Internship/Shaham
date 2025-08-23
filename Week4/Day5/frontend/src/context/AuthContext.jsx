@@ -1,5 +1,4 @@
 "use client"
-import { useNavigate } from "react-router-dom"
 import { createContext } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import {
@@ -31,7 +30,6 @@ export const useAuth = () => {
 
   const [loginMutation] = useLoginMutation()
   const [registerMutation] = useRegisterMutation()
-  const navigate = useNavigate() 
   const { data: profileData, isFetching } = useProfileQuery(undefined, {
     skip: !token,
   })
