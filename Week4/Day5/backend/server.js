@@ -21,32 +21,29 @@ const PORT = process.env.PORT || 5000
 const path = require("path");
 app.use("/images", express.static(path.join(__dirname, "images")));
 
+// ---- CORS CONFIG ----
 const allowedOrigins = process.env.CORS_ORIGINS
   ? process.env.CORS_ORIGINS.split(",").map(o => o.trim())
   : ["http://localhost:5000"]
 
 console.log("Allowed origins:", allowedOrigins)
+
 app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true)
-      } else {
-        callback(new Error("Not allowed by CORS: " + origin))
+        return callback(null, true)
       }
+      return callback(null, false)
     },
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 )
-app.options("*", (req, res) => {
-  res.header("Access-Control-Allow-Origin", req.headers.origin)
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS")
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization")
-  res.header("Access-Control-Allow-Credentials", "true")
-  return res.sendStatus(200)
-})
+
+app.options("*", cors()) // respond OK to preflights
+// ---- END CORS CONFIG ----
 
 app.use(express.json({ limit: "10mb" }))
 app.use(express.urlencoded({ extended: true }))
