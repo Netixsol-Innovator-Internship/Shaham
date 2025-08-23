@@ -63,12 +63,13 @@ export const useAuth = () => {
   }
 
   const register = async (payload) => {
+    console.log("Register payload being sent:", payload)
     try {
       const res = await registerMutation(payload).unwrap()
-      // res already is { token, user }
       dispatch(setCredentials(res))
       return { success: true, ...res }
     } catch (err) {
+      console.error("Register error:", err)
       return {
         success: false,
         message: err?.data?.message || err?.error || "Registration failed",

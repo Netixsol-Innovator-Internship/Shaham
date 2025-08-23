@@ -28,34 +28,23 @@ export const CartProvider = ({ children }) => {
 
   const addToCart = async (productId, quantity) => {
     await addToCartMut({ productId, quantity }).unwrap()
-    refetch()
   }
 
   const updateQuantity = async (productId, quantity) => {
     await updateCartMut({ productId, quantity }).unwrap()
-    refetch()
   }
 
   const removeFromCart = async (productId) => {
     await removeFromCartMut(productId).unwrap()
-    refetch()
   }
 
   const clearCart = async () => {
     await clearCartMut().unwrap()
-    refetch()
   }
 
   const items = useMemo(() => {
     if (!data) return []
-
-    if (Array.isArray(data)) return data
-    if (Array.isArray(data.items)) return data.items
-    if (Array.isArray(data.data?.items)) return data.data.items
-    if (Array.isArray(data.data?.cart)) return data.data.cart
-    if (Array.isArray(data.cart)) return data.cart
-
-    return []
+      return data?.data?.cart?.items ?? []
   }, [data])
 
   const cartCount = useMemo(
