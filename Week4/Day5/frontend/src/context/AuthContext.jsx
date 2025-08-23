@@ -1,132 +1,107 @@
 "use client"
+import { useNavigate } from "react-router-dom"
+import { createContext } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import {
+  useLoginMutation,
+  useRegisterMutation,
+  useProfileQuery,
+} from "../redux/apiSlice"
+import {
+  setCredentials,
+  clearAuth,
+  setRedirectUrl as setRedirectUrlAction,
+  getAndClearRedirectUrl as getAndClearRedirectUrlAction,
+  setUser,
+} from "../redux/authSlice"
+import { useEffect } from "react"
 
-import { createContext, useContext, useState, useEffect } from "react"
-import axios from "axios"
-
-const AuthContext = createContext()
+const AuthContext = createContext(null)
 
 export const useAuth = () => {
-  const context = useContext(AuthContext)
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider")
-  }
-  return context
-}
+  const dispatch = useDispatch()
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null)
-  const [token, setToken] = useState(null) // <-- add token state
-  const [loading, setLoading] = useState(true)
-  const [redirectAfterLogin, setRedirectAfterLogin] = useState(
-    () => localStorage.getItem("redirectAfterLogin") || null
-  )
+  const authState = useSelector((s) => s.auth) || {}
+  const {
+    user = null,
+    token = null,
+    loading = false,
+    redirectAfterLogin = null,
+  } = authState
 
-  const API_BASE_URL =
-    import.meta.env.VITE_API_URL || "http://localhost:5000/api"
+  const [loginMutation] = useLoginMutation()
+  const [registerMutation] = useRegisterMutation()
+  const navigate = useNavigate() 
+  const { data: profileData, isFetching } = useProfileQuery(undefined, {
+    skip: !token,
+  })
 
+  // Load profile if token exists
   useEffect(() => {
-    const storedToken = localStorage.getItem("token")
-    if (storedToken) {
-      setToken(storedToken) // <-- set token state
-      axios.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`
-      checkAuthStatus(storedToken)
-    } else {
-      setLoading(false)
+    if (profileData?.data?.user && !user) {
+      dispatch(setUser(profileData.data.user))
     }
-  }, [])
-
-  const checkAuthStatus = async (storedToken) => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/auth/profile`, {
-        headers: { Authorization: `Bearer ${storedToken}` },
-      })
-      setUser(response.data.data.user)
-    } catch (error) {
-      localStorage.removeItem("token")
-      delete axios.defaults.headers.common["Authorization"]
-      setToken(null)
-      setUser(null)
-    } finally {
-      setLoading(false)
-    }
-  }
+  }, [profileData, user, dispatch])
 
   const login = async (email, password) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/auth/login`, {
-        email,
-        password,
-      })
+      const res = await loginMutation({ email, password }).unwrap()
+      dispatch(setCredentials(res))
 
-      const { token: newToken, user: newUser } = response.data.data
-      localStorage.setItem("token", newToken)
-      axios.defaults.headers.common["Authorization"] = `Bearer ${newToken}`
-      setUser(newUser)
-      setToken(newToken)
+      if (typeof window !== "undefined") {
+        window.location.href = "/"
+      }
 
-      return { success: true }
-    } catch (error) {
+      return { success: true, ...res }
+    } catch (err) {
+      console.error("Login error:", err)
       return {
         success: false,
-        message: error.response?.data?.message || "Login failed",
+        message: err?.data?.message || err?.error || "Login failed",
       }
     }
   }
 
-  const register = async (name, email, password) => {
+  const register = async (payload) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/auth/register`, {
-        name,
-        email,
-        password,
-      })
-
-      const { token: newToken, user: newUser } = response.data.data
-      localStorage.setItem("token", newToken)
-      axios.defaults.headers.common["Authorization"] = `Bearer ${newToken}`
-      setUser(newUser)
-      setToken(newToken)
-
-      return { success: true }
-    } catch (error) {
+      const res = await registerMutation(payload).unwrap()
+      // res already is { token, user }
+      dispatch(setCredentials(res))
+      return { success: true, ...res }
+    } catch (err) {
       return {
         success: false,
-        message: error.response?.data?.message || "Registration failed",
+        message: err?.data?.message || err?.error || "Registration failed",
       }
     }
   }
 
   const logout = () => {
-    localStorage.removeItem("token")
-    localStorage.removeItem("redirectAfterLogin")
-    delete axios.defaults.headers.common["Authorization"]
-    setUser(null)
-    setToken(null)
-    setRedirectAfterLogin(null)
+    dispatch(clearAuth())
+    if (typeof window !== "undefined") {
+      window.location.href = "/"
+    }
   }
 
   const setRedirectUrl = (url) => {
-    setRedirectAfterLogin(url)
-    localStorage.setItem("redirectAfterLogin", url)
+    dispatch(setRedirectUrlAction(url))
   }
 
   const getAndClearRedirectUrl = () => {
-    const url = redirectAfterLogin || localStorage.getItem("redirectAfterLogin")
-    setRedirectAfterLogin(null)
-    localStorage.removeItem("redirectAfterLogin")
-    return url
+    return dispatch(getAndClearRedirectUrlAction())
   }
 
-  const value = {
+  return {
     user,
     token,
+    loading: loading || isFetching,
     login,
     register,
     logout,
-    loading,
     setRedirectUrl,
     getAndClearRedirectUrl,
+    redirectAfterLogin,
   }
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
+
+export const AuthProvider = ({ children }) => children

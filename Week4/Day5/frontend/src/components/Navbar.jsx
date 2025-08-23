@@ -9,14 +9,14 @@ import CartPopup from "./CartPopup"
 
 const Navbar = () => {
   const { user, logout } = useAuth()
-  const { cartCount } = useCart()
+  const { cartCount, resetCart } = useCart()
   const [showCartPopup, setShowCartPopup] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const navigate = useNavigate()
-  const { clearCart } = useCart()
-  
+
   const userMenuRef = useRef(null)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
@@ -29,9 +29,16 @@ const Navbar = () => {
     }
   }, [])
 
+  useEffect(() => {
+    if (!user && isUserMenuOpen) {
+      setIsUserMenuOpen(false)
+    }
+  }, [user, isUserMenuOpen])
+
   const handleLogout = () => {
-    clearCart()
+    resetCart()
     logout()
+    navigate("/", { replace: true })
   }
 
   return (
@@ -82,15 +89,18 @@ const Navbar = () => {
             {/* User Account */}
             {user ? (
               <div className="relative" ref={userMenuRef}>
-                <button onClick={() => setIsUserMenuOpen(!isUserMenuOpen)} className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 transition-colors cursor-pointer">
+                <button
+                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 transition-colors cursor-pointer"
+                >
                   <img src="/images/Person.png" alt="User" className="w-5 h-5 dark:invert cursor-pointer" />
                 </button>
 
-                {(isUserMenuOpen || true) && (
+                {isUserMenuOpen && (
                   <div
                     className={`absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50 border dark:border-gray-700 
                     transition-all duration-200 
-                    ${isUserMenuOpen ? "opacity-100 visible" : "opacity-0 invisible group-hover:opacity-100 group-hover:visible"}`}
+                    ${isUserMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"}`}
                   >
                     <div className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300 border-b dark:border-gray-700">
                       Hello, {user.name}
