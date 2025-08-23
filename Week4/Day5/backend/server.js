@@ -21,14 +21,18 @@ const PORT = process.env.PORT || 5000
 const path = require("path");
 app.use("/images", express.static(path.join(__dirname, "images")));
 
-// Middleware
+const allowedOrigins = process.env.CORS_ORIGINS
+  ? process.env.CORS_ORIGINS.split(",").map(o => o.trim())
+  : ["http://localhost:5000"]
+
+console.log("Allowed origins:", allowedOrigins)
 app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true)
       } else {
-        callback(new Error("Not allowed by CORS"))
+        callback(new Error("Not allowed by CORS: " + origin))
       }
     },
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
@@ -36,6 +40,13 @@ app.use(
     credentials: true,
   })
 )
+app.options("*", (req, res) => {
+  res.header("Access-Control-Allow-Origin", req.headers.origin)
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS")
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization")
+  res.header("Access-Control-Allow-Credentials", "true")
+  return res.sendStatus(200)
+})
 
 app.use(express.json({ limit: "10mb" }))
 app.use(express.urlencoded({ extended: true }))
