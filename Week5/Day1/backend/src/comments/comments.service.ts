@@ -15,4 +15,24 @@ export class CommentsService {
   async list(limit = 50) {
     return this.commentModel.find().sort({ createdAt: -1 }).limit(limit).lean();
   }
+
+  async update(id: string, authorId: string, text: string) {
+    const comment = await this.commentModel.findById(id);
+    if (!comment) throw new Error('Comment not found');
+    if (comment.authorId !== authorId) throw new Error('Not allowed');
+
+    comment.text = text;
+    await comment.save();
+    return comment.toObject();
+  }
+
+  async delete(id: string, authorId: string) {
+    const comment = await this.commentModel.findById(id);
+    if (!comment) throw new Error('Comment not found');
+    if (comment.authorId !== authorId) throw new Error('Not allowed');
+
+    await comment.deleteOne();
+    return { _id: id };
+  }
+
 }

@@ -19,4 +19,12 @@ export declare class CommentsService {
     } & {
         __v: number;
     })[]>;
+    update(id: string, authorId: string, text: string): Promise<Comment & {
+        _id: import("mongoose").Types.ObjectId;
+    } & {
+        __v: number;
+    }>;
+    delete(id: string, authorId: string): Promise<{
+        _id: string;
+    }>;
 }

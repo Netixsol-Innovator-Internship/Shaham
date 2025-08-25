@@ -13,13 +13,14 @@ exports.CommentsGateway = void 0;
 const websockets_1 = require("@nestjs/websockets");
 const socket_io_1 = require("socket.io");
 let CommentsGateway = class CommentsGateway {
-    onModuleInit() {
-        this.server.on('connection', (socket) => {
-            console.log('Client connected:', socket.id);
-        });
-    }
     emitNewComment(comment) {
         this.server.emit('new_comment', comment);
+    }
+    emitUpdatedComment(comment) {
+        this.server.emit('comment_updated', comment);
+    }
+    emitDeletedComment(id) {
+        this.server.emit('comment_deleted', { _id: id });
     }
 };
 exports.CommentsGateway = CommentsGateway;
@@ -28,12 +29,6 @@ __decorate([
     __metadata("design:type", socket_io_1.Server)
 ], CommentsGateway.prototype, "server", void 0);
 exports.CommentsGateway = CommentsGateway = __decorate([
-    (0, websockets_1.WebSocketGateway)({
-        namespace: '/comments',
-        cors: {
-            origin: process.env.CORS_ORIGIN?.split(',') || '*',
-            credentials: true,
-        },
-    })
+    (0, websockets_1.WebSocketGateway)({ namespace: '/comments' })
 ], CommentsGateway);
 //# sourceMappingURL=comments.gateway.js.map

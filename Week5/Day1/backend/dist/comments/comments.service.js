@@ -28,6 +28,25 @@ let CommentsService = class CommentsService {
     async list(limit = 50) {
         return this.commentModel.find().sort({ createdAt: -1 }).limit(limit).lean();
     }
+    async update(id, authorId, text) {
+        const comment = await this.commentModel.findById(id);
+        if (!comment)
+            throw new Error('Comment not found');
+        if (comment.authorId !== authorId)
+            throw new Error('Not allowed');
+        comment.text = text;
+        await comment.save();
+        return comment.toObject();
+    }
+    async delete(id, authorId) {
+        const comment = await this.commentModel.findById(id);
+        if (!comment)
+            throw new Error('Comment not found');
+        if (comment.authorId !== authorId)
+            throw new Error('Not allowed');
+        await comment.deleteOne();
+        return { _id: id };
+    }
 };
 exports.CommentsService = CommentsService;
 exports.CommentsService = CommentsService = __decorate([

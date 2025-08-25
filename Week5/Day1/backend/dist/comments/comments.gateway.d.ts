@@ -1,7 +1,7 @@
-import { OnModuleInit } from '@nestjs/common';
 import { Server } from 'socket.io';
-export declare class CommentsGateway implements OnModuleInit {
+export declare class CommentsGateway {
     server: Server;
-    onModuleInit(): void;
     emitNewComment(comment: any): void;
+    emitUpdatedComment(comment: any): void;
+    emitDeletedComment(id: string): void;
 }

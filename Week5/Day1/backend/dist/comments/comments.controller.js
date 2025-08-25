@@ -33,6 +33,16 @@ let CommentsController = class CommentsController {
         this.gateway.emitNewComment(created);
         return created;
     }
+    async update(id, body) {
+        const updated = await this.commentsService.update(id, body.authorId, body.text);
+        this.gateway.emitUpdatedComment(updated);
+        return updated;
+    }
+    async delete(id, body) {
+        const deleted = await this.commentsService.delete(id, body.authorId);
+        this.gateway.emitDeletedComment(deleted._id);
+        return deleted;
+    }
 };
 exports.CommentsController = CommentsController;
 __decorate([
@@ -48,6 +58,22 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], CommentsController.prototype, "create", null);
+__decorate([
+    (0, common_1.Put)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], CommentsController.prototype, "update", null);
+__decorate([
+    (0, common_1.Delete)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], CommentsController.prototype, "delete", null);
 exports.CommentsController = CommentsController = __decorate([
     (0, common_1.Controller)('comments'),
     __metadata("design:paramtypes", [comments_service_1.CommentsService,

@@ -22,4 +22,17 @@ export declare class CommentsController {
     }) | {
         error: string;
     }>;
+    update(id: string, body: {
+        text: string;
+        authorId: string;
+    }): Promise<import("./schemas").Comment & {
+        _id: import("mongoose").Types.ObjectId;
+    } & {
+        __v: number;
+    }>;
+    delete(id: string, body: {
+        authorId: string;
+    }): Promise<{
+        _id: string;
+    }>;
 }
