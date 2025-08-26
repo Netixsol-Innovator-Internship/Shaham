@@ -1,4 +1,5 @@
 const Product = require("../models/Product")
+const cloudinary = require("../config/cloudinary")
 
 const getProducts = async (req, res) => {
   try {
@@ -97,15 +98,27 @@ const getProductById = async (req, res) => {
 const createProduct = async (req, res) => {
   try {
     const { name, description, price, category, origin, stock } = req.body
-    const image = req.file ? `/images/${req.file.filename}` : null
-
-    if (!image) {
+    if (!req.file) {
       return res.status(400).json({ success: false, message: "Product image is required" })
     }
 
-    const product = await Product.create({ name, description, price, image, category, origin, stock })
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "products",
+    })
+
+    const product = await Product.create({
+      name,
+      description,
+      price,
+      category,
+      origin,
+      stock,
+      image: result.secure_url,
+    })
+
     res.status(201).json({ success: true, data: product })
   } catch (error) {
+    console.error(error)
     res.status(500).json({ success: false, message: error.message })
   }
 }
