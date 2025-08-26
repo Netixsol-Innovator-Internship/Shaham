@@ -22,9 +22,13 @@ const path = require("path");
 app.use("/images", express.static(path.join(__dirname, "images")));
 
 // ---- CORS CONFIG ----
+const allowedOrigins = process.env.CORS_ORIGINS
+  ? process.env.CORS_ORIGINS.split(",").map(o => o.trim())
+  : ["http://localhost:3001", "http://localhost:5000"];
+console.log("Allowed origins:", allowedOrigins);
+
 const corsOptions = {
   origin: (origin, callback) => {
-    // Allow requests with no origin (like Postman) or from allowedOrigins
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -38,7 +42,6 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
-
 // ---- END CORS CONFIG ----
 
 app.use(express.json({ limit: "10mb" }))
