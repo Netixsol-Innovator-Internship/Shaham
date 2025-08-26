@@ -22,27 +22,23 @@ const path = require("path");
 app.use("/images", express.static(path.join(__dirname, "images")));
 
 // ---- CORS CONFIG ----
-const allowedOrigins = process.env.CORS_ORIGINS
-  ? process.env.CORS_ORIGINS.split(",").map(o => o.trim())
-  : ["http://localhost:5000"]
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like Postman) or from allowedOrigins
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+};
 
-console.log("Allowed origins:", allowedOrigins)
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        return callback(null, true)
-      }
-      return callback(null, false)
-    },
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  })
-)
-
-app.options("*", cors()) // respond OK to preflights
 // ---- END CORS CONFIG ----
 
 app.use(express.json({ limit: "10mb" }))
