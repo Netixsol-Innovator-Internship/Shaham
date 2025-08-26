@@ -13,17 +13,8 @@ const validateRequest = require("../middleware/validateRequest")
 
 const router = express.Router()
 
-// Configure multer storage
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "images/") // Save uploaded files to the "images" folder
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9)
-    const ext = file.originalname.split(".").pop()
-    cb(null, `${file.fieldname}-${uniqueSuffix}.${ext}`)
-  },
-})
+// Configure multer memory storage for Cloudinary
+const storage = multer.memoryStorage()
 const upload = multer({ storage })
 
 // Validation rules

@@ -1,6 +1,20 @@
-const Product = require("../models/Product")
-const cloudinary = require("../config/cloudinary")
-const fs = require("fs")
+const Product = require("../models/Product");
+const cloudinary = require("../config/cloudinary");
+const streamifier = require("streamifier");
+
+// Helper function to upload buffer to Cloudinary
+const uploadToCloudinary = (fileBuffer) => {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: "products" },
+      (error, result) => {
+        if (result) resolve(result);
+        else reject(error);
+      }
+    );
+    streamifier.createReadStream(fileBuffer).pipe(stream);
+  });
+};
 
 // GET all products
 const getProducts = async (req, res) => {
@@ -17,32 +31,27 @@ const getProducts = async (req, res) => {
       search,
       sortBy = "createdAt",
       sortOrder = "desc",
-    } = req.query
+    } = req.query;
 
-    const filter = { isActive: true }
-
-    if (category) filter.category = category
-    if (collection) filter.collection = collection
-    if (origin) filter.origin = new RegExp(origin, "i")
-    if (caffeineLevel) filter.caffeineLevel = caffeineLevel
-
+    const filter = { isActive: true };
+    if (category) filter.category = category;
+    if (collection) filter.collection = collection;
+    if (origin) filter.origin = new RegExp(origin, "i");
+    if (caffeineLevel) filter.caffeineLevel = caffeineLevel;
     if (minPrice || maxPrice) {
-      filter.price = {}
-      if (minPrice) filter.price.$gte = Number(minPrice)
-      if (maxPrice) filter.price.$lte = Number(maxPrice)
+      filter.price = {};
+      if (minPrice) filter.price.$gte = Number(minPrice);
+      if (maxPrice) filter.price.$lte = Number(maxPrice);
     }
+    if (search) filter.$text = { $search: search };
 
-    if (search) {
-      filter.$text = { $search: search }
-    }
+    const skip = (Number(page) - 1) * Number(limit);
+    const sort = {};
+    sort[sortBy] = sortOrder === "asc" ? 1 : -1;
 
-    const skip = (Number(page) - 1) * Number(limit)
-    const sort = {}
-    sort[sortBy] = sortOrder === "asc" ? 1 : -1
-
-    const products = await Product.find(filter).sort(sort).skip(skip).limit(Number(limit))
-    const total = await Product.countDocuments(filter)
-    const totalPages = Math.ceil(total / Number(limit))
+    const products = await Product.find(filter).sort(sort).skip(skip).limit(Number(limit));
+    const total = await Product.countDocuments(filter);
+    const totalPages = Math.ceil(total / Number(limit));
 
     res.status(200).json({
       success: true,
@@ -56,39 +65,36 @@ const getProducts = async (req, res) => {
           hasPrevPage: Number(page) > 1,
         },
       },
-    })
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
       message: "Failed to fetch products",
       error: error.message,
-    })
+    });
   }
-}
+};
 
 // GET single product
 const getProductById = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id)
+    const product = await Product.findById(req.params.id);
     if (!product || !product.isActive) {
-      return res.status(404).json({ success: false, message: "Product not found" })
+      return res.status(404).json({ success: false, message: "Product not found" });
     }
-    res.status(200).json({ success: true, data: { product } })
+    res.status(200).json({ success: true, data: { product } });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Failed to fetch product", error: error.message })
+    res.status(500).json({ success: false, message: "Failed to fetch product", error: error.message });
   }
-}
+};
 
 // CREATE product
 const createProduct = async (req, res) => {
   try {
-    const { name, description, price, category, origin, stock } = req.body
-    if (!req.file) return res.status(400).json({ success: false, message: "Product image is required" })
+    const { name, description, price, category, origin, stock } = req.body;
+    if (!req.file) return res.status(400).json({ success: false, message: "Product image is required" });
 
-    const result = await cloudinary.uploader.upload(req.file.path, { folder: "products" })
-
-    // remove local file after upload
-    fs.unlinkSync(req.file.path)
+    const result = await uploadToCloudinary(req.file.buffer);
 
     const product = await Product.create({
       name,
@@ -98,52 +104,51 @@ const createProduct = async (req, res) => {
       origin,
       stock,
       image: result.secure_url,
-    })
+    });
 
-    res.status(201).json({ success: true, data: product })
+    res.status(201).json({ success: true, data: product });
   } catch (error) {
-    console.error(error)
-    res.status(500).json({ success: false, message: error.message })
+    console.error(error);
+    res.status(500).json({ success: false, message: error.message });
   }
-}
+};
 
 // UPDATE product
 const updateProduct = async (req, res) => {
   try {
-    const existingProduct = await Product.findById(req.params.id)
-    if (!existingProduct) return res.status(404).json({ success: false, message: "Product not found" })
+    const existingProduct = await Product.findById(req.params.id);
+    if (!existingProduct) return res.status(404).json({ success: false, message: "Product not found" });
 
-    const updateData = { ...req.body }
+    const updateData = { ...req.body };
 
     if (req.file) {
-      const result = await cloudinary.uploader.upload(req.file.path, { folder: "products" })
-      updateData.image = result.secure_url
-      fs.unlinkSync(req.file.path)
+      const result = await uploadToCloudinary(req.file.buffer);
+      updateData.image = result.secure_url;
     }
 
-    const product = await Product.findByIdAndUpdate(req.params.id, updateData, { new: true, runValidators: true })
+    const product = await Product.findByIdAndUpdate(req.params.id, updateData, { new: true, runValidators: true });
 
     res.status(200).json({
       success: true,
       message: "Product updated successfully",
       previousData: existingProduct,
       data: { product },
-    })
+    });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Failed to update product", error: error.message })
+    res.status(500).json({ success: false, message: "Failed to update product", error: error.message });
   }
-}
+};
 
 // DELETE product
 const deleteProduct = async (req, res) => {
   try {
-    const product = await Product.findByIdAndDelete(req.params.id)
-    if (!product) return res.status(404).json({ success: false, message: "Product not found" })
-    res.status(200).json({ success: true, message: "Product deleted successfully" })
+    const product = await Product.findByIdAndDelete(req.params.id);
+    if (!product) return res.status(404).json({ success: false, message: "Product not found" });
+    res.status(200).json({ success: true, message: "Product deleted successfully" });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Failed to delete product", error: error.message })
+    res.status(500).json({ success: false, message: "Failed to delete product", error: error.message });
   }
-}
+};
 
 module.exports = {
   getProducts,
@@ -151,4 +156,4 @@ module.exports = {
   createProduct,
   updateProduct,
   deleteProduct,
-}
+};
