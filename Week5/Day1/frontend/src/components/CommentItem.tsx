@@ -11,6 +11,9 @@ import {
   useUnfollowUserMutation,
 } from '@/store/api'
 import { useEffect, useState } from 'react'
+import { convertFromRaw } from 'draft-js'
+import { stateToHTML } from 'draft-js-export-html'
+import RichTextEditor from '@/components/RichTextEditor'
 
 function useClientTimeFormat(dateISO: string) {
   const [text, setText] = useState<string>(() => new Date(dateISO).toISOString())
@@ -33,21 +36,20 @@ export default function CommentItem({ c }: { c: any }) {
   const [unfollowUser] = useUnfollowUserMutation()
 
   const [replyBody, setReplyBody] = useState('')
-
+  const [resetReply, setResetReply] = useState(0)
   const { data: replies = [] } = useGetCommentsQuery({ parent: c._id })
-
   const { data: me } = useGetMeQuery()
 
   // Author
-  let authorName = 'Unknown';
-  let authorId: string | undefined;
+  let authorName = 'Unknown'
+  let authorId: string | undefined
 
   if (typeof c.author === 'object' && c.author !== null) {
-    authorId = c.author._id;
-    authorName = c.author.username || c.author.name || 'Unknown';
+    authorId = c.author._id
+    authorName = c.author.username || c.author.name || 'Unknown'
   } else if (typeof c.author === 'string') {
-    authorId = c.author;
-    authorName = c.authorName || c.username || c.name || 'Unknown';
+    authorId = c.author
+    authorName = c.authorName || c.username || c.name || 'Unknown'
   }
 
   const createdAtText = useClientTimeFormat(c.createdAt)
@@ -59,9 +61,12 @@ export default function CommentItem({ c }: { c: any }) {
 
   const likesArr: any[] = Array.isArray(c.likes) ? c.likes : []
   const likeCount = likesArr.length
-  const isLiked = !!(me && likesArr.some((u: any) =>
-    typeof u === 'string' ? u === me._id : u?._id === me._id
-  ))
+  const isLiked = !!(
+    me &&
+    likesArr.some((u: any) =>
+      typeof u === 'string' ? u === me._id : u?._id === me._id
+    )
+  )
 
   const handleLikeToggle = async () => {
     if (!me) return
@@ -93,10 +98,20 @@ export default function CommentItem({ c }: { c: any }) {
       } else {
         await followUser(authorId).unwrap()
       }
-      // Me query will auto-update via socket follow events in api.ts
     } catch (err) {
       console.error('Follow/Unfollow failed:', err)
     }
+  }
+
+  // --- Parse Draft.js JSON -> HTML ---
+  let contentHtml = ''
+  try {
+    const raw = JSON.parse(c.content)
+    const contentState = convertFromRaw(raw)
+    contentHtml = stateToHTML(contentState)
+  } catch (err) {
+    // fallback to raw text if not Draft.js JSON
+    contentHtml = c.content
   }
 
   return (
@@ -104,7 +119,9 @@ export default function CommentItem({ c }: { c: any }) {
       <div className="text-sm text-gray-500 flex items-center justify-between">
         <span suppressHydrationWarning>{createdAtText}</span>
         <div className="flex items-center gap-2">
-          <Link href={`/profile/${authorId}`} className="badge hover:underline">{authorName}</Link>
+          <Link href={`/profile/${authorId}`} className="badge hover:underline">
+            {authorName}
+          </Link>
           {me && !isMyComment && (
             <button className="btn btn-xs" onClick={handleFollowToggle}>
               {isFollowing ? 'Unfollow' : 'Follow'}
@@ -113,7 +130,11 @@ export default function CommentItem({ c }: { c: any }) {
         </div>
       </div>
 
-      <div className="mt-1">{c.content}</div>
+      {/* Render comment HTML */}
+      <div
+        className="mt-1 prose max-w-none"
+        dangerouslySetInnerHTML={{ __html: contentHtml }}
+      />
 
       <div className="mt-2 flex items-center gap-2 text-sm">
         <button className="btn" onClick={handleLikeToggle}>
@@ -129,19 +150,15 @@ export default function CommentItem({ c }: { c: any }) {
       </div>
 
       {/* reply box */}
-      <div className="mt-3 flex gap-2">
-        <input
-          className="input"
-          placeholder="Reply..."
-          value={replyBody}
-          onChange={(e) => setReplyBody(e.target.value)}
-        />
+       <div className="mt-3 space-y-2">
+        <RichTextEditor onChange={setReplyBody} resetSignal={resetReply} />
         <button
           className="btn"
           disabled={!replyBody.trim()}
           onClick={() => {
             create({ content: replyBody, parentComment: c._id })
             setReplyBody('')
+            setResetReply(r => r + 1) // clear reply editor
           }}
         >
           Send

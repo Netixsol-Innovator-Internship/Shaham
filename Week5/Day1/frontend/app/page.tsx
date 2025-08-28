@@ -1,9 +1,10 @@
-'use client';
+'use client'
 import { useEffect, useMemo, useState } from 'react'
 import { useGetCommentsQuery, useCreateCommentMutation } from '@/store/api'
 import { getSocket } from '@/lib/socket'
 import CommentItem from '@/components/CommentItem'
 import { useAppSelector } from '@/store/hooks'
+import RichTextEditor from '@/components/RichTextEditor'
 
 function nest(comments: any[]) {
   const byId: Record<string, any> = {};
@@ -40,6 +41,7 @@ export default function Page() {
   const { data: comments = [], refetch } = useGetCommentsQuery()
   const [createComment] = useCreateCommentMutation()
   const [content, setContent] = useState('')
+  const [resetCounter, setResetCounter] = useState(0)
   const token = useAppSelector(s => s.auth.token)
   const tree = useMemo(()=>nest(comments), [comments])
 
@@ -70,14 +72,19 @@ export default function Page() {
     <main className="container py-6 space-y-4">
       <div className="card p-4">
         <h2 className="font-semibold">Add Comment</h2>
-        <div className="mt-2 flex gap-2">
-          <input className="input" placeholder="Write something..." value={content} onChange={e=>setContent(e.target.value)} />
+        <div className="mt-2 space-y-2">
+          <RichTextEditor onChange={setContent} resetSignal={resetCounter} />
           <button
-            className="btn btn-primary disabled:opacity-50"
+            className="btn btn-primary"
             disabled={!token || !content.trim()}
-            onClick={async () => { await createComment({ content }).unwrap(); setContent('') }}
-            title={!token ? 'Login to comment' : ''}
-          >Post</button>
+            onClick={async () => {
+              await createComment({ content }).unwrap()
+              setContent('')
+              setResetCounter(c => c + 1) // trigger editor reset
+            }}
+          >
+            Post
+          </button>
         </div>
         {!token && <p className="text-xs text-gray-500 mt-1">Login to post, like or reply.</p>}
       </div>
@@ -87,7 +94,6 @@ export default function Page() {
           <CommentItem key={c._id} c={c} />
         ))}
       </div>
-
     </main>
-  ) 
-} 
+  )
+}
