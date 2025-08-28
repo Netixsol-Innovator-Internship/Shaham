@@ -9,18 +9,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
+const config_1 = require("@nestjs/config");
+const auth_module_1 = require("./auth/auth.module");
+const users_module_1 = require("./users/users.module");
 const comments_module_1 = require("./comments/comments.module");
-const dotenv = require("dotenv");
-dotenv.config();
+const notifications_module_1 = require("./notifications/notifications.module");
+const follows_module_1 = require("./follows/follows.module");
+const gateway_module_1 = require("./gateway/gateway.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            mongoose_1.MongooseModule.forRoot(process.env.MONGODB_URI || 'mongodb://localhost:27017/realtime_comments'),
+            config_1.ConfigModule.forRoot({ isGlobal: true }),
+            mongoose_1.MongooseModule.forRoot(process.env.MONGODB_URI),
+            auth_module_1.AuthModule,
+            users_module_1.UsersModule,
             comments_module_1.CommentsModule,
+            notifications_module_1.NotificationsModule,
+            follows_module_1.FollowsModule,
+            gateway_module_1.GatewayModule,
         ],
     })
 ], AppModule);
-//# sourceMappingURL=app.module.js.map

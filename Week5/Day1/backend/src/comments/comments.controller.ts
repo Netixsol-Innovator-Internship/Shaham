@@ -1,47 +1,58 @@
-import { Body, Controller, Get, Post, Put, Delete, Param } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UseGuards, Delete } from '@nestjs/common';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+import { CurrentUser } from '../common/decorators/user.decorator';
+import { CreateCommentDto } from './dto/create-comment.dto';
 import { CommentsService } from './comments.service';
-import { CommentsGateway } from './comments.gateway';
+import { NotificationsGateway } from '../gateway/notifications.gateway';
 
 @Controller('comments')
 export class CommentsController {
-  constructor(
-    private readonly commentsService: CommentsService,
-    private readonly gateway: CommentsGateway,
-  ) {}
+  constructor(private readonly commentsService: CommentsService, private readonly gateway: NotificationsGateway) {}
+
+  @UseGuards(JwtAuthGuard)
+  @Post()
+  async create(@CurrentUser() user, @Body() dto: CreateCommentDto) {
+    // service already emits and returns populated comment
+    const populated = await this.commentsService.create(
+      user._id,
+      dto.content,
+      dto.parentComment,
+    );
+
+    return populated;
+  }
 
   @Get()
-  async list() {
-    return this.commentsService.list();
+  async list(@Query('parent') parent?: string) {
+    return this.commentsService.list(parent);
   }
 
-  @Post()
-  async create(@Body() body: { text: string; authorId: string }) {
-    const { text, authorId } = body || {};
-    if (!text || !authorId) {
-      return { error: 'text and authorId are required' };
-    }
-    const created = await this.commentsService.create({ text, authorId });
-    this.gateway.emitNewComment(created);
-    return created;
+  @Get(':id')
+  async getOne(@Param('id') id: string) {
+    return this.commentsService.findById(id);
   }
 
-  @Put(':id')
-  async update(
-    @Param('id') id: string,
-    @Body() body: { text: string; authorId: string },
-  ) {
-    const updated = await this.commentsService.update(id, body.authorId, body.text);
-    this.gateway.emitUpdatedComment(updated);
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  async remove(@Param('id') id: string, @CurrentUser() user) {
+    const deleted = await this.commentsService.remove(id, user._id);
+    this.gateway.emitToAll('comments:deleted', { commentId: id });
+    return deleted;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/like')
+  async like(@Param('id') id: string, @CurrentUser() user) {
+    const updated = await this.commentsService.like(id, user._id);
+    this.gateway.emitToAll('comments:likes', { commentId: id, likes: updated.likes.length });
     return updated;
   }
 
-  @Delete(':id')
-  async delete(
-    @Param('id') id: string,
-    @Body() body: { authorId: string },
-  ) {
-    const deleted = await this.commentsService.delete(id, body.authorId);
-    this.gateway.emitDeletedComment(deleted._id);
-    return deleted;
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/like')
+  async unlike(@Param('id') id: string, @CurrentUser() user) {
+    const updated = await this.commentsService.unlike(id, user._id);
+    this.gateway.emitToAll('comments:likes', { commentId: id, likes: updated.likes.length });
+    return updated;
   }
 }

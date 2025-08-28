@@ -1,19 +1,51 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { IoAdapter } from '@nestjs/platform-socket.io';
 import { ValidationPipe } from '@nestjs/common';
+import * as cookieParser from 'cookie-parser';
+import serverlessExpress from '@vendia/serverless-express';
+
+let cachedServer: any;
+
+async function createApp() {
+  const app = await NestFactory.create(AppModule);
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+  app.use(cookieParser());
+
+  const origin = process.env.CLIENT_ORIGIN || 'http://localhost:3001';
+  app.enableCors({
+    origin,
+    credentials: true,
+  });
+
+  await app.init();
+  return app;
+}
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.useWebSocketAdapter(new IoAdapter(app));
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+  app.use(cookieParser());
 
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+  const origin = process.env.CLIENT_ORIGIN || 'http://localhost:3001';
+  app.enableCors({
+    origin,
+    credentials: true,
+  });
 
-  const origins = (process.env.CORS_ORIGIN || 'http://localhost:3000')
-    .split(',')
-    .map(s => s.trim());
-  app.enableCors({ origin: origins, credentials: true });
-
-  await app.listen(process.env.PORT ? parseInt(process.env.PORT, 10) : 5000);
+  const port = process.env.PORT || 5000;
+  await app.listen(port);
+  console.log(`Server running on http://localhost:${port}`);
 }
-bootstrap();
+
+if (!process.env.VERCEL) {
+  bootstrap();
+}
+
+export const handler = async (event, context) => {
+  if (!cachedServer) {
+    const app = await createApp();
+    const expressInstance = app.getHttpAdapter().getInstance();
+    cachedServer = serverlessExpress({ app: expressInstance });
+  }
+  return cachedServer(event, context);
+};
