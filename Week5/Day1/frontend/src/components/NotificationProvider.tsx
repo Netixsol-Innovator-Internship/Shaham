@@ -1,3 +1,4 @@
+
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { useGetNotificationsQuery } from '@/store/api';
@@ -15,7 +16,7 @@ export default function NotificationProvider() {
   const [queue, setQueue] = useState<any[]>([]);
   const seenIds = useRef<Set<string>>(new Set());
 
-  // Clear UI state on logout
+  // Clear any queued toasts when logging out
   useEffect(() => {
     if (!token) {
       setQueue([]);
@@ -23,23 +24,23 @@ export default function NotificationProvider() {
     }
   }, [token]);
 
-  // Add any unread notifications we haven't shown yet
+  // Enqueue only truly new notifications (not seen before)
   useEffect(() => {
-    if (!Array.isArray(list) || list.length === 0) return;
-    const unread = list.filter((n: any) => !n?.read);
-    const toAdd: any[] = [];
-    for (const n of unread) {
-      const id = String(n?._id ?? n?.id ?? '');
-      if (id && !seenIds.current.has(id)) {
+    if (!list || list.length === 0) return;
+    const next = [...queue];
+    for (const n of list) {
+      const id = String(n._id);
+      if (!seenIds.current.has(id)) {
         seenIds.current.add(id);
-        toAdd.push(n);
+        if (!n.read) next.push(n);
       }
     }
-    if (toAdd.length) setQueue((q) => [...toAdd, ...q]);
+    if (next.length !== queue.length) setQueue(next);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [list]);
 
   const handleClose = (id: string) => {
-    setQueue((q) => q.filter((n) => String(n._id) !== String(id)));
+    setQueue((prev) => prev.filter((n) => String(n._id) !== id));
   };
 
   return (

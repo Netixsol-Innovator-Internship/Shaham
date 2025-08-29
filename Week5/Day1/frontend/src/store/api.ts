@@ -223,12 +223,10 @@ export const api = createApi({
               if (idx !== -1) {
                 const entry = draft[idx]
 
-                // update likes only if it's an array
                 if (payload?.likes !== undefined) {
                   if (Array.isArray(payload.likes)) {
                     entry.likes = payload.likes
                   } else if (typeof payload.likes === 'number') {
-                    // optional: track count separately
                     entry.likesCount = payload.likes
                   }
                 }
@@ -288,30 +286,48 @@ export const api = createApi({
 
     // ---------------- NOTIFICATIONS ----------------
     getNotifications: builder.query<any[], void>({
-      query: () => ({ url: '/notifications' }),
+      query: () => ({ url: '/notifications', params: { all: true } }),
       providesTags: ['Notifications'],
       async onCacheEntryAdded(arg, { updateCachedData, cacheDataLoaded, cacheEntryRemoved }) {
         try { await cacheDataLoaded } catch { return }
         const s = getSocket()
 
         const handleNewNotification = (payload: any) => {
-          updateCachedData((draft) => {
-            if (!draft.some((n: any) => n._id === payload._id)) {
+          console.log('[notifications] new event', payload)
+          updateCachedData((draft: any[] | undefined) => {
+            if (!draft) return
+            if (!draft.some((n: any) => String(n._id) === String(payload._id))) {
               draft.unshift(payload)
             }
           })
         }
 
+        // ✅ fixed: only listen to colon events (what backend actually emits)
         s.on('notification:new', handleNewNotification)
+
         await cacheEntryRemoved
+
         s.off('notification:new', handleNewNotification)
       }
     }),
 
     markAllRead: builder.mutation<{ ok: boolean }, void>({
       query: () => ({ url: '/notifications/read-all', method: 'PATCH' }),
-      invalidatesTags: ['Notifications'],
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        const patch = dispatch(
+          api.util.updateQueryData('getNotifications', undefined, (draft: any[] | undefined) => {
+            if (!draft) return
+            draft.forEach(n => { if (n) n.read = true })
+          })
+        )
+        try {
+          await queryFulfilled
+        } catch (err) {
+          patch.undo()
+        }
+      },
     }),
+
   }),
 })
 
