@@ -1,0 +1,1 @@
+Socket.IO gateway: clients should connect and emit 'join' with { auctionId } to receive 'newBid' events.

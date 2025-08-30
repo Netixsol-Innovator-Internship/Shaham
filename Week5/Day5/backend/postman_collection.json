@@ -1,0 +1,234 @@
+{
+  "info": {
+    "name": "Auction Backend API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Register",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{ \"name\":\"Test User\",\"username\":\"test\",\"email\":\"test@example.com\",\"password\":\"password\" }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/auth/register",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "auth",
+            "register"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "body": {
+          "mode": "raw",
+          "raw": "{ \"email\":\"test@example.com\",\"password\":\"password\" }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/auth/login",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "auth",
+            "login"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Create Car (Auth required)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"vin\":\"VIN123456\",\n  \"year\":2020,\n  \"make\":\"Toyota\",\n  \"model\":\"Camry\",\n  \"mileage\":50000,\n  \"engineSize\":\"2.5L\",\n  \"paint\":\"White\",\n  \"gcc\":\"Yes\",\n  \"type\":\"sedan\",\n  \"noteworthyOptions\":\"Sunroof\",\n  \"accidentHistory\":\"None\",\n  \"fullServiceHistory\":\"Yes\",\n  \"hasModified\":false,\n  \"maxBid\":50000,\n  \"photos\":[\"https://via.placeholder.com/400\",\"https://via.placeholder.com/401\",\"https://via.placeholder.com/402\",\"https://via.placeholder.com/403\",\"https://via.placeholder.com/404\",\"https://via.placeholder.com/405\"],\n  \"startingBid\":1000,\n  \"endTime\":\"2025-12-31T23:59:59.000Z\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/cars",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "cars"
+          ]
+        }
+      }
+    },
+    {
+      "name": "List Cars",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:5000/cars",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "cars"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Car",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:5000/cars/{{carId}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "cars",
+            "{{carId}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Place Bid (Auth)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{ \"amount\": 2000 }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/bids/{{carId}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "bids",
+            "{{carId}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "List Bids for Car",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:5000/bids/car/{{carId}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "bids",
+            "car",
+            "{{carId}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "List Notifications (Auth)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/notifications",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "notifications"
+          ]
+        }
+      }
+    },
+    {
+      "name": "End Auction (Auth, seller only)",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/cars/{{carId}}/end",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "cars",
+            "{{carId}}",
+            "end"
+          ]
+        }
+      }
+    }
+  ]
+}
