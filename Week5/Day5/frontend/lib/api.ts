@@ -45,21 +45,21 @@ export const api = createApi({
       query: (body) => ({ url: 'cars', method: 'POST', body }),
       invalidatesTags: ['Cars']
     }),
-    startAuction: builder.mutation<any, string>({ // carId
+    startAuction: builder.mutation<any, string>({
       query: (id) => ({ url: `cars/${id}/start`, method: 'PATCH' }),
-      invalidatesTags: ['Cars', 'Car']
+      invalidatesTags: (_r, _e, id) => [{ type: 'Cars' }, { type: 'Car', id }]
     }),
     endAuction: builder.mutation<any, string>({
       query: (id) => ({ url: `cars/${id}/end`, method: 'PATCH' }),
-      invalidatesTags: ['Cars','Car']
+      invalidatesTags: (_r, _e, id) => [{ type: 'Cars' }, { type: 'Car', id }]
     }),
-    updateCar: builder.mutation<any, {id:string, body:any}>({
-      query: ({id, body}) => ({ url: `cars/${id}`, method: 'PATCH', body }),
-      invalidatesTags: ['Cars','Car']
+    updateCar: builder.mutation<any, { id: string; body: any }>({
+      query: ({ id, body }) => ({ url: `cars/${id}`, method: 'PATCH', body }),
+      invalidatesTags: (_r, _e, { id }) => [{ type: 'Cars' }, { type: 'Car', id }]
     }),
     deleteCar: builder.mutation<any, string>({
       query: (id) => ({ url: `cars/${id}`, method: 'DELETE' }),
-      invalidatesTags: ['Cars']
+      invalidatesTags: (_r, _e, id) => [{ type: 'Cars' }, { type: 'Car', id }]
     }),
 
     // Bids
