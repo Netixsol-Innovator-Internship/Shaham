@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { Car, CarDocument } from '../schemas/car.schema';
 import { UsersService } from '../users/users.service';
 import { NotificationService } from '../notifications/notifications.service';
+import { AuctionGateway } from '../gateways/auction.gateway';
 
 @Injectable()
 export class CarsService {
@@ -11,7 +12,8 @@ export class CarsService {
     @InjectModel(Car.name) private carModel: Model<CarDocument>,
     private usersService: UsersService,
     private notificationService: NotificationService,
-  ) {}
+    private gateway: AuctionGateway,
+  ) { }
 
   async create(createDto: any, userId: string) {
     // Ensure min 6 photos
@@ -31,7 +33,7 @@ export class CarsService {
   }
 
   async list(query: any) {
-    const q: any = { status: 'active' };
+    const q: any = { ...query };
     if (query.make) q.make = query.make;
     if (query.model) q.model = query.model;
     if (query.type) q.type = query.type;
@@ -62,6 +64,7 @@ export class CarsService {
     if (car.status !== 'draft') throw new BadRequestException('Auction already started or ended');
 
     car.status = 'active';
+    car.startTime = new Date();
     await car.save();
 
     await this.notificationService.create({
@@ -69,6 +72,9 @@ export class CarsService {
       receiver: null,
       comment: `Auction started for ${car.make} ${car.model}`,
     });
+    // Broadcast events so clients can refresh lists/notifications
+    this.gateway.server && this.gateway.server.emit('auctionStarted', { carId: car._id.toString() });
+    this.gateway.server && this.gateway.server.emit('notificationsUpdated');
 
     return car;
   }
@@ -108,6 +114,8 @@ export class CarsService {
       receiver: null,
       comment: `Auction ended for ${car.make} ${car.model}`,
     });
+    this.gateway.server && this.gateway.server.emit('auctionEnded', { carId: car._id.toString() });
+    this.gateway.server && this.gateway.server.emit('notificationsUpdated');
 
     if (car.highestBid && car.highestBid.userId) {
       await this.notificationService.create({
@@ -115,6 +123,7 @@ export class CarsService {
         receiver: car.highestBid.userId,
         comment: `You won the auction for ${car.make} ${car.model} with ${car.highestBid.amount}`,
       });
+      this.gateway.server && this.gateway.server.emit('notificationsUpdated');
     }
     return car;
   }

@@ -11,6 +11,7 @@ export class Notification {
   @Prop({ type: Types.ObjectId, ref: 'User', required: false })
   receiver: Types.ObjectId;
 
+
   @Prop({ default: false })
   read: boolean;
 

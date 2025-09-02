@@ -6,7 +6,7 @@ import { UsersModule } from './users/users.module';
 import { CarsModule } from './cars/cars.module';
 import { BidsModule } from './bids/bids.module';
 import { NotificationsModule } from './notifications/notifications.module';
-import { AuctionGateway } from './gateways/auction.gateway';
+import { GatewaysModule } from './gateways/gateways.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
@@ -14,13 +14,15 @@ import { ThrottlerModule } from '@nestjs/throttler';
     ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRoot(process.env.MONGO_URI || 'mongodb://localhost:27017/auctiondb'),
     ThrottlerModule.forRoot({
-  throttlers: [{ ttl: 5, limit: 10,},],}),
+      throttlers: [{ ttl: 5, limit: 10, },],
+    }),
     AuthModule,
     UsersModule,
     CarsModule,
     BidsModule,
     NotificationsModule,
+    GatewaysModule,
   ],
-  providers: [AuctionGateway],
+  providers: [],
 })
-export class AppModule {}
+export class AppModule { }

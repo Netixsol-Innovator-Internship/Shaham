@@ -18,7 +18,7 @@ export class User {
   password: string;
 
   @Prop()
-  mobileNo: string;
+  phone: string;
 
   @Prop()
   nationality: string;
@@ -27,7 +27,7 @@ export class User {
   idType: string;
 
   @Prop()
-  idNo: string;
+  idNumber: string;
 
   @Prop({ type: [{ type: Types.ObjectId, ref: 'Car' }] , default: [] })
   wishlist: Types.ObjectId[];

@@ -6,16 +6,17 @@ import { BidsService } from './bids.service';
 import { BidsController } from './bids.controller';
 import { UsersModule } from '../users/users.module';
 import { NotificationsModule } from '../notifications/notifications.module';
-import { AuctionGateway } from '../gateways/auction.gateway';
+import { GatewaysModule } from '../gateways/gateways.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Bid.name, schema: BidSchema }, { name: Car.name, schema: CarSchema }]),
     UsersModule,
     NotificationsModule,
+    GatewaysModule,
   ],
-  providers: [BidsService, AuctionGateway],
+  providers: [BidsService],
   controllers: [BidsController],
   exports: [BidsService],
 })
-export class BidsModule {}
+export class BidsModule { }

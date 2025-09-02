@@ -13,6 +13,12 @@ export class BidsController {
     return this.bidsService.placeBid(carId, req.user.userId, amount);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  async myBids(@Request() req: any) {
+    return this.bidsService.listForUser(req.user.userId);
+  }
+
   @Get('car/:carId')
   async list(@Param('carId') carId: string) {
     return this.bidsService.listForCar(carId);

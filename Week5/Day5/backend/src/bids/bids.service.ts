@@ -15,7 +15,7 @@ export class BidsService {
     private usersService: UsersService,
     private notificationService: NotificationService,
     private gateway: AuctionGateway,
-  ) {}
+  ) { }
 
   async placeBid(carId: string, userId: string, amount: number) {
     const car = await this.carModel.findById(carId).exec();
@@ -36,11 +36,31 @@ export class BidsService {
     await car.save();
     // add to user bids
     await this.usersService.addMyBid(userId, saved._id);
-    // create notification for other users (simple: notify all users)
-    await this.notificationService.create({ type: 'New', receiver: null, comment: `New bid ${amount} on ${car.make} ${car.model}` });
+    // create notifications for bidders only (exclude the bidder who placed this bid)
+    const bidderIds = new Set<string>();
+    (car.bidders || []).forEach((b: any) => {
+      if (b.userId?.toString && b.userId.toString() !== userId.toString()) {
+        bidderIds.add(b.userId.toString());
+      }
+    });
+    for (const bidderId of bidderIds) {
+      await this.notificationService.create({
+        type: 'New',
+        receiver: new Types.ObjectId(bidderId),
+        comment: `New bid ${amount} on ${car.make} ${car.model}`,
+      });
+    }
+    // notify clients
+    this.gateway.server && this.gateway.server.emit('notificationsUpdated');
     // emit via socket gateway
     this.gateway.server && this.gateway.server.to(carId.toString()).emit('newBid', { carId, userId, amount, bidId: saved._id });
     return saved;
+  }
+  async listForUser(userId: string) {
+    return this.bidModel
+      .find({ user: userId })
+      .populate('car')
+      .exec();
   }
 
   async listForCar(carId: string) {

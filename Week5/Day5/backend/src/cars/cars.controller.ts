@@ -14,6 +14,12 @@ export class CarsController {
     return this.carsService.create(body, req.user.userId);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  async listMyCars(@Request() req: any) {
+    return this.carsService.list({ seller: req.user.userId });
+  }
+
   @Get()
   async list(@Query() query: any) {
     return this.carsService.list(query);

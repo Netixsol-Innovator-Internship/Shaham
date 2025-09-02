@@ -54,6 +54,9 @@ export class Car {
   @Prop({ required: true })
   startingBid: number;
 
+  @Prop({ type: Date })
+  startTime: Date;
+
   @Prop({ required: true })
   endTime: Date;
 
