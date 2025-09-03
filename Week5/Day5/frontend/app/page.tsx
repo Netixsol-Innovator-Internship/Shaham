@@ -18,7 +18,7 @@ export default function Home() {
   const modelsForMake = useMemo(() => (q.make ? (MAKES[q.make] || []) : []), [q.make, MAKES])
 
   return (
-    <div className="space-y-16 mt-[-60px]">
+    <div className="space-y-16 mt-[-65px]">
       {/* Hero search section */}
       <section className="relative w-full h-[500px] flex items-center justify-center text-white">
         {/* Full background image */}

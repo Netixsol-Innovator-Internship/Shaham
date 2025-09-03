@@ -1,0 +1,535 @@
+{
+  "info": {
+    "name": "Ecom Backend Lean",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Register",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/auth/register",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "auth",
+            "register"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\": \"Test User\", \"email\": \"test@example.com\", \"password\": \"password\"}"
+        }
+      }
+    },
+    {
+      "name": "Resend OTP",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/auth/resend-otp",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "auth",
+            "resend-otp"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"email\": \"test@example.com\"}"
+        }
+      }
+    },
+    {
+      "name": "Verify OTP",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/auth/verify-otp",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "auth",
+            "verify-otp"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"email\": \"test@example.com\", \"otp\": \"123456\"}"
+        }
+      }
+    },
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/auth/login",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "auth",
+            "login"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"email\": \"test@example.com\", \"password\": \"password\"}"
+        }
+      }
+    },
+    {
+      "name": "List Products",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/products",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "products"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Product",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/products/:id",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "products",
+            ":id"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Create Product (admin)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{adminToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/admin/products",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "admin",
+            "products"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\": \"Sample\", \"stock\": 10, \"priceMoney\": 999, \"purchaseType\": \"money\"}"
+        }
+      }
+    },
+    {
+      "name": "Upload images (admin)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{adminToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "multipart/form-data"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/admin/products/upload/:id/:color",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "admin",
+            "products",
+            "upload",
+            ":id",
+            ":color"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Create Sale (admin)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{adminToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/admin/sales/create",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "admin",
+            "sales",
+            "create"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"title\": \"Launch Sale\", \"type\": \"percentage\", \"value\": 20, \"productIds\": [], \"startAt\": null, \"endAt\": null}"
+        }
+      }
+    },
+    {
+      "name": "List Sales",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/admin/sales/list",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "admin",
+            "sales",
+            "list"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Cart",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/cart",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "cart"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Add to Cart",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/cart/add",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "cart",
+            "add"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"productId\": \"replace-id\", \"qty\": 1, \"purchaseMethod\": \"money\"}"
+        }
+      }
+    },
+    {
+      "name": "Update Cart Qty",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/cart/update/:productId",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "cart",
+            "update",
+            ":productId"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"qty\": 2}"
+        }
+      }
+    },
+    {
+      "name": "Remove from Cart",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/cart/remove/:productId",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "cart",
+            "remove",
+            ":productId"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Create PaymentIntent",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/orders/create-payment-intent",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "orders",
+            "create-payment-intent"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"amount\": 1999}"
+        }
+      }
+    },
+    {
+      "name": "Checkout",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/orders/checkout",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "orders",
+            "checkout"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"paymentMethod\": \"mock\", \"discount\": 0}"
+        }
+      }
+    },
+    {
+      "name": "My Orders",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/orders",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "orders"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Order",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/orders/:id",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "orders",
+            ":id"
+          ]
+        }
+      }
+    },
+    {
+      "name": "List Notifications",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/notifications",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "notifications"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Mark Notification Read",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/notifications/mark-read/:id",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "notifications",
+            "mark-read",
+            ":id"
+          ]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "adminToken",
+      "value": ""
+    }
+  ]
+}

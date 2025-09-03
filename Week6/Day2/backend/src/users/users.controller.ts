@@ -1,0 +1,30 @@
+import { Controller, Get, UseGuards, Request, Param, Post, Body } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { UsersService } from './users.service';
+import { Roles } from '../common/decorators/roles.decorator';
+import { RolesGuard } from '../common/guards/roles.guard';
+
+@Controller('users')
+export class UsersController {
+  constructor(private users: UsersService) {}
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('me')
+  async me(@Request() req) {
+    return this.users.findById(req.user.id);
+  }
+
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('super_admin')
+  @Post('admin/set-role/:id')
+  async setRole(@Param('id') id: string, @Body() body: { role: string }) {
+    return this.users.setRole(id, body.role);
+  }
+
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('admin','super_admin')
+  @Post('admin/block/:id')
+  async block(@Param('id') id: string, @Body() body: { block: boolean }) {
+    return this.users.blockUser(id, body.block);
+  }
+}
