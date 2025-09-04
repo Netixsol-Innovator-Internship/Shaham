@@ -27,6 +27,14 @@ export class Product {
   @Prop({ default: 0 }) sold: number;
 
   @Prop({ type: [Object], default: [] }) reviews: any[];
+
+  // Loyalty Points System Support
+  @Prop({ default: 0 }) pointsPrice?: number;
+  @Prop({
+    default: 'regular',
+    enum: ['regular', 'loyalty-only', 'hybrid']
+  }) productType: string;
+  @Prop({ default: false }) isLoyaltyOnly: boolean;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

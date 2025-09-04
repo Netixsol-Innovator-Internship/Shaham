@@ -4,7 +4,7 @@ import { AuthGuard } from '@nestjs/passport';
 
 @Controller('cart')
 export class CartController {
-  constructor(private cart: CartService) {}
+  constructor(private cart: CartService) { }
 
   @UseGuards(AuthGuard('jwt'))
   @Get()
@@ -20,13 +20,20 @@ export class CartController {
 
   @UseGuards(AuthGuard('jwt'))
   @Delete('remove/:productId')
-  async remove(@Request() req, @Param('productId') productId: string) {
-    return this.cart.removeItem(req.user.id, productId);
+  async remove(@Request() req, @Param('productId') productId: string, @Body() body: any) {
+    return this.cart.removeItem(req.user.id, productId, body.variantId, body.sizeStockId, body.purchaseMethod);
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Patch('update/:productId')
-  async update(@Request() req, @Param('productId') productId: string, @Body() body: { qty:number }) {
-    return this.cart.updateQty(req.user.id, productId, body.qty);
+  async update(@Request() req, @Param('productId') productId: string, @Body() body: any) {
+    return this.cart.updateQty(
+      req.user.id,
+      productId,
+      body.variantId,
+      body.sizeStockId,
+      body.purchaseMethod,
+      body.qty
+    );
   }
 }

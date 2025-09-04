@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { RealtimeModule } from './realtime/realtime.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -14,6 +15,7 @@ import { UtilsModule } from './utils/utils.module';
 
 @Module({
   imports: [
+    RealtimeModule,
     MongooseModule.forRoot(process.env.MONGO_URI || 'mongodb://localhost:27017/ecom'),
     AuthModule,
     UsersModule,

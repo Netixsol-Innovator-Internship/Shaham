@@ -1,3 +1,4 @@
+import { emitRealtime } from '../realtime/realtime.util';
 import {
   Injectable,
   BadRequestException,
@@ -28,7 +29,7 @@ export class OrdersService {
     private notifications: NotificationsService,
     @InjectModel(Variant.name) private variantModel: Model<Variant>,
     @InjectModel(SizeStock.name) private sizeStockModel: Model<SizeStock>,
-  ) {}
+  ) { }
 
   async createPaymentIntent(amount: number) {
     if (!process.env.STRIPE_SECRET_KEY)
@@ -67,7 +68,7 @@ export class OrdersService {
 
       // Price calculation
       const moneyPrice = variant.salePrice || variant.regularPrice || 0;
-      const pointsPrice = prod.pointsPrice || 0;
+      const pointsPrice = variant.pointsPrice || 0;
       const itemPrice = it.purchaseMethod === 'points' ? 0 : moneyPrice;
 
       subtotal += itemPrice * qty;
@@ -87,10 +88,15 @@ export class OrdersService {
       });
     }
 
-    const total = subtotal + 15 - (payload.discount || 0);
+    let total = subtotal + 15 - (payload.discount || 0);
 
-    // Validate payment intent if stripe
-    if (payload.paymentMethod === 'stripe') {
+    // For points-only purchases, total should be 0
+    if (payload.purchaseMethod === 'points') {
+      total = 0;
+    }
+
+    // Validate payment intent if stripe (skip for points purchases)
+    if (payload.paymentMethod === 'stripe' && payload.purchaseMethod !== 'points') {
       if (!payload.paymentIntentId)
         throw new BadRequestException('paymentIntentId required for stripe');
       const intent = await stripe.paymentIntents.retrieve(
@@ -104,14 +110,14 @@ export class OrdersService {
       userId,
       address: payload.address || {},
       items: itemsSnapshot,
-      deliveryFee: 15,
+      deliveryFee: payload.purchaseMethod === 'points' ? 0 : 15, // No delivery fee for points purchases
       discount: payload.discount || 0,
       subtotal,
       total,
-      paymentMethod: payload.paymentMethod,
+      paymentMethod: payload.paymentMethod || (payload.purchaseMethod === 'points' ? 'points' : 'stripe'),
       paymentIntentId: payload.paymentIntentId,
-      pointsUsed: payload.pointsUsed || 0,
-      pointsEarned: Math.floor(subtotal / 100),
+      pointsUsed: payload.purchaseMethod === 'points' ? subtotal : (payload.pointsUsed || 0),
+      pointsEarned: payload.purchaseMethod === 'points' ? 0 : Math.floor(subtotal / 50), // 1 point per $50 as per requirements
       completed: true,
       status: 'completed',
       completedAt: new Date(),
@@ -130,6 +136,17 @@ export class OrdersService {
     if (order.pointsUsed) await this.users.adjustPoints(userId, -order.pointsUsed);
     if (order.pointsEarned) await this.users.adjustPoints(userId, order.pointsEarned);
 
+    // For points-only purchases, calculate points used from items
+    if (payload.purchaseMethod === 'points') {
+      let totalPointsUsed = 0;
+      for (const item of itemsSnapshot) {
+        if (item.purchaseMethod === 'points') {
+          totalPointsUsed += (item.pointsPrice || 0) * item.qty;
+        }
+      }
+      await this.users.adjustPoints(userId, -totalPointsUsed);
+    }
+
     // Empty cart
     cart.items = [];
     await cart.save();
@@ -141,6 +158,14 @@ export class OrdersService {
       title: 'Order completed',
       payload: { orderId: order._id },
     });
+
+    // Send loyalty points notification
+    if (order.pointsEarned > 0) {
+      await this.notifications.createLoyaltyPointsNotification(userId, order.pointsEarned, 'earned');
+    }
+    if (order.pointsUsed > 0) {
+      await this.notifications.createLoyaltyPointsNotification(userId, order.pointsUsed, 'spent');
+    }
 
     return order;
   }

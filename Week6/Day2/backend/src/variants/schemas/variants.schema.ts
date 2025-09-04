@@ -26,6 +26,13 @@ export class Variant {
   @Prop({ default: 0 }) discount?: number;
   @Prop({ required: true }) regularPrice: number;
   @Prop() salePrice?: number;
+
+  // Loyalty Points System Support
+  @Prop({ default: 0 }) pointsPrice?: number;
+  @Prop({
+    default: 'money',
+    enum: ['money', 'points', 'hybrid']
+  }) purchaseMethod: string;
 }
 
 export const VariantSchema = SchemaFactory.createForClass(Variant);

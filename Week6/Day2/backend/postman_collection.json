@@ -174,7 +174,71 @@
         },
         "body": {
           "mode": "raw",
-          "raw": "{\"name\": \"Sample\", \"stock\": 10, \"priceMoney\": 999, \"purchaseType\": \"money\"}"
+          "raw": "{\"name\": \"Sample\", \"category\": \"t-shirts\", \"productType\": \"regular\", \"isLoyaltyOnly\": false}"
+        }
+      }
+    },
+    {
+      "name": "Create Variant (admin)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{adminToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/admin/variants/:productId",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "admin",
+            "variants",
+            ":productId"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"color\": \"blue\", \"sku\": \"TSHIRT-BLUE-001\", \"regularPrice\": 29.99, \"pointsPrice\": 0, \"purchaseMethod\": \"money\"}"
+        }
+      }
+    },
+    {
+      "name": "Create Size Stock (admin)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{adminToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/admin/sizes/:variantId",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "admin",
+            "sizes",
+            ":variantId"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"size\": \"medium\", \"stock\": 10}"
         }
       }
     },
@@ -193,17 +257,16 @@
           }
         ],
         "url": {
-          "raw": "http://localhost:5000/admin/products/upload/:id/:color",
+          "raw": "http://localhost:5000/admin/variants/upload/:id",
           "host": [
             "localhost"
           ],
           "port": "5000",
           "path": [
             "admin",
-            "products",
+            "variants",
             "upload",
-            ":id",
-            ":color"
+            ":id"
           ]
         }
       }
@@ -308,7 +371,38 @@
         },
         "body": {
           "mode": "raw",
-          "raw": "{\"productId\": \"replace-id\", \"qty\": 1, \"purchaseMethod\": \"money\"}"
+          "raw": "{\"productId\": \"replace-id\", \"variantId\": \"replace-variant-id\", \"sizeStockId\": \"replace-size-stock-id\", \"qty\": 1, \"purchaseMethod\": \"money\"}"
+        }
+      }
+    },
+    {
+      "name": "Add to Cart with Points",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/cart/add",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "cart",
+            "add"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"productId\": \"replace-id\", \"variantId\": \"replace-variant-id\", \"sizeStockId\": \"replace-size-stock-id\", \"qty\": 1, \"purchaseMethod\": \"points\"}"
         }
       }
     },
@@ -340,7 +434,7 @@
         },
         "body": {
           "mode": "raw",
-          "raw": "{\"qty\": 2}"
+          "raw": "{\"variantId\": \"replace-variant-id\", \"sizeStockId\": \"replace-size-stock-id\", \"purchaseMethod\": \"money\", \"qty\": 2}"
         }
       }
     },
@@ -352,6 +446,10 @@
           {
             "key": "Authorization",
             "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
           }
         ],
         "url": {
@@ -365,6 +463,10 @@
             "remove",
             ":productId"
           ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"variantId\": \"replace-variant-id\", \"sizeStockId\": \"replace-size-stock-id\", \"purchaseMethod\": \"money\"}"
         }
       }
     },
@@ -400,7 +502,7 @@
       }
     },
     {
-      "name": "Checkout",
+      "name": "Checkout with Money",
       "request": {
         "method": "POST",
         "header": [
@@ -426,7 +528,38 @@
         },
         "body": {
           "mode": "raw",
-          "raw": "{\"paymentMethod\": \"mock\", \"discount\": 0}"
+          "raw": "{\"paymentMethod\": \"stripe\", \"paymentIntentId\": \"pi_xxx\", \"discount\": 0, \"address\": {\"street\": \"123 Main St\", \"city\": \"City\", \"state\": \"State\", \"zip\": \"12345\"}}"
+        }
+      }
+    },
+    {
+      "name": "Checkout with Points",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/orders/checkout",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "orders",
+            "checkout"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"purchaseMethod\": \"points\", \"address\": {\"street\": \"123 Main St\", \"city\": \"City\", \"state\": \"State\", \"zip\": \"12345\"}}"
         }
       }
     },
