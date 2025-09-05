@@ -25,6 +25,8 @@ export interface Product {
   _id: string;
   name: string;
   slug: string;
+  images?: string[];
+  image?: string;
   description?: string;
   category: "t-shirts" | "shorts" | "shirts" | "hoodie" | "jeans";
   brand?: string;
@@ -38,6 +40,7 @@ export interface Product {
   isLoyaltyOnly: boolean;
   createdAt: string;
   updatedAt: string;
+  variants?: ProductVariant[];
 }
 
 export interface ProductVariant {

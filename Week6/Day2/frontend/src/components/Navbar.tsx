@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/lib/store";
 import {
   Menu,
   ShoppingCart,
@@ -13,6 +15,7 @@ import {
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const isAuthenticated = useSelector((s: RootState) => s.auth.isAuthenticated);
 
   const categories = [
     { name: "Casual", href: "/productsdisplaypage?style=casual" },
@@ -87,9 +90,15 @@ export default function Navbar() {
             </Link>
 
             {/* User Account */}
-            <button>
-              <User className="w-6 h-6" />
-            </button>
+            {isAuthenticated ? (
+              <Link href="/profile" className="hover:text-gray-600">
+                <User className="w-6 h-6" />
+              </Link>
+            ) : (
+              <Link href="/login" className="hover:text-gray-600">
+                <User className="w-6 h-6" />
+              </Link>
+            )}
 
             {/* Mobile Hamburger */}
             <button
@@ -108,9 +117,8 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       <div
-        className={`md:hidden absolute top-16 left-0 w-full bg-white border-t shadow-md transition-all duration-300 overflow-hidden ${
-          mobileOpen ? "max-h-60 opacity-100" : "max-h-0 opacity-0"
-        }`}
+        className={`md:hidden absolute top-16 left-0 w-full bg-white border-t shadow-md transition-all duration-300 overflow-hidden ${mobileOpen ? "max-h-60 opacity-100" : "max-h-0 opacity-0"
+          }`}
       >
         <div className="flex flex-col p-4 gap-4">
           {/* Shop with dropdown inside mobile */}

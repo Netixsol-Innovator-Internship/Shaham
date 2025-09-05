@@ -13,11 +13,15 @@ import type {
     ProductFilters
 } from '@/types';
 
+// Debug: log the API base URL
+const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+console.log('API Base URL:', baseUrl);
+
 // Define the base API
 export const api = createApi({
     reducerPath: 'api',
     baseQuery: fetchBaseQuery({
-        baseUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000',
+        baseUrl,
         prepareHeaders: (headers, { getState }) => {
             // Get token from localStorage or state
             const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
@@ -64,10 +68,26 @@ export const api = createApi({
 
         // Product endpoints
         getProducts: builder.query<Product[], ProductFilters>({
-            query: (filters) => ({
-                url: '/products',
-                params: filters,
-            }),
+            query: (filters) => {
+                console.log('getProducts called with filters:', filters);
+
+                // Filter out empty/undefined values
+                const cleanFilters: any = {};
+                if (filters) {
+                    Object.entries(filters).forEach(([key, value]) => {
+                        if (value !== undefined && value !== null && value !== '') {
+                            cleanFilters[key] = value;
+                        }
+                    });
+                }
+
+                console.log('Clean filters being sent:', cleanFilters);
+
+                return {
+                    url: '/products',
+                    params: Object.keys(cleanFilters).length > 0 ? cleanFilters : undefined,
+                };
+            },
             providesTags: ['Product'],
         }),
 
@@ -172,6 +192,12 @@ export const api = createApi({
             }),
             invalidatesTags: ['Notification'],
         }),
+
+        // Size endpoints
+        getVariantSizes: builder.query<any[], string>({
+            query: (variantId) => `/sizes/variant/${variantId}`,
+            providesTags: (result, error, variantId) => [{ type: 'Product', id: variantId }],
+        }),
     }),
 });
 
@@ -210,4 +236,7 @@ export const {
     // Notifications
     useGetNotificationsQuery,
     useMarkNotificationReadMutation,
+
+    // Sizes
+    useGetVariantSizesQuery,
 } = api;

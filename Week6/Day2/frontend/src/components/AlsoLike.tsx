@@ -1,42 +1,17 @@
 "use client";
 import ProductCard from "@/components/ProductCard";
+import { useGetProductsQuery } from "@/lib/api";
 
 const AlsoLike = () => {
-  // Dummy data
-  const products = [
-    {
-      id: "1",
-      name: "Polo with Contrast Trims",
-      image: "/polo-blue.png",
-      price: 212,
-      oldPrice: 242,
-      discount: 20,
-      rating: 4.0,
-    },
-    {
-      id: "2",
-      name: "Gradient Graphic T-shirt",
-      image: "/gradient-tee.png",
-      price: 145,
-      rating: 3.5,
-    },
-    {
-      id: "3",
-      name: "Polo with Tipping Details",
-      image: "/polo-red.png",
-      price: 180,
-      rating: 4.5,
-    },
-    {
-      id: "4",
-      name: "Black Striped T-shirt",
-      image: "/striped-tee.png",
-      price: 120,
-      oldPrice: 150,
-      discount: 30,
-      rating: 5.0,
-    },
-  ];
+  const { data } = useGetProductsQuery({});
+  const products = (data || []).slice(0, 4).map((p: any) => {
+    const image = p?.image || p?.images?.[0] || p?.variants?.[0]?.images?.[0] || "/shirt.png";
+    const price = p?.price ?? p?.salePrice ?? p?.variants?.[0]?.salePrice ?? p?.variants?.[0]?.regularPrice ?? 0;
+    const oldPrice = p?.variants?.[0]?.salePrice ? p?.variants?.[0]?.regularPrice : undefined;
+    const discount = oldPrice && price ? Math.max(0, Math.round(((oldPrice - price) / oldPrice) * 100)) : undefined;
+    const rating = typeof p?.rating === 'number' ? p.rating : 0;
+    return { _id: p._id || p.id, name: p.name, image, price, oldPrice, discount, rating };
+  });
 
   return (
     <section className="max-w-7xl mx-auto px-6 my-16">
@@ -45,7 +20,7 @@ const AlsoLike = () => {
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
         {products.map((p) => (
-          <ProductCard key={p.id} {...p} />
+          <ProductCard key={p._id} {...p} />
         ))}
       </div>
     </section>

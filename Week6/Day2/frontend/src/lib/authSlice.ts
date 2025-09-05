@@ -10,9 +10,9 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-    user: null,
+    user: typeof window !== 'undefined' && localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') as string) : null,
     token: typeof window !== 'undefined' ? localStorage.getItem('token') : null,
-    isAuthenticated: false,
+    isAuthenticated: typeof window !== 'undefined' ? !!localStorage.getItem('token') : false,
     isLoading: false,
     error: null,
 };

@@ -47,8 +47,8 @@ export const api = createApi({
           updateCachedData((draft: any) => {
             if (!draft) return
             const followerId = String(payload?.follower?._id ?? payload?.follower ?? payload?.followerId)
-            const targetId   = String(payload?.targetUser?._id ?? payload?.targetUser ?? payload?.targetId)
-            const meId       = String(draft._id)
+            const targetId = String(payload?.targetUser?._id ?? payload?.targetUser ?? payload?.targetId)
+            const meId = String(draft._id)
 
             if (followerId && followerId === meId) {
               draft.followingCount = (draft.followingCount ?? draft.following?.length ?? 0) + 1
@@ -64,8 +64,8 @@ export const api = createApi({
           updateCachedData((draft: any) => {
             if (!draft) return
             const followerId = String(payload?.follower?._id ?? payload?.follower ?? payload?.followerId)
-            const targetId   = String(payload?.targetUser?._id ?? payload?.targetUser ?? payload?.targetId)
-            const meId       = String(draft._id)
+            const targetId = String(payload?.targetUser?._id ?? payload?.targetUser ?? payload?.targetId)
+            const meId = String(draft._id)
 
             if (followerId && followerId === meId) {
               draft.followingCount = Math.max(0, (draft.followingCount ?? draft.following?.length ?? 0) - 1)
@@ -113,8 +113,8 @@ export const api = createApi({
           updateCachedData((draft: any) => {
             if (!draft) return
             const followerId = String(payload?.follower?._id ?? payload?.follower ?? payload?.followerId)
-            const targetId   = String(payload?.targetUser?._id ?? payload?.targetUser ?? payload?.targetId)
-            const pageId     = String(arg)
+            const targetId = String(payload?.targetUser?._id ?? payload?.targetUser ?? payload?.targetId)
+            const pageId = String(arg)
 
             if (targetId === pageId) {
               draft.followersCount = (draft.followersCount ?? draft.followers?.length ?? 0) + 1
@@ -131,8 +131,8 @@ export const api = createApi({
           updateCachedData((draft: any) => {
             if (!draft) return
             const followerId = String(payload?.follower?._id ?? payload?.follower ?? payload?.followerId)
-            const targetId   = String(payload?.targetUser?._id ?? payload?.targetUser ?? payload?.targetId)
-            const pageId     = String(arg)
+            const targetId = String(payload?.targetUser?._id ?? payload?.targetUser ?? payload?.targetId)
+            const pageId = String(arg)
 
             if (targetId === pageId) {
               draft.followersCount = Math.max(0, (draft.followersCount ?? draft.followers?.length ?? 0) - 1)
@@ -197,7 +197,7 @@ export const api = createApi({
                 }
               })
             }
-          } catch {}
+          } catch { }
         }
 
         const handleDeleted = (payload: any) => {
@@ -210,7 +210,7 @@ export const api = createApi({
                 if (String(getId(d)) === String(delId)) draft.splice(i, 1)
               }
             })
-          } catch {}
+          } catch { }
         }
 
         const handleLikeOrUpdate = (payload: any) => {
@@ -235,7 +235,7 @@ export const api = createApi({
                 if (payload?.author) entry.author = payload.author
               }
             })
-          } catch {}
+          } catch { }
         }
         s.on('comments:new', handleNew)
         s.on('comment:new', handleNew)
@@ -286,14 +286,14 @@ export const api = createApi({
 
     // ---------------- NOTIFICATIONS ----------------
     getNotifications: builder.query<any[], void>({
-      query: () => ({ url: '/notifications', params: { all: true } }),
+      query: () => ({ url: '/notifications' }),
       providesTags: ['Notifications'],
+      keepUnusedDataFor: 0,
       async onCacheEntryAdded(arg, { updateCachedData, cacheDataLoaded, cacheEntryRemoved }) {
         try { await cacheDataLoaded } catch { return }
         const s = getSocket()
 
         const handleNewNotification = (payload: any) => {
-          console.log('[notifications] new event', payload)
           updateCachedData((draft: any[] | undefined) => {
             if (!draft) return
             if (!draft.some((n: any) => String(n._id) === String(payload._id))) {
@@ -302,30 +302,33 @@ export const api = createApi({
           })
         }
 
-        // ✅ fixed: only listen to colon events (what backend actually emits)
         s.on('notification:new', handleNewNotification)
-
         await cacheEntryRemoved
-
         s.off('notification:new', handleNewNotification)
       }
     }),
 
-    markAllRead: builder.mutation<{ ok: boolean }, void>({
-      query: () => ({ url: '/notifications/read-all', method: 'PATCH' }),
-      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+    markRead: builder.mutation<any, string>({
+      query: (id) => ({ url: `/notifications/${id}/read`, method: 'PATCH' }),
+      async onQueryStarted(id, { dispatch, queryFulfilled }) {
         const patch = dispatch(
           api.util.updateQueryData('getNotifications', undefined, (draft: any[] | undefined) => {
             if (!draft) return
-            draft.forEach(n => { if (n) n.read = true })
+            const n = draft.find((x) => String(x._id) === String(id))
+            if (n) n.read = true
           })
         )
         try {
           await queryFulfilled
-        } catch (err) {
+        } catch {
           patch.undo()
         }
       },
+    }),
+
+    markAllRead: builder.mutation<{ ok: boolean }, void>({
+      query: () => ({ url: '/notifications/read-all', method: 'PATCH' }),
+      invalidatesTags: ['Notifications'],
     }),
 
   }),
@@ -345,5 +348,6 @@ export const {
   useUnlikeCommentMutation,
   useDeleteCommentMutation,
   useGetNotificationsQuery,
+  useMarkReadMutation,
   useMarkAllReadMutation,
 } = api

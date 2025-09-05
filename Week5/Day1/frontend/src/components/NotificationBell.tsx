@@ -1,29 +1,28 @@
-
 'use client';
-import React from 'react';
+
 import Link from 'next/link';
 import { useAppSelector } from '@/store/hooks';
 import { useGetNotificationsQuery } from '@/store/api';
 
 export default function NotificationBell() {
   const token = useAppSelector((s) => s.auth.token);
-
-  // If not logged in, hide the bell entirely
   if (!token) return null;
 
   const { data: list = [] } = useGetNotificationsQuery(undefined, {
     skip: !token,
-    refetchOnReconnect: true,
     refetchOnMountOrArgChange: true,
-  });
+    refetchOnReconnect: true,
+    refetchOnFocus: true,
+  })
 
-  const unread = (list || []).filter((n: any) => !n.read).length;
+  const unread = list.reduce((acc, n) => acc + (n.read ? 0 : 1), 0);
 
   return (
     <Link
       href="/notifications"
       className="relative inline-flex items-center"
       aria-label="Notifications"
+      prefetch={false}
     >
       <span className="text-sm">🔔</span>
       {unread > 0 && (

@@ -1,16 +1,44 @@
 "use client";
-import { FC, useState } from "react";
+import { FC, useMemo, useState } from "react";
+import {
+  useCheckoutMutation,
+  useGetCartQuery,
+} from "@/lib/api";
 
-type OrderProps = {
-  subtotal: number;
-  discount: number;
-  deliveryFee: number;
-};
-
-const Order: FC<OrderProps> = ({ subtotal, discount, deliveryFee }) => {
+const Order: FC = () => {
   const [promo, setPromo] = useState("");
+  const { data: cart } = useGetCartQuery();
+  const [checkout, { isLoading }] = useCheckoutMutation();
 
+  const subtotal = useMemo(() => {
+    return (cart?.items || []).reduce((sum: number, it: any) => {
+      // If purchase with points → price is 0 (handled separately)
+      const price =
+        it.purchaseMethod === "points" ? 0 : it.product?.price || 0;
+      return sum + price * (it.quantity || 1);
+    }, 0);
+  }, [cart]);
+
+  const loyaltySubtotal = useMemo(() => {
+    return (cart?.items || []).reduce((sum: number, it: any) => {
+      return it.purchaseMethod === "points"
+        ? sum + (it.product?.loyaltyPoints || 0) * (it.quantity || 1)
+        : sum;
+    }, 0);
+  }, [cart]);
+
+  const deliveryFee = useMemo(() => (subtotal > 0 ? 15 : 0), [subtotal]);
+  const discount = 0;
   const total = subtotal - discount + deliveryFee;
+
+  const onCheckout = async () => {
+    await checkout({
+      paymentMethod: total > 0 ? "stripe" : "points",
+      purchaseMethod: total > 0 ? "money" : "points",
+      discount: 0,
+      address: { street: "N/A", city: "N/A", state: "N/A", zip: "00000" },
+    });
+  };
 
   return (
     <div className="bg-white rounded-xl p-6 shadow-sm w-[350px]">
@@ -18,11 +46,10 @@ const Order: FC<OrderProps> = ({ subtotal, discount, deliveryFee }) => {
       <div className="space-y-2">
         <div className="flex justify-between">
           <span>Subtotal</span>
-          <span className="font-semibold">${subtotal}</span>
-        </div>
-        <div className="flex justify-between text-red-500">
-          <span>Discount (-20%)</span>
-          <span>- ${discount}</span>
+          <span className="font-semibold">
+            ${subtotal}
+            {loyaltySubtotal > 0 && ` + ${loyaltySubtotal} pts`}
+          </span>
         </div>
         <div className="flex justify-between">
           <span>Delivery Fee</span>
@@ -34,10 +61,12 @@ const Order: FC<OrderProps> = ({ subtotal, discount, deliveryFee }) => {
 
       <div className="flex justify-between font-semibold text-lg">
         <span>Total</span>
-        <span>${total}</span>
+        <span>
+          ${total}
+          {loyaltySubtotal > 0 && ` + ${loyaltySubtotal} pts`}
+        </span>
       </div>
 
-      {/* Promo Code */}
       <div className="flex mt-4">
         <input
           type="text"
@@ -46,11 +75,17 @@ const Order: FC<OrderProps> = ({ subtotal, discount, deliveryFee }) => {
           onChange={(e) => setPromo(e.target.value)}
           className="flex-1 rounded-l-full px-4 py-2 bg-gray-100 outline-none"
         />
-        <button className="rounded-r-full bg-black text-white px-4 py-2">Apply</button>
+        <button className="rounded-r-full bg-black text-white px-4 py-2">
+          Apply
+        </button>
       </div>
 
-      <button className="w-full mt-6 bg-black text-white py-3 rounded-full font-semibold hover:opacity-90">
-        Go to Checkout →
+      <button
+        onClick={onCheckout}
+        disabled={isLoading}
+        className="w-full mt-6 bg-black text-white py-3 rounded-full font-semibold hover:opacity-90"
+      >
+        {isLoading ? "Processing…" : "Go to Checkout →"}
       </button>
     </div>
   );

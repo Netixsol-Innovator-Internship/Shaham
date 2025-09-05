@@ -1,89 +1,48 @@
 "use client";
 import { useState } from "react";
-import ReviewCard from "./ReviewCard";
-
-const dummyReviews = Array.from({ length: 20 }, (_, i) => ({
-  id: i,
-  name: `User ${i + 1}`,
-  rating: Math.floor(Math.random() * 2) + 4,
-  date: `August ${10 + i}, 2023`,
-  comment: "Really loved this t-shirt. Fabric feels premium and comfy!",
-}));
 
 const ProductReviews = () => {
-  const [reviews, setReviews] = useState(dummyReviews);
-  const [filter, setFilter] = useState("Latest");
-  const [page, setPage] = useState(1);
-  const perPage = 6;
-
-  const totalPages = Math.ceil(reviews.length / perPage);
-  const paginated = reviews.slice((page - 1) * perPage, page * perPage);
-
-  const handleFilterChange = (value: string) => {
-    setFilter(value);
-    let sorted = [...dummyReviews];
-    if (value === "Latest") sorted = [...dummyReviews].reverse();
-    if (value === "Oldest") sorted = [...dummyReviews];
-    if (value === "Highest Rated") sorted.sort((a, b) => b.rating - a.rating);
-    if (value === "Lowest Rated") sorted.sort((a, b) => a.rating - b.rating);
-    setReviews(sorted);
-    setPage(1);
-  };
+  const [showWriteReview, setShowWriteReview] = useState(false);
 
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold">All Reviews ({reviews.length})</h2>
+        <h2 className="text-xl font-semibold">Product Reviews</h2>
         <div className="flex items-center gap-3">
-          <select
-            value={filter}
-            onChange={(e) => handleFilterChange(e.target.value)}
-            className="border rounded-md px-3 py-1"
+          <button
+            onClick={() => setShowWriteReview(!showWriteReview)}
+            className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 transition"
           >
-            <option>Latest</option>
-            <option>Oldest</option>
-            <option>Highest Rated</option>
-            <option>Lowest Rated</option>
-          </select>
-          <button className="bg-black text-white px-4 py-2 rounded-md">
             Write a Review
           </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {paginated.map((r) => (
-          <ReviewCard key={r.id} name={r.name} text={r.comment} rating={r.rating} />
-        ))}
-      </div>
-
-      {/* Pagination */}
-      <div className="flex justify-center gap-2 mt-6">
-        <button
-          onClick={() => setPage((p) => Math.max(1, p - 1))}
-          disabled={page === 1}
-          className="px-3 py-1 border rounded disabled:opacity-50"
-        >
-          Prev
-        </button>
-        {Array.from({ length: totalPages }).map((_, i) => (
+      {showWriteReview && (
+        <div className="bg-gray-50 p-6 rounded-lg mb-6">
+          <h3 className="text-lg font-semibold mb-4">Write Your Review</h3>
+          <p className="text-gray-600 mb-4">
+            The review system is currently under development. Please check back soon to share your feedback!
+          </p>
           <button
-            key={i}
-            onClick={() => setPage(i + 1)}
-            className={`px-3 py-1 border rounded ${
-              page === i + 1 ? "bg-black text-white" : ""
-            }`}
+            onClick={() => setShowWriteReview(false)}
+            className="text-gray-500 hover:text-gray-700"
           >
-            {i + 1}
+            Close
           </button>
-        ))}
-        <button
-          onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-          disabled={page === totalPages}
-          className="px-3 py-1 border rounded disabled:opacity-50"
-        >
-          Next
-        </button>
+        </div>
+      )}
+
+      <div className="text-center py-12">
+        <div className="text-gray-500 mb-4">
+          <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+          </svg>
+        </div>
+        <h3 className="text-lg font-medium text-gray-900 mb-2">No reviews yet</h3>
+        <p className="text-gray-600">
+          Be the first to review this product! The review system is being implemented and will be available soon.
+        </p>
       </div>
     </div>
   );

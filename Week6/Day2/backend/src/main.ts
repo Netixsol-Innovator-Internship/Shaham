@@ -3,12 +3,20 @@ import { AppModule } from './app.module';
 import * as dotenv from 'dotenv';
 import { ValidationPipe } from '@nestjs/common';
 import { IoAdapter } from '@nestjs/platform-socket.io';
+import cookieParser from 'cookie-parser';
 dotenv.config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.enableCors({ origin: '*', credentials: true });
+  app.use(cookieParser());
+  app.enableCors({
+    origin: process.env.FRONTEND_ORIGIN || 'http://localhost:3001',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+    exposedHeaders: ['Authorization'],
+  });
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
 
   // Configure WebSocket adapter for Socket.IO

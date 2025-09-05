@@ -26,8 +26,8 @@ const defaultFilters = {
   category: [],
   style: [],
   colors: [],
-  size: "", // radio (only one at a time)
-  price: [50, 200],
+  size: "",
+  price: [0, 10000],
 };
 
 const Filters: FC<FiltersProps> = ({ filters, setFilters }) => {

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Variant, VariantSchema } from './schemas/variants.schema';
 import { VariantsService } from './variants.service';
@@ -12,7 +12,7 @@ import { SizeStockModule } from '../sizestocks/sizestocks.module';
   imports: [
     MongooseModule.forFeature([{ name: Variant.name, schema: VariantSchema }]),
     ProductsModule,
-    SizeStockModule,
+    forwardRef(() => SizeStockModule),
     UtilsModule,
   ],
   providers: [VariantsService],

@@ -1,11 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import Link from "next/link";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/lib/store";
 
 export default function PromoBar() {
+  const isAuthenticated = useSelector((s: RootState) => s.auth.isAuthenticated);
   const [visible, setVisible] = useState(true);
+
+  // Debug: log auth state
+  useEffect(() => {
+    console.log("PromoBar auth state:", isAuthenticated);
+  }, [isAuthenticated]);
+
+  // Hide if user manually closed or if authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      setVisible(false);
+    }
+  }, [isAuthenticated]);
 
   if (!visible) return null;
 

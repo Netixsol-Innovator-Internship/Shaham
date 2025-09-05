@@ -21,10 +21,13 @@ export default function LoginPage() {
       // init socket with new token
       initSocket(res.access_token)
 
-      // ✅ refetch notifications immediately after login
-      dispatch(
-        api.endpoints.getNotifications.initiate(undefined, { forceRefetch: true })
-      )
+      // Force-fetch notifications before navigating so old unread show up
+      try {
+        // @ts-ignore dispatch returns a promise-like with unwrap
+        await dispatch(
+          api.endpoints.getNotifications.initiate(undefined, { forceRefetch: true })
+        ).unwrap()
+      } catch { }
 
       router.push('/')
     } catch (e) {

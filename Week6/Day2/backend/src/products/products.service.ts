@@ -31,7 +31,7 @@ export class ProductsService {
     for (const product of products) {
       const variants = await this.variantModel.find({ productId: product._id }).lean();
       const populatedVariants = [];
-      
+
       for (const variant of variants) {
         const sizes = await this.sizeStockModel.find({ variantId: variant._id }).lean();
         populatedVariants.push({
@@ -39,13 +39,13 @@ export class ProductsService {
           sizes: sizes
         });
       }
-      
+
       // Create a new object with the variants property
       const populatedProduct = {
         ...product,
         variants: populatedVariants
       } as PopulatedProduct;
-      
+
       results.push(populatedProduct);
     }
 
@@ -58,7 +58,7 @@ export class ProductsService {
 
     const variants = await this.variantModel.find({ productId: product._id }).lean();
     const populatedVariants = [];
-    
+
     for (const variant of variants) {
       const sizes = await this.sizeStockModel.find({ variantId: variant._id }).lean();
       populatedVariants.push({

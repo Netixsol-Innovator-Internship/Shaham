@@ -14,7 +14,7 @@ import { Server, Socket } from 'socket.io';
 // NOTE: CORS is permissive by default; tighten in production via environment
 @WebSocketGateway({
   cors: {
-    origin: '*',
+    origin: process.env.FRONTEND_ORIGIN || 'http://localhost:3001',
     methods: ['GET', 'POST'],
     credentials: true,
   },
@@ -30,7 +30,7 @@ export class RealtimeGateway implements OnGatewayInit, OnGatewayConnection, OnGa
       try {
         if (room) this.server.to(room).emit(event, data);
         else this.server.emit(event, data);
-      } catch {}
+      } catch { }
     };
     (globalThis as any).__realtimeServer = this.server;
   }

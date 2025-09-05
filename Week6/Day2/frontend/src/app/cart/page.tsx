@@ -15,7 +15,7 @@ export default function CartPage() {
       {/* Layout */}
       <div className="flex flex-col md:flex-row gap-8">
         <Cart />
-        <Order subtotal={565} discount={113} deliveryFee={15} />
+        <Order />
       </div>
     </div>
   );
