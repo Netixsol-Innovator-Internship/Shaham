@@ -177,6 +177,11 @@ export const api = createApi({
             providesTags: ['User'],
         }),
 
+        getPointsBalance: builder.query<{ loyaltyPoints: number }, void>({
+            query: () => '/users/points-balance',
+            providesTags: ['User'],
+        }),
+
         // Sale endpoints
         getSales: builder.query<Sale[], void>({
             query: () => '/admin/sales/list',
@@ -233,6 +238,7 @@ export const {
 
     // User
     useGetProfileQuery,
+    useGetPointsBalanceQuery,
 
     // Sales
     useGetSalesQuery,

@@ -4,6 +4,7 @@ import { Cart } from './schemas/cart.schema';
 import { Model } from 'mongoose';
 import { UsersService } from '../users/users.service';
 import { ProductsService } from '../products/products.service';
+import { LOYALTY_CONSTANTS } from '../common/constants/loyalty.constants';
 
 @Injectable()
 export class CartService {
@@ -35,14 +36,17 @@ export class CartService {
           // Find size details from variant's sizes
           const sizeStock = variant.sizes?.find((s: any) => s._id.toString() === item.sizeStockId);
           
+          const moneyPrice = variant.salePrice || variant.regularPrice;
+          const pointsPrice = variant.pointsPrice || Math.ceil(moneyPrice / LOYALTY_CONSTANTS.POINT_TO_DOLLAR_RATIO);
+          
           return {
             ...item,
             name: product.name,
             image: variant.images?.[0] || '/shirt.png',
             color: variant.color,
             size: sizeStock?.size || 'Unknown',
-            moneyPrice: variant.salePrice || variant.regularPrice,
-            pointsPrice: variant.pointsPrice || 0,
+            moneyPrice,
+            pointsPrice,
           };
         } catch (error) {
           console.error('Error populating cart item:', error);

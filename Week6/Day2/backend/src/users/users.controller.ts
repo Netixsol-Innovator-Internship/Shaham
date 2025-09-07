@@ -14,6 +14,13 @@ export class UsersController {
     return this.users.findById(req.user.id);
   }
 
+  @UseGuards(AuthGuard('jwt'))
+  @Get('points-balance')
+  async getPointsBalance(@Request() req) {
+    const balance = await this.users.getUserPointsBalance(req.user.id);
+    return { loyaltyPoints: balance };
+  }
+
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('super_admin')
   @Post('admin/set-role/:id')

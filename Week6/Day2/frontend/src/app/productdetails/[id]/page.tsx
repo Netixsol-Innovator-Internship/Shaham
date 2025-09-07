@@ -124,6 +124,8 @@ const ProductDetailsPage = () => {
           price={price}
           oldPrice={oldPrice}
           discount={discount}
+          pointsPrice={selectedVariant?.pointsPrice}
+          purchaseMethod={selectedVariant?.purchaseMethod}
           colors={colors}
           sizes={sizes}
           selectedColor={selectedColor}

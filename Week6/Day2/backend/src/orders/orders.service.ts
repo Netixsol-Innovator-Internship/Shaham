@@ -12,6 +12,7 @@ import { ProductsService } from '../products/products.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { Variant } from '../variants/schemas/variants.schema';
 import { SizeStock } from '../sizestocks/schemas/sizestocks.schema';
+import { LOYALTY_CONSTANTS, PURCHASE_METHODS } from '../common/constants/loyalty.constants';
 
 @Injectable()
 export class OrdersService {
@@ -39,9 +40,11 @@ export class OrdersService {
       throw new BadRequestException('Cart is empty. Please add items before checkout.');
     }
 
-    let subtotal = 0;
+    let moneySubtotal = 0;
+    let pointsSubtotal = 0;
     const itemsSnapshot = [];
 
+    // Calculate totals for each item based on purchase method
     for (const it of cart.items) {
       const qty = it.qty || 1;
 
@@ -60,12 +63,31 @@ export class OrdersService {
           `Insufficient stock for ${prod.name} (${variant.color}, ${sizeStock.size})`,
         );
 
-      // Price calculation
+      // Get pricing based on purchase method
       const moneyPrice = variant.salePrice || variant.regularPrice || 0;
-      const pointsPrice = variant.pointsPrice || 0;
-      const itemPrice = it.purchaseMethod === 'points' ? 0 : moneyPrice;
+      const pointsPrice = variant.pointsPrice || Math.ceil(moneyPrice / LOYALTY_CONSTANTS.POINT_TO_DOLLAR_RATIO);
+      
+      let itemMoneyTotal = 0;
+      let itemPointsTotal = 0;
+      
+      // Determine purchase method - use item-level method if available, otherwise use order-level
+      const purchaseMethod = it.purchaseMethod || payload.purchaseMethod || PURCHASE_METHODS.MONEY;
+      
+      if (purchaseMethod === PURCHASE_METHODS.MONEY) {
+        itemMoneyTotal = moneyPrice * qty;
+      } else if (purchaseMethod === PURCHASE_METHODS.POINTS) {
+        itemPointsTotal = pointsPrice * qty;
+      } else if (purchaseMethod === PURCHASE_METHODS.HYBRID) {
+        // For hybrid, user can choose - default to money if not specified
+        if (payload.usePointsForItem && payload.usePointsForItem[it.variantId]) {
+          itemPointsTotal = pointsPrice * qty;
+        } else {
+          itemMoneyTotal = moneyPrice * qty;
+        }
+      }
 
-      subtotal += itemPrice * qty;
+      moneySubtotal += itemMoneyTotal;
+      pointsSubtotal += itemPointsTotal;
 
       // Add snapshot item
       itemsSnapshot.push({
@@ -78,44 +100,53 @@ export class OrdersService {
         qty,
         moneyPrice,
         pointsPrice,
-        purchaseMethod: it.purchaseMethod,
+        purchaseMethod,
+        itemMoneyTotal,
+        itemPointsTotal,
       });
     }
 
-    let total = subtotal + 15 - (payload.discount || 0);
+    console.log('Calculated totals:', { moneySubtotal, pointsSubtotal });
 
-    // For points-only purchases, total should be 0
-    if (payload.purchaseMethod === 'points') {
-      total = 0;
+    // Validate points balance if points are being used
+    if (pointsSubtotal > 0) {
+      const userPointsBalance = await this.users.getUserPointsBalance(userId);
+      if (userPointsBalance < pointsSubtotal) {
+        throw new BadRequestException(
+          `Insufficient loyalty points. Required: ${pointsSubtotal}, Available: ${userPointsBalance}`
+        );
+      }
     }
 
-    // Mock payment processing - no external payment validation needed
+    // Calculate delivery fee (only for money purchases)
+    const deliveryFee = moneySubtotal > 0 ? 15 : 0;
+    const discount = payload.discount || 0;
+    const moneyTotal = Math.max(0, moneySubtotal + deliveryFee - discount);
+
+    // Calculate points earned from money spent (10 points per $50)
+    const pointsEarned = moneySubtotal > 0 ? await this.users.calculatePointsFromDollars(moneySubtotal) : 0;
+
+    console.log('Order calculations:', {
+      moneySubtotal,
+      pointsSubtotal,
+      deliveryFee,
+      discount,
+      moneyTotal,
+      pointsEarned
+    });
 
     // Create order
-    console.log('Creating order with data:', {
-      userId,
-      address: payload.address || {},
-      items: itemsSnapshot,
-      deliveryFee: payload.purchaseMethod === 'points' ? 0 : 15,
-      discount: payload.discount || 0,
-      subtotal,
-      total,
-      paymentMethod: payload.paymentMethod || (payload.purchaseMethod === 'points' ? 'points' : 'stripe'),
-      pointsUsed: payload.purchaseMethod === 'points' ? subtotal : (payload.pointsUsed || 0),
-      pointsEarned: payload.purchaseMethod === 'points' ? 0 : Math.floor(subtotal / 50),
-    });
-    
     const order = await this.orderModel.create({
       userId,
       address: payload.address || {},
       items: itemsSnapshot,
-      deliveryFee: payload.purchaseMethod === 'points' ? 0 : 15, // No delivery fee for points purchases
-      discount: payload.discount || 0,
-      subtotal,
-      total,
-      paymentMethod: payload.paymentMethod || (payload.purchaseMethod === 'points' ? 'points' : 'mock'),
-      pointsUsed: payload.purchaseMethod === 'points' ? subtotal : (payload.pointsUsed || 0),
-      pointsEarned: payload.purchaseMethod === 'points' ? 0 : Math.floor(subtotal / 50), // 1 point per $50 as per requirements
+      deliveryFee,
+      discount,
+      subtotal: moneySubtotal,
+      total: moneyTotal,
+      paymentMethod: moneyTotal > 0 ? 'mock' : 'points',
+      pointsUsed: pointsSubtotal,
+      pointsEarned,
       completed: true,
       status: 'completed',
       completedAt: new Date(),
@@ -132,19 +163,15 @@ export class OrdersService {
       await this.products.incrementSoldCount(it.productId, it.qty);
     }
 
-    // Loyalty points
-    if (order.pointsUsed) await this.users.adjustPoints(userId, -order.pointsUsed);
-    if (order.pointsEarned) await this.users.adjustPoints(userId, order.pointsEarned);
-
-    // For points-only purchases, calculate points used from items
-    if (payload.purchaseMethod === 'points') {
-      let totalPointsUsed = 0;
-      for (const item of itemsSnapshot) {
-        if (item.purchaseMethod === 'points') {
-          totalPointsUsed += (item.pointsPrice || 0) * item.qty;
-        }
-      }
-      await this.users.adjustPoints(userId, -totalPointsUsed);
+    // Handle loyalty points transactions
+    if (pointsSubtotal > 0) {
+      console.log(`Deducting ${pointsSubtotal} points from user ${userId}`);
+      await this.users.deductPoints(userId, pointsSubtotal);
+    }
+    
+    if (pointsEarned > 0) {
+      console.log(`Adding ${pointsEarned} points to user ${userId}`);
+      await this.users.addPoints(userId, pointsEarned);
     }
 
     // Empty cart
@@ -160,12 +187,12 @@ export class OrdersService {
       payload: { orderId: order._id },
     });
 
-    // Send loyalty points notification
-    if (order.pointsEarned > 0) {
-      await this.notifications.createLoyaltyPointsNotification(userId, order.pointsEarned, 'earned');
+    // Send loyalty points notifications
+    if (pointsEarned > 0) {
+      await this.notifications.createLoyaltyPointsNotification(userId, pointsEarned, 'earned');
     }
-    if (order.pointsUsed > 0) {
-      await this.notifications.createLoyaltyPointsNotification(userId, order.pointsUsed, 'spent');
+    if (pointsSubtotal > 0) {
+      await this.notifications.createLoyaltyPointsNotification(userId, pointsSubtotal, 'spent');
     }
 
     console.log('=== CHECKOUT PROCESS COMPLETED ===');

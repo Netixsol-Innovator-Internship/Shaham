@@ -78,20 +78,27 @@ const ProductCard: FC<ProductCardProps> = ({
 
           {/* Price / Loyalty Points */}
           <div className="mt-2">
-            <span className="text-lg font-semibold text-gray-900">
-              ${price}
-            </span>
-            {oldPrice && (
-              <span className="ml-2 text-sm text-gray-400 line-through">
-                ${oldPrice}
-              </span>
+            {/* Money Price - only show if price > 0 */}
+            {price > 0 && (
+              <div>
+                <span className="text-lg font-semibold text-gray-900">
+                  ${price}
+                </span>
+                {oldPrice && (
+                  <span className="ml-2 text-sm text-gray-400 line-through">
+                    ${oldPrice}
+                  </span>
+                )}
+                {discount && (
+                  <span className="ml-2 text-sm text-red-500">-{discount}%</span>
+                )}
+              </div>
             )}
-            {discount && (
-              <span className="ml-2 text-sm text-red-500">-{discount}%</span>
-            )}
-            {loyaltyPoints !== undefined && (
-              <p className="text-sm text-blue-600 mt-1">
-                Or {loyaltyPoints} points
+            
+            {/* Points Price - only show if loyaltyPoints > 0 */}
+            {loyaltyPoints !== undefined && loyaltyPoints > 0 && (
+              <p className="text-sm text-purple-600 mt-1 font-medium">
+                {price > 0 ? "Or " : ""}{loyaltyPoints} pts
               </p>
             )}
           </div>

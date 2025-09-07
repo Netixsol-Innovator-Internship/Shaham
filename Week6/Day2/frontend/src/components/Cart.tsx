@@ -112,6 +112,41 @@ const Cart: FC = () => {
     }
   };
 
+  const handlePaymentMethodChange = async (id: string, newMethod: 'money' | 'points') => {
+    const it = items.find(i => i.id === id)?.raw;
+    if (!it) return;
+    
+    console.log("Changing payment method for item:", it, "to:", newMethod);
+    
+    try {
+      // Remove the old item
+      await removeFromCart({ 
+        productId: it.productId, 
+        body: { 
+          variantId: it.variantId, 
+          sizeStockId: it.sizeStockId, 
+          purchaseMethod: it.purchaseMethod 
+        } 
+      }).unwrap();
+      
+      // Add the item with new payment method
+      await updateCart({ 
+        productId: it.productId, 
+        body: { 
+          variantId: it.variantId, 
+          sizeStockId: it.sizeStockId, 
+          purchaseMethod: newMethod, 
+          qty: it.qty 
+        } 
+      }).unwrap();
+      
+      toast.success(`Payment method changed to ${newMethod === 'money' ? 'money' : 'points'}`);
+    } catch (error: any) {
+      console.error("Payment method change error:", error);
+      toast.error(error?.data?.message || "Failed to change payment method");
+    }
+  };
+
   return (
     <div className="bg-white rounded-xl p-6 shadow-sm flex-1">
       {isLoading && (
@@ -134,6 +169,7 @@ const Cart: FC = () => {
             onIncrease={increaseQty}
             onDecrease={decreaseQty}
             onRemove={removeItem}
+            onPaymentMethodChange={handlePaymentMethodChange}
           />
         ))
       )}

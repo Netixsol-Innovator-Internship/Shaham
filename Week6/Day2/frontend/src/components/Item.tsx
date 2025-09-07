@@ -15,6 +15,7 @@ type ItemProps = {
   onIncrease: (id: string) => void;
   onDecrease: (id: string) => void;
   onRemove: (id: string) => void;
+  onPaymentMethodChange?: (id: string, method: 'money' | 'points') => void;
 };
 
 const Item: FC<ItemProps> = ({
@@ -30,6 +31,7 @@ const Item: FC<ItemProps> = ({
   onIncrease,
   onDecrease,
   onRemove,
+  onPaymentMethodChange,
 }) => {
   return (
     <div className="flex items-center justify-between border-b py-4">
@@ -42,14 +44,40 @@ const Item: FC<ItemProps> = ({
           <p className="text-sm text-gray-600">Color: {color}</p>
           <div className="mt-1">
             {purchaseMethod === 'points' ? (
-              <p className="font-bold text-blue-600">{pointsPrice || price} Points</p>
+              <div className="flex items-center gap-2">
+                <p className="font-bold text-purple-600">{pointsPrice || price} pts</p>
+                <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">Points Only</span>
+              </div>
             ) : purchaseMethod === 'hybrid' ? (
               <div>
-                <p className="font-bold">${price}</p>
-                <p className="text-sm text-blue-600">or {pointsPrice} Points</p>
+                <div className="flex items-center gap-2 mb-2">
+                  <p className="font-bold">${price}</p>
+                  <p className="text-sm text-purple-600">or {pointsPrice} pts</p>
+                  <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">Flexible Payment</span>
+                </div>
+                {/* Payment Method Selection for Hybrid Items */}
+                {onPaymentMethodChange && (
+                  <div className="flex gap-1 mt-2">
+                    <button
+                      onClick={() => onPaymentMethodChange(id, 'money')}
+                      className="px-2 py-1 text-xs rounded-md bg-green-500 text-white hover:bg-green-600 transition-colors"
+                    >
+                      Use ${price}
+                    </button>
+                    <button
+                      onClick={() => onPaymentMethodChange(id, 'points')}
+                      className="px-2 py-1 text-xs rounded-md bg-purple-500 text-white hover:bg-purple-600 transition-colors"
+                    >
+                      Use {pointsPrice} pts
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
-              <p className="font-bold">${price}</p>
+              <div className="flex items-center gap-2">
+                <p className="font-bold">${price}</p>
+                <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">Money Only</span>
+              </div>
             )}
           </div>
         </div>

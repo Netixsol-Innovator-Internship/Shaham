@@ -3,13 +3,17 @@ import { FC, useMemo, useState } from "react";
 import {
   useCheckoutMutation,
   useGetCartQuery,
+  useGetPointsBalanceQuery,
 } from "@/lib/api";
 import toast from "react-hot-toast";
 
 const Order: FC = () => {
   const [promo, setPromo] = useState("");
   const { data: cart } = useGetCartQuery();
+  const { data: pointsData } = useGetPointsBalanceQuery();
   const [checkout, { isLoading }] = useCheckoutMutation();
+  
+  const userPointsBalance = pointsData?.loyaltyPoints || 0;
 
   const subtotal = useMemo(() => {
     return (cart?.items || []).reduce((sum: number, it: any) => {
@@ -39,6 +43,12 @@ const Order: FC = () => {
       return;
     }
 
+    // Check if user has sufficient points for points purchases
+    if (loyaltySubtotal > 0 && userPointsBalance < loyaltySubtotal) {
+      toast.error(`Insufficient loyalty points. Required: ${loyaltySubtotal}, Available: ${userPointsBalance}`);
+      return;
+    }
+
     try {
       const result = await checkout({
         paymentMethod: total > 0 ? "mock" : "points",
@@ -60,28 +70,53 @@ const Order: FC = () => {
   return (
     <div className="bg-white rounded-xl p-6 shadow-sm w-[350px]">
       <h2 className="text-lg font-semibold mb-4">Order Summary</h2>
+      
+      {/* User Points Balance */}
+      <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg p-3 mb-4">
+        <div className="flex justify-between items-center">
+          <span className="text-sm text-gray-600">Your Loyalty Points</span>
+          <span className="font-bold text-purple-600">{userPointsBalance} pts</span>
+        </div>
+        {loyaltySubtotal > 0 && (
+          <div className="text-xs text-gray-500 mt-1">
+            {userPointsBalance >= loyaltySubtotal ? (
+              <span className="text-green-600">✓ Sufficient points for this order</span>
+            ) : (
+              <span className="text-red-600">⚠ Need {loyaltySubtotal - userPointsBalance} more points</span>
+            )}
+          </div>
+        )}
+      </div>
+
       <div className="space-y-2">
-        <div className="flex justify-between">
-          <span>Subtotal</span>
-          <span className="font-semibold">
-            ${subtotal}
-            {loyaltySubtotal > 0 && ` + ${loyaltySubtotal} pts`}
-          </span>
-        </div>
-        <div className="flex justify-between">
-          <span>Delivery Fee</span>
-          <span>${deliveryFee}</span>
-        </div>
+        {subtotal > 0 && (
+          <div className="flex justify-between">
+            <span>Money Subtotal</span>
+            <span className="font-semibold">${subtotal}</span>
+          </div>
+        )}
+        {loyaltySubtotal > 0 && (
+          <div className="flex justify-between">
+            <span>Points Subtotal</span>
+            <span className="font-semibold text-purple-600">{loyaltySubtotal} pts</span>
+          </div>
+        )}
+        {deliveryFee > 0 && (
+          <div className="flex justify-between">
+            <span>Delivery Fee</span>
+            <span>${deliveryFee}</span>
+          </div>
+        )}
       </div>
 
       <hr className="my-4" />
 
       <div className="flex justify-between font-semibold text-lg">
         <span>Total</span>
-        <span>
-          ${total}
-          {loyaltySubtotal > 0 && ` + ${loyaltySubtotal} pts`}
-        </span>
+        <div className="text-right">
+          {total > 0 && <div>${total}</div>}
+          {loyaltySubtotal > 0 && <div className="text-purple-600">{loyaltySubtotal} pts</div>}
+        </div>
       </div>
 
       <div className="flex mt-4">
