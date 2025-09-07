@@ -3,6 +3,8 @@ import { FC } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Star, StarHalf } from "lucide-react";
+import { useGetCurrentSaleQuery } from "@/lib/api";
+import { calculateSalePrice, formatCurrency } from "@/lib/saleUtils";
 
 interface ProductCardProps {
   _id: string;
@@ -27,6 +29,11 @@ const ProductCard: FC<ProductCardProps> = ({
   loyaltyPoints,
   variantId,
 }) => {
+  const { data: currentSale } = useGetCurrentSaleQuery();
+  
+  // Calculate sale pricing
+  const pricing = calculateSalePrice(price, _id, currentSale);
+  
   const fullStars = Math.floor(rating || 0);
   const hasHalfStar = (rating || 0) % 1 >= 0.5;
   const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
@@ -81,16 +88,32 @@ const ProductCard: FC<ProductCardProps> = ({
             {/* Money Price - only show if price > 0 */}
             {price > 0 && (
               <div>
-                <span className="text-lg font-semibold text-gray-900">
-                  ${price}
-                </span>
-                {oldPrice && (
-                  <span className="ml-2 text-sm text-gray-400 line-through">
-                    ${oldPrice}
-                  </span>
-                )}
-                {discount && (
-                  <span className="ml-2 text-sm text-red-500">-{discount}%</span>
+                {pricing.isOnSale ? (
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-lg font-semibold text-red-600">
+                      {formatCurrency(pricing.salePrice)}
+                    </span>
+                    <span className="text-sm text-gray-400 line-through">
+                      {formatCurrency(pricing.originalPrice)}
+                    </span>
+                    <span className="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full font-medium">
+                      -{pricing.discountPercentage}% OFF
+                    </span>
+                  </div>
+                ) : (
+                  <div>
+                    <span className="text-lg font-semibold text-gray-900">
+                      {formatCurrency(price)}
+                    </span>
+                    {oldPrice && (
+                      <span className="ml-2 text-sm text-gray-400 line-through">
+                        {formatCurrency(oldPrice)}
+                      </span>
+                    )}
+                    {discount && (
+                      <span className="ml-2 text-sm text-red-500">-{discount}%</span>
+                    )}
+                  </div>
                 )}
               </div>
             )}

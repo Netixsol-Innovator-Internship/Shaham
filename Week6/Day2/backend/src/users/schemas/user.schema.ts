@@ -14,7 +14,7 @@ export class User {
   @Prop() otp?: string;
   @Prop() otpExpiresAt?: Date;
   @Prop() otpRequestedAt?: Date;
-  @Prop({ default: false }) blocked: boolean;
+  @Prop({ default: false }) isBlocked: boolean;
   @Prop() mobile: string;
   @Prop() address: string;
   @Prop({ type: [Object], default: [] }) addresses: any[];

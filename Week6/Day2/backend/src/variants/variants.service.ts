@@ -54,12 +54,18 @@ export class VariantsService {
 
   // --- create a variant and persist provided sizeStocks (if any) ---
   async create(productId: string, data: any) {
+    console.log('VariantsService.create called with:', { productId, data });
+    
     const product = await this.products.findById(productId).catch(() => null);
     if (!product) throw new NotFoundException('Product not found');
 
+    console.log('Found product for variant creation:', product.name);
+
     const v = await this.variantModel.create({ ...data, productId: new Types.ObjectId(productId) });
+    console.log('Created variant:', v);
 
     if (data.sizeStocks?.length) {
+      console.log('Creating size stocks:', data.sizeStocks);
       const docs: any[] = data.sizeStocks.map((s: any) => {
         const normalized = this.normalizeSizeValue(s.size);
         if (!normalized) {
@@ -73,27 +79,36 @@ export class VariantsService {
           stock: s.stock ?? 0,
         };
       });
-      await this.sizeStockModel.insertMany(docs);
+      console.log('Size stock docs to insert:', docs);
+      const insertedSizeStocks = await this.sizeStockModel.insertMany(docs);
+      console.log('Inserted size stocks:', insertedSizeStocks);
     }
 
     // attach sizes for response
     const sizes = await this.sizeStockModel.find({ variantId: v._id }).lean();
     const variantObj: any = v.toObject ? v.toObject() : { ...v };
     variantObj.sizes = sizes;
+    variantObj.sizeStocks = sizes; // Add sizeStocks alias for frontend compatibility
 
+    console.log('VariantsService.create final result:', variantObj);
     return variantObj;
   }
 
   // --- update existing variant; if sizeStocks provided, replace them ---
   async update(id: string, data: any) {
+    console.log('VariantsService.update called with:', { id, data });
+    
     const variantDoc = await this.variantModel.findById(id);
     if (!variantDoc) throw new NotFoundException('Variant not found');
+
+    console.log('Found variant:', variantDoc);
 
     for (const [key, val] of Object.entries(data)) {
       if (key === 'sizeStocks') continue;
       (variantDoc as any)[key] = val;
     }
-    await variantDoc.save();
+    const savedVariant = await variantDoc.save();
+    console.log('Saved variant:', savedVariant);
 
     if (data.sizeStocks) {
       await this.sizeStockModel.deleteMany({ variantId: variantDoc._id });
@@ -119,7 +134,9 @@ export class VariantsService {
     const sizes = await this.sizeStockModel.find({ variantId: variantDoc._id }).lean();
     const variantObj: any = variantDoc.toObject ? variantDoc.toObject() : { ...variantDoc };
     variantObj.sizes = sizes;
+    variantObj.sizeStocks = sizes; // Add sizeStocks alias for frontend compatibility
 
+    console.log('VariantsService.update final result:', variantObj);
     return variantObj;
   }
 

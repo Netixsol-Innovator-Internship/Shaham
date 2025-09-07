@@ -103,7 +103,7 @@ export class AuthService {
     const user = await this.userModel.findOne({ email: data.email });
     if (!user) throw new UnauthorizedException('Invalid credentials');
     if (!user.verified) throw new ForbiddenException('Email not verified. Please verify OTP.');
-    if (user.blocked) throw new ForbiddenException('Account blocked');
+    if (user.isBlocked) throw new ForbiddenException('Account blocked');
 
     const ok = await bcrypt.compare(data.password, (user as any).passwordHash);
     if (!ok) throw new UnauthorizedException('Invalid credentials');

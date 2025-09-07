@@ -203,6 +203,10 @@ export class OrdersService {
     return this.orderModel.find({ userId }).sort({ createdAt: -1 }).lean();
   }
 
+  async listAll() {
+    return this.orderModel.find({}).sort({ createdAt: -1 }).lean();
+  }
+
   async getById(id: string) {
     return this.orderModel.findById(id).lean();
   }

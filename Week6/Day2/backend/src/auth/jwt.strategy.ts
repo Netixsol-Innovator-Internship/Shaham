@@ -34,7 +34,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new UnauthorizedException('User not found');
     }
     
-    if (user.blocked) {
+    if (user.isBlocked) {
       console.log('JWT Strategy - User blocked:', payload.sub);
       throw new UnauthorizedException('User blocked');
     }

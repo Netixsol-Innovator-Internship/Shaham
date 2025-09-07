@@ -28,6 +28,7 @@ export class ProductsService {
       populatedVariants.push({
         ...variant,
         sizes,
+        sizeStocks: sizes, // Add sizeStocks alias for frontend compatibility
       });
     }
 
@@ -61,16 +62,35 @@ export class ProductsService {
     return this.populateVariants(product);
   }
 
+  // Get all products including inactive ones (for admin)
+  async listAll(): Promise<PopulatedProduct[]> {
+    const products = await this.productModel.find({}).lean();
+    return Promise.all(products.map((p) => this.populateVariants(p)));
+  }
+
   async createProduct(data: any) {
     return this.productModel.create(data);
   }
 
-  async updateProduct(id: string, data: any) {
-    return this.productModel.findByIdAndUpdate(id, data, { new: true });
+  async updateProduct(id: string, productData: any) {
+    console.log('ProductsService.updateProduct called with:', { id, productData });
+    
+    const result = await this.productModel.findByIdAndUpdate(
+      id,
+      productData,
+      { new: true }
+    );
+    
+    console.log('ProductsService.updateProduct result:', result);
+    return result;
   }
 
   async deleteProduct(id: string) {
-    return this.productModel.findByIdAndUpdate(id, { isActive: false }, { new: true });
+    return this.productModel.findByIdAndUpdate(
+      id,
+      { isActive: false },
+      { new: true }
+    );
   }
 
   async incrementSoldCount(id: string, qty = 1) {

@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import { Providers } from "@/components/Providers";
 import { Toaster } from "react-hot-toast";
 import PromoBar from "@/components/PromoBar";
+import SaleNotificationBar from "@/components/SaleNotificationBar";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import "./globals.css";
@@ -26,6 +27,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Providers>
+          <SaleNotificationBar />
           <PromoBar />
           <Navbar />
 

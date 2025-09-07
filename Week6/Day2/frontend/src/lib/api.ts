@@ -33,7 +33,7 @@ export const api = createApi({
             return headers;
         },
     }),
-    tagTypes: ['Product', 'Cart', 'Order', 'User', 'Sale', 'Notification'],
+    tagTypes: ['Product', 'Products', 'Cart', 'Order', 'User', 'Users', 'Sale', 'Notification'],
     endpoints: (builder) => ({
         // Auth endpoints
         register: builder.mutation<{ message: string }, RegisterData>({
@@ -166,6 +166,61 @@ export const api = createApi({
             providesTags: ['Order'],
         }),
 
+        getAllOrders: builder.query<Order[], void>({
+            query: () => '/orders/admin/all',
+            providesTags: ['Order'],
+        }),
+
+        // Admin product endpoints
+        getAllProducts: builder.query<Product[], void>({
+            query: () => '/products/admin/all',
+            providesTags: ['Product', 'Products'],
+        }),
+
+        createProduct: builder.mutation<Product, any>({
+            query: (productData) => ({
+                url: '/products/admin/create',
+                method: 'POST',
+                body: productData,
+            }),
+            invalidatesTags: ['Product', 'Products'],
+        }),
+
+        createVariant: builder.mutation<any, { productId: string; variantData: any }>({
+            query: ({ productId, variantData }) => ({
+                url: `/variants/admin/create/${productId}`,
+                method: 'POST',
+                body: variantData,
+            }),
+            invalidatesTags: ['Product', 'Products'],
+        }),
+
+        updateProduct: builder.mutation<Product, { productId: string; productData: any }>({
+            query: ({ productId, productData }) => ({
+                url: `/products/admin/${productId}`,
+                method: 'PUT',
+                body: productData,
+            }),
+            invalidatesTags: ['Product', 'Products'],
+        }),
+
+        updateVariant: builder.mutation<any, { variantId: string; variantData: any }>({
+            query: ({ variantId, variantData }) => ({
+                url: `/variants/admin/${variantId}`,
+                method: 'PUT',
+                body: variantData,
+            }),
+            invalidatesTags: ['Product', 'Products'],
+        }),
+
+        deleteProduct: builder.mutation<any, string>({
+            query: (productId) => ({
+                url: `/products/admin/${productId}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['Product', 'Products'],
+        }),
+
         getOrder: builder.query<Order, string>({
             query: (id) => `/orders/${id}`,
             providesTags: (result, error, id) => [{ type: 'Order', id }],
@@ -182,19 +237,91 @@ export const api = createApi({
             providesTags: ['User'],
         }),
 
-        updateProfile: builder.mutation<User, { name?: string; mobile?: string; address?: string }>({
-            query: (updateData) => ({
+        updateProfile: builder.mutation<User, any>({
+            query: (profileData) => ({
                 url: '/users/profile',
                 method: 'PUT',
-                body: updateData,
+                body: profileData,
             }),
             invalidatesTags: ['User'],
+        }),
+
+        getAllUsers: builder.query<User[], void>({
+            query: () => '/users/admin/all',
+            providesTags: ['Users'],
+        }),
+
+        updateUserRole: builder.mutation<User, { userId: string; role: string }>({
+            query: ({ userId, role }) => ({
+                url: `/users/admin/${userId}/role`,
+                method: 'PATCH',
+                body: { role },
+            }),
+            invalidatesTags: ['Users'],
+        }),
+
+        updateUserBlockStatus: builder.mutation<User, { userId: string; isBlocked: boolean }>({
+            query: ({ userId, isBlocked }) => ({
+                url: `/users/admin/${userId}/block`,
+                method: 'PATCH',
+                body: { isBlocked },
+            }),
+            invalidatesTags: ['Users'],
         }),
 
         // Sale endpoints
         getSales: builder.query<Sale[], void>({
             query: () => '/admin/sales/list',
             providesTags: ['Sale'],
+        }),
+
+        createSale: builder.mutation<Sale, any>({
+            query: (saleData) => ({
+                url: '/admin/sales/create',
+                method: 'POST',
+                body: saleData,
+            }),
+            invalidatesTags: ['Sale'],
+        }),
+
+        updateSale: builder.mutation<Sale, { id: string; data: any }>({
+            query: ({ id, data }) => ({
+                url: `/admin/sales/${id}`,
+                method: 'PUT',
+                body: data,
+            }),
+            invalidatesTags: ['Sale'],
+        }),
+
+        deleteSale: builder.mutation<void, string>({
+            query: (id) => ({
+                url: `/admin/sales/${id}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['Sale'],
+        }),
+
+        getSaleById: builder.query<Sale, string>({
+            query: (id) => `/admin/sales/${id}`,
+            providesTags: (result, error, id) => [{ type: 'Sale', id }],
+        }),
+
+        getCurrentSale: builder.query<Sale | null, void>({
+            query: () => '/admin/sales/current',
+            providesTags: ['Sale'],
+        }),
+
+        getActiveSales: builder.query<Sale[], void>({
+            query: () => '/admin/sales/active',
+            providesTags: ['Sale'],
+        }),
+
+        endSale: builder.mutation<Sale, string>({
+            query: (id) => ({
+                url: `/admin/sales/${id}/end`,
+                method: 'PUT',
+            }),
+            invalidatesTags: ['Sale'],
         }),
 
         // Notification endpoints
@@ -230,19 +357,20 @@ export const {
     // Products
     useGetProductsQuery,
     useGetProductQuery,
+    useAddReviewMutation,
     useGetLoyaltyProductsQuery,
     useGetHybridProductsQuery,
-    useAddReviewMutation,
 
     // Cart
-    useGetCartQuery,
     useAddToCartMutation,
+    useGetCartQuery,
     useUpdateCartItemMutation,
     useRemoveFromCartMutation,
 
     // Orders
     useCheckoutMutation,
     useGetOrdersQuery,
+    useGetAllOrdersQuery,
     useGetOrderQuery,
 
     // User
@@ -250,8 +378,28 @@ export const {
     useGetPointsBalanceQuery,
     useUpdateProfileMutation,
 
+    // Admin
+    useGetAllProductsQuery,
+    useCreateProductMutation,
+    useCreateVariantMutation,
+    useUpdateProductMutation,
+    useUpdateVariantMutation,
+    useDeleteProductMutation,
+
+    // User Management
+    useGetAllUsersQuery,
+    useUpdateUserRoleMutation,
+    useUpdateUserBlockStatusMutation,
+
     // Sales
     useGetSalesQuery,
+    useCreateSaleMutation,
+    useUpdateSaleMutation,
+    useDeleteSaleMutation,
+    useGetSaleByIdQuery,
+    useGetCurrentSaleQuery,
+    useGetActiveSalesQuery,
+    useEndSaleMutation,
 
     // Notifications
     useGetNotificationsQuery,

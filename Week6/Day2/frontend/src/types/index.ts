@@ -130,13 +130,15 @@ export interface Sale {
     title: string;
     description?: string;
     type: 'percentage' | 'fixed';
-    value: number;
+    discountPercentage: number;
     productIds: string[];
-    startAt?: Date;
-    endAt?: Date;
+    startAt: string;
+    endAt: string;
     active: boolean;
-    createdAt: Date;
-    updatedAt: Date;
+    isScheduled: boolean;
+    createdBy: string;
+    createdAt: string;
+    updatedAt: string;
 }
 
 // Notification Types

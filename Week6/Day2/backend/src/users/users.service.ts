@@ -63,22 +63,44 @@ export class UsersService {
     return this.userModel.findByIdAndUpdate(userId, { $push: { orders: orderId } });
   }
 
-  async setRole(userId: string, role: string) {
-    return this.userModel.findByIdAndUpdate(userId, { role }, { new: true });
+  async updateProfile(userId: string, updateData: any) {
+    return this.userModel.findByIdAndUpdate(
+      userId,
+      updateData,
+      { new: true }
+    ).select('-password');
+  }
+
+  async getAllUsers() {
+    return this.userModel.find({}).select('-password').lean();
+  }
+
+  async updateUserRole(userId: string, role: string) {
+    const validRoles = ['user', 'admin', 'super_admin'];
+    if (!validRoles.includes(role)) {
+      throw new Error('Invalid role');
+    }
+    
+    return this.userModel.findByIdAndUpdate(
+      userId,
+      { role },
+      { new: true }
+    ).select('-password');
+  }
+
+  async updateUserBlockStatus(userId: string, isBlocked: boolean) {
+    return this.userModel.findByIdAndUpdate(
+      userId,
+      { isBlocked },
+      { new: true }
+    ).select('-password');
   }
 
   async blockUser(userId: string, block=true) {
-    return this.userModel.findByIdAndUpdate(userId, { blocked: block }, { new: true });
+    return this.userModel.findByIdAndUpdate(userId, { isBlocked: block }, { new: true });
   }
 
-  async updateProfile(userId: string, updateData: { name?: string; mobile?: string; address?: string }) {
-    // Only allow updating specific fields
-    const allowedFields = { name: updateData.name, mobile: updateData.mobile, address: updateData.address };
-    const filteredData = Object.fromEntries(
-      Object.entries(allowedFields).filter(([_, value]) => value !== undefined)
-    );
-    
-    return this.userModel.findByIdAndUpdate(userId, filteredData, { new: true })
-      .select('-passwordHash -otp -otpExpiresAt -otpRequestedAt');
+  async setRole(userId: string, role: string) {
+    return this.userModel.findByIdAndUpdate(userId, { role }, { new: true });
   }
 }
