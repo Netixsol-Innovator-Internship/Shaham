@@ -182,6 +182,15 @@ export const api = createApi({
             providesTags: ['User'],
         }),
 
+        updateProfile: builder.mutation<User, { name?: string; mobile?: string; address?: string }>({
+            query: (updateData) => ({
+                url: '/users/profile',
+                method: 'PUT',
+                body: updateData,
+            }),
+            invalidatesTags: ['User'],
+        }),
+
         // Sale endpoints
         getSales: builder.query<Sale[], void>({
             query: () => '/admin/sales/list',
@@ -239,6 +248,7 @@ export const {
     // User
     useGetProfileQuery,
     useGetPointsBalanceQuery,
+    useUpdateProfileMutation,
 
     // Sales
     useGetSalesQuery,

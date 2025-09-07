@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards, Request, Param, Post, Body } from '@nestjs/common';
+import { Controller, Get, UseGuards, Request, Param, Post, Body, Put } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { UsersService } from './users.service';
 import { Roles } from '../common/decorators/roles.decorator';
@@ -33,5 +33,11 @@ export class UsersController {
   @Post('admin/block/:id')
   async block(@Param('id') id: string, @Body() body: { block: boolean }) {
     return this.users.blockUser(id, body.block);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Put('profile')
+  async updateProfile(@Request() req, @Body() updateData: { name?: string; mobile?: string; address?: string }) {
+    return this.users.updateProfile(req.user.id, updateData);
   }
 }

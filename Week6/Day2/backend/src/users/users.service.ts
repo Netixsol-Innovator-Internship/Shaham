@@ -70,4 +70,15 @@ export class UsersService {
   async blockUser(userId: string, block=true) {
     return this.userModel.findByIdAndUpdate(userId, { blocked: block }, { new: true });
   }
+
+  async updateProfile(userId: string, updateData: { name?: string; mobile?: string; address?: string }) {
+    // Only allow updating specific fields
+    const allowedFields = { name: updateData.name, mobile: updateData.mobile, address: updateData.address };
+    const filteredData = Object.fromEntries(
+      Object.entries(allowedFields).filter(([_, value]) => value !== undefined)
+    );
+    
+    return this.userModel.findByIdAndUpdate(userId, filteredData, { new: true })
+      .select('-passwordHash -otp -otpExpiresAt -otpRequestedAt');
+  }
 }
