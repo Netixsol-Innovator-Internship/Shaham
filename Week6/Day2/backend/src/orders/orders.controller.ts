@@ -6,11 +6,6 @@ import { AuthGuard } from '@nestjs/passport';
 export class OrdersController {
   constructor(private orders: OrdersService) {}
 
-  @UseGuards(AuthGuard('jwt'))
-  @Post('create-payment-intent')
-  async createPaymentIntent(@Body() body: { amount: number }) {
-    return this.orders.createPaymentIntent(body.amount);
-  }
 
   @UseGuards(AuthGuard('jwt'))
   @Post('checkout')

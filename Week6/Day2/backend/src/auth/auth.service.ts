@@ -21,7 +21,7 @@ export class AuthService {
     @InjectModel(User.name) private userModel: Model<User>,
     private jwtService: JwtService,
     private mail: MailService,
-  ) {}
+  ) { }
 
   async register(data: { name: string; email: string; password: string }) {
     const existing = await this.userModel.findOne({ email: data.email });
@@ -108,7 +108,7 @@ export class AuthService {
     const ok = await bcrypt.compare(data.password, (user as any).passwordHash);
     if (!ok) throw new UnauthorizedException('Invalid credentials');
 
-    const payload = { sub: user._id.toString(), email: user.email, role: user.role };
+    const payload = { sub: user._id.toString(), email: user.email, name: user.name, role: user.role };
     const token = this.jwtService.sign(payload);
 
     return {

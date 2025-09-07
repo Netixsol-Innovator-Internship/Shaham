@@ -4,6 +4,7 @@ import {
   useCheckoutMutation,
   useGetCartQuery,
 } from "@/lib/api";
+import toast from "react-hot-toast";
 
 const Order: FC = () => {
   const [promo, setPromo] = useState("");
@@ -14,15 +15,15 @@ const Order: FC = () => {
     return (cart?.items || []).reduce((sum: number, it: any) => {
       // If purchase with points → price is 0 (handled separately)
       const price =
-        it.purchaseMethod === "points" ? 0 : it.product?.price || 0;
-      return sum + price * (it.quantity || 1);
+        it.purchaseMethod === "points" ? 0 : it.moneyPrice || 0;
+      return sum + price * (it.qty || 1);
     }, 0);
   }, [cart]);
 
   const loyaltySubtotal = useMemo(() => {
     return (cart?.items || []).reduce((sum: number, it: any) => {
       return it.purchaseMethod === "points"
-        ? sum + (it.product?.loyaltyPoints || 0) * (it.quantity || 1)
+        ? sum + (it.pointsPrice || 0) * (it.qty || 1)
         : sum;
     }, 0);
   }, [cart]);
@@ -32,12 +33,28 @@ const Order: FC = () => {
   const total = subtotal - discount + deliveryFee;
 
   const onCheckout = async () => {
-    await checkout({
-      paymentMethod: total > 0 ? "stripe" : "points",
-      purchaseMethod: total > 0 ? "money" : "points",
-      discount: 0,
-      address: { street: "N/A", city: "N/A", state: "N/A", zip: "00000" },
-    });
+    // Check if cart is empty
+    if (!cart?.items || cart.items.length === 0) {
+      toast.error("Your cart is empty. Add some items before checkout.");
+      return;
+    }
+
+    try {
+      const result = await checkout({
+        paymentMethod: total > 0 ? "mock" : "points",
+        purchaseMethod: total > 0 ? "money" : "points",
+        discount: 0,
+        address: { street: "N/A", city: "N/A", state: "N/A", zip: "00000" },
+      }).unwrap();
+      
+      // Show success notification
+      toast.success("Payment completed! Your order has been placed successfully.");
+      
+      console.log("Checkout successful:", result);
+    } catch (error: any) {
+      console.error("Checkout failed:", error);
+      toast.error(error?.data?.message || "Checkout failed. Please try again.");
+    }
   };
 
   return (
@@ -82,8 +99,12 @@ const Order: FC = () => {
 
       <button
         onClick={onCheckout}
-        disabled={isLoading}
-        className="w-full mt-6 bg-black text-white py-3 rounded-full font-semibold hover:opacity-90"
+        disabled={isLoading || !cart?.items || cart.items.length === 0}
+        className={`w-full mt-6 py-3 rounded-full font-semibold transition-all ${
+          isLoading || !cart?.items || cart.items.length === 0
+            ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+            : "bg-black text-white hover:opacity-90"
+        }`}
       >
         {isLoading ? "Processing…" : "Go to Checkout →"}
       </button>

@@ -1,49 +1,188 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, FC, FormEvent } from "react";
+import { useAddReviewMutation } from "@/lib/api";
+import toast from "react-hot-toast";
+import ReviewCard from "./ReviewCard";
 
-const ProductReviews = () => {
-  const [showWriteReview, setShowWriteReview] = useState(false);
+interface Review {
+  _id?: string;
+  name?: string;
+  rating: number;
+  comment?: string;
+  createdAt?: string | Date;
+}
+
+const ProductReviews: FC<{ productId: string; reviews: Review[] }> = ({
+  productId,
+  reviews: initialReviews,
+}) => {
+  const [reviews, setReviews] = useState<Review[]>(initialReviews || []);
+  const [filter, setFilter] = useState("Latest");
+  const [page, setPage] = useState(1);
+  const [showForm, setShowForm] = useState(false);
+  const [rating, setRating] = useState<number>(5);
+  const [comment, setComment] = useState("");
+  const [addReview, { isLoading }] = useAddReviewMutation();
+
+  const perPage = 6;
+
+  // Update reviews when initialReviews prop changes
+  useEffect(() => {
+    setReviews(initialReviews || []);
+  }, [initialReviews]);
+
+  // sort/filter
+  const sorted = [...reviews].sort((a, b) => {
+    if (filter === "Latest") {
+      return new Date(b.createdAt || "").getTime() - new Date(a.createdAt || "").getTime();
+    }
+    if (filter === "Oldest") {
+      return new Date(a.createdAt || "").getTime() - new Date(b.createdAt || "").getTime();
+    }
+    if (filter === "Highest Rated") return b.rating - a.rating;
+    if (filter === "Lowest Rated") return a.rating - b.rating;
+    return 0;
+  });
+
+  const totalPages = Math.ceil(sorted.length / perPage) || 1;
+  const paginated = sorted.slice((page - 1) * perPage, page * perPage);
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    try {
+      const newReview = await addReview({
+        productId,
+        review: { rating, comment: comment.trim() || undefined },
+      }).unwrap();
+      toast.success("Review posted");
+
+      // update reviews locally - newReview is the full product with all reviews
+      const latestReview = newReview.reviews[newReview.reviews.length - 1];
+      setReviews((prev) => [...prev, latestReview]);
+      setShowForm(false);
+      setRating(5);
+      setComment("");
+      setFilter("Latest");
+      setPage(1);
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to post review");
+    }
+  };
 
   return (
     <div>
+      {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold">Product Reviews</h2>
+        <h2 className="text-xl font-semibold">All Reviews ({reviews.length})</h2>
         <div className="flex items-center gap-3">
-          <button
-            onClick={() => setShowWriteReview(!showWriteReview)}
-            className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 transition"
+          <select
+            value={filter}
+            onChange={(e) => {
+              setFilter(e.target.value);
+              setPage(1);
+            }}
+            className="border rounded-md px-3 py-1"
           >
-            Write a Review
+            <option>Latest</option>
+            <option>Oldest</option>
+            <option>Highest Rated</option>
+            <option>Lowest Rated</option>
+          </select>
+          <button
+            onClick={() => setShowForm((s) => !s)}
+            className="bg-black text-white px-4 py-2 rounded-md"
+          >
+            {showForm ? "Cancel" : "Write a Review"}
           </button>
         </div>
       </div>
 
-      {showWriteReview && (
-        <div className="bg-gray-50 p-6 rounded-lg mb-6">
-          <h3 className="text-lg font-semibold mb-4">Write Your Review</h3>
-          <p className="text-gray-600 mb-4">
-            The review system is currently under development. Please check back soon to share your feedback!
-          </p>
+      {/* Review form */}
+      {showForm && (
+        <form
+          onSubmit={handleSubmit}
+          className="border p-4 rounded-lg mb-6 space-y-4"
+        >
+          <div>
+            <label className="block text-sm font-medium mb-1">Rating</label>
+            <select
+              value={rating}
+              onChange={(e) => setRating(Number(e.target.value))}
+              className="w-full border rounded-md px-3 py-2"
+            >
+              {[5, 4, 3, 2, 1].map((r) => (
+                <option key={r} value={r}>
+                  {r} {r === 1 ? "star" : "stars"}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Review (optional)</label>
+            <textarea
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              className="w-full border rounded-md px-3 py-2 min-h-[100px]"
+              placeholder="Share your thoughts..."
+            />
+          </div>
+
           <button
-            onClick={() => setShowWriteReview(false)}
-            className="text-gray-500 hover:text-gray-700"
+            type="submit"
+            disabled={isLoading}
+            className="bg-black text-white px-4 py-2 rounded-md disabled:opacity-60"
           >
-            Close
+            {isLoading ? "Posting..." : "Submit"}
           </button>
-        </div>
+        </form>
       )}
 
-      <div className="text-center py-12">
-        <div className="text-gray-500 mb-4">
-          <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-          </svg>
-        </div>
-        <h3 className="text-lg font-medium text-gray-900 mb-2">No reviews yet</h3>
-        <p className="text-gray-600">
-          Be the first to review this product! The review system is being implemented and will be available soon.
-        </p>
-      </div>
+      {/* Reviews list */}
+      {reviews?.length ? (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {paginated.map((r, i) => (
+              <ReviewCard
+                key={r._id || i}
+                name={r.name || "Anonymous"}
+                text={r.comment || ""}
+                rating={r.rating}
+              />
+            ))}
+          </div>
+
+          {/* Pagination */}
+          <div className="flex justify-center gap-2 mt-6">
+            <button
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page === 1}
+              className="px-3 py-1 border rounded disabled:opacity-50"
+            >
+              Prev
+            </button>
+            {Array.from({ length: totalPages }).map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setPage(i + 1)}
+                className={`px-3 py-1 border rounded ${page === i + 1 ? "bg-black text-white" : ""
+                  }`}
+              >
+                {i + 1}
+              </button>
+            ))}
+            <button
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={page === totalPages}
+              className="px-3 py-1 border rounded disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
+        </>
+      ) : (
+        <p className="text-gray-500">No reviews yet. Be the first!</p>
+      )}
     </div>
   );
 };

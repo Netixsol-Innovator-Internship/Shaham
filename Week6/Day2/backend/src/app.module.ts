@@ -14,10 +14,13 @@ import { OrdersModule } from './orders/orders.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { UtilsModule } from './utils/utils.module';
 
+
+console.log('MONGO_URI from env:', process.env.MONGO_URI);
+
 @Module({
   imports: [
     RealtimeModule,
-    MongooseModule.forRoot(process.env.MONGO_URI || 'mongodb://localhost:27017/ecom'),
+    MongooseModule.forRoot(process.env.MONGO_URI),
     AuthModule,
     UsersModule,
     ProductsModule,

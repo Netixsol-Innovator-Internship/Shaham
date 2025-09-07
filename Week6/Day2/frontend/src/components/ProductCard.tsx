@@ -54,7 +54,7 @@ const ProductCard: FC<ProductCardProps> = ({
           <p className="text-sm font-medium text-gray-800">{name}</p>
 
           {/* Ratings */}
-          {rating !== undefined && (
+          {rating !== undefined && rating > 0 && (
             <div className="flex items-center justify-center mt-1 gap-1">
               {[...Array(fullStars)].map((_, i) => (
                 <Star

@@ -30,7 +30,8 @@ const ProductDetailsPage = () => {
 
     setSelectedVariant(initialVariant);
     setSelectedColor(initialVariant.color);
-    setSelectedSize(initialVariant.sizes?.[0]?.size || "");
+    // selectedSize will be set when sizes are available
+    setSelectedSize("");
   }, [product, variantIdFromURL]);
 
   const colors = useMemo(() => {
@@ -40,7 +41,18 @@ const ProductDetailsPage = () => {
 
   const images = selectedVariant?.images || [];
 
-  const sizes = selectedVariant?.sizes?.map((s: any) => s.size) || [];
+  // sizes now comes straight from the selectedVariant (populated by backend as `sizes`)
+  const sizeStocks = selectedVariant?.sizes || []; // array of { _id, variantId, size, stock, ... }
+  const sizes = (sizeStocks || []).map((s: any) => s.size);
+
+  useEffect(() => {
+    // auto-select first size whenever the variant's sizes change
+    if (sizeStocks?.length) {
+      setSelectedSize(sizeStocks[0].size);
+    } else {
+      setSelectedSize("");
+    }
+  }, [selectedVariant, sizeStocks]);
 
   const price =
     selectedVariant?.salePrice ??
@@ -71,7 +83,7 @@ const ProductDetailsPage = () => {
     purchaseMethod: "money" | "points";
   }) => {
     try {
-      const sizeStock = selectedVariant?.sizes?.find((s: any) => s.size === size);
+      const sizeStock = sizeStocks?.find((s: any) => s.size === size);
       if (!selectedVariant || !sizeStock) {
         toast.error("Please select a valid size");
         return;
@@ -97,7 +109,7 @@ const ProductDetailsPage = () => {
 
     setSelectedVariant(foundVariant);
     setSelectedColor(foundVariant.color);
-    setSelectedSize(foundVariant.sizes?.[0]?.size || "");
+    setSelectedSize(""); // sizes effect will auto-select first size
   };
 
   return (
@@ -124,7 +136,7 @@ const ProductDetailsPage = () => {
       </div>
 
       <div className="mt-12">
-        <ProductTabs />
+        <ProductTabs productId={product?._id || ""} reviews={product?.reviews || []} />
       </div>
       <AlsoLike />
     </div>

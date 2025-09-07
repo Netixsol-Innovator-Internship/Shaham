@@ -130,7 +130,7 @@ export default function ProductsDisplayPage() {
             <div className="grid grid-cols-3 gap-6">
               {displayedProducts.map((product) => (
                 <ProductCard
-                  key={product._id}
+                  key={`${product._id}-${product.variantId}`}
                   _id={product._id}
                   name={product.name}
                   image={product.image}
@@ -138,6 +138,7 @@ export default function ProductsDisplayPage() {
                   oldPrice={product.oldPrice}
                   discount={product.discount}
                   rating={Number(product.rating)}
+                  variantId={product.variantId}
                 />
               ))}
             </div>

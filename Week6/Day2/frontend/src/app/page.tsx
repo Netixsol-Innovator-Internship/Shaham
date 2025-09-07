@@ -52,17 +52,27 @@ export default function HomePage() {
     // Calculate discount
     const discount = oldPrice && price ? Math.max(0, Math.round(((oldPrice - price) / oldPrice) * 100)) : undefined;
 
-    // Extract rating
-    const rating = typeof p?.rating === "number" ? p.rating : 0;
+    // Extract rating - calculate average from reviews if available
+    const rating = p?.reviews?.length > 0 
+      ? p.reviews.reduce((sum: number, review: any) => sum + (review.rating || 0), 0) / p.reviews.length
+      : p?.rating || 0;
+
+    // Extract loyalty points
+    const loyaltyPoints = variant?.pointsPrice ?? p?.pointsPrice;
+
+    // Get variant ID for proper linking
+    const variantId = variant?._id;
 
     return {
-      _id: p._id || p.id, // Use _id to match ProductSection interface
-      name: p.name,
+      _id: p._id || p.id,
+      name: p.name || 'Unnamed Product',
       image: firstImage,
       price,
       oldPrice,
       discount,
       rating,
+      loyaltyPoints,
+      variantId,
     };
   };
 

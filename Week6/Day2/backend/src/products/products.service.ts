@@ -5,7 +5,7 @@ import { Variant, VariantDocument } from '../variants/schemas/variants.schema';
 import { SizeStock, SizeStockDocument } from '../sizestocks/schemas/sizestocks.schema';
 import { Model, Types } from 'mongoose';
 
-// Interface for populated product with variants and sizes
+// Product with populated variants and sizes
 export interface PopulatedProduct extends Omit<Product, 'variants'> {
   variants: Array<Variant & { sizes: SizeStock[] }>;
 }
@@ -18,6 +18,26 @@ export class ProductsService {
     @InjectModel(SizeStock.name) private sizeStockModel: Model<SizeStockDocument>,
   ) { }
 
+  // --- helper: attach variants with sizes ---
+  private async populateVariants(product: any): Promise<PopulatedProduct> {
+    const variants = await this.variantModel.find({ productId: product._id }).lean();
+    const populatedVariants = [];
+
+    for (const variant of variants) {
+      const sizes = await this.sizeStockModel.find({ variantId: variant._id }).lean();
+      populatedVariants.push({
+        ...variant,
+        sizes,
+      });
+    }
+
+    return {
+      ...product,
+      variants: populatedVariants,
+    } as PopulatedProduct;
+  }
+
+  // --- product listing with filters ---
   async list(filters: any = {}): Promise<PopulatedProduct[]> {
     const query: any = { isActive: true };
 
@@ -26,54 +46,19 @@ export class ProductsService {
     if (filters.productType) query.productType = filters.productType;
 
     const products = await this.productModel.find(query).lean();
-
-    const results: PopulatedProduct[] = [];
-    for (const product of products) {
-      const variants = await this.variantModel.find({ productId: product._id }).lean();
-      const populatedVariants = [];
-
-      for (const variant of variants) {
-        const sizes = await this.sizeStockModel.find({ variantId: variant._id }).lean();
-        populatedVariants.push({
-          ...variant,
-          sizes: sizes
-        });
-      }
-
-      // Create a new object with the variants property
-      const populatedProduct = {
-        ...product,
-        variants: populatedVariants
-      } as PopulatedProduct;
-
-      results.push(populatedProduct);
-    }
-
-    return results;
+    return Promise.all(products.map((p) => this.populateVariants(p)));
   }
 
   async findById(id: string): Promise<PopulatedProduct> {
     const product = await this.productModel.findById(id).lean();
     if (!product) throw new NotFoundException('Product not found');
+    return this.populateVariants(product);
+  }
 
-    const variants = await this.variantModel.find({ productId: product._id }).lean();
-    const populatedVariants = [];
-
-    for (const variant of variants) {
-      const sizes = await this.sizeStockModel.find({ variantId: variant._id }).lean();
-      populatedVariants.push({
-        ...variant,
-        sizes: sizes
-      });
-    }
-
-    // Create a new object with the variants property
-    const populatedProduct = {
-      ...product,
-      variants: populatedVariants
-    } as PopulatedProduct;
-
-    return populatedProduct;
+  async findBySlug(slug: string): Promise<PopulatedProduct> {
+    const product = await this.productModel.findOne({ slug }).lean();
+    if (!product) throw new NotFoundException('Product not found');
+    return this.populateVariants(product);
   }
 
   async createProduct(data: any) {
@@ -107,4 +92,27 @@ export class ProductsService {
   async getRegularProducts(): Promise<PopulatedProduct[]> {
     return this.list({ productType: 'regular' });
   }
+
+  // --- reviews: only rating + review text ---
+  async addReview(productId: string, body: any, user: any) {
+    const product = await this.productModel.findById(productId);
+    if (!product) throw new NotFoundException('Product not found');
+
+    // Handle both nested and flat request body structures
+    const reviewData = body.review || body;
+    
+    const review = {
+      name: user.name || user.email,   // fetch real username/email
+      rating: reviewData.rating,
+      comment: reviewData.comment || "",  // prevent empty string issue
+      createdAt: new Date(),
+    };
+
+    product.reviews.push(review);
+    await product.save();
+
+    // Return populated product with variants and sizes like other methods
+    return this.populateVariants(product);
+  }
+
 }

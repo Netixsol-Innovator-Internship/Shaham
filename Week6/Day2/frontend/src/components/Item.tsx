@@ -10,6 +10,8 @@ type ItemProps = {
   color: string;
   price: number;
   qty: number;
+  purchaseMethod?: 'money' | 'points' | 'hybrid';
+  pointsPrice?: number;
   onIncrease: (id: string) => void;
   onDecrease: (id: string) => void;
   onRemove: (id: string) => void;
@@ -23,6 +25,8 @@ const Item: FC<ItemProps> = ({
   color,
   price,
   qty,
+  purchaseMethod,
+  pointsPrice,
   onIncrease,
   onDecrease,
   onRemove,
@@ -36,7 +40,18 @@ const Item: FC<ItemProps> = ({
           <h3 className="font-semibold text-lg">{name}</h3>
           <p className="text-sm text-gray-600">Size: {size}</p>
           <p className="text-sm text-gray-600">Color: {color}</p>
-          <p className="font-bold mt-1">${price}</p>
+          <div className="mt-1">
+            {purchaseMethod === 'points' ? (
+              <p className="font-bold text-blue-600">{pointsPrice || price} Points</p>
+            ) : purchaseMethod === 'hybrid' ? (
+              <div>
+                <p className="font-bold">${price}</p>
+                <p className="text-sm text-blue-600">or {pointsPrice} Points</p>
+              </div>
+            ) : (
+              <p className="font-bold">${price}</p>
+            )}
+          </div>
         </div>
       </div>
 

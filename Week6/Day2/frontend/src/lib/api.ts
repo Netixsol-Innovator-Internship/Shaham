@@ -25,8 +25,10 @@ export const api = createApi({
         prepareHeaders: (headers, { getState }) => {
             // Get token from localStorage or state
             const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+            console.log('API Request - Token:', token ? 'Present' : 'Missing');
             if (token) {
                 headers.set('authorization', `Bearer ${token}`);
+                console.log('Authorization header set:', `Bearer ${token.substring(0, 20)}...`);
             }
             return headers;
         },
@@ -96,6 +98,15 @@ export const api = createApi({
             providesTags: (result, error, id) => [{ type: 'Product', id }],
         }),
 
+        addReview: builder.mutation<Product, { productId: string; review: { rating: number; comment?: string } }>({
+            query: ({ productId, review }) => ({
+                url: `/products/${productId}/reviews`,
+                method: "POST",
+                body: review,
+            }),
+            invalidatesTags: (result, error, { productId }) => [{ type: "Product", id: productId }],
+        }),
+
         getLoyaltyProducts: builder.query<Product[], void>({
             query: () => '/products?productType=loyalty-only',
             providesTags: ['Product'],
@@ -140,13 +151,6 @@ export const api = createApi({
         }),
 
         // Order endpoints
-        createPaymentIntent: builder.mutation<any, { amount: number }>({
-            query: (data) => ({
-                url: '/orders/create-payment-intent',
-                method: 'POST',
-                body: data,
-            }),
-        }),
 
         checkout: builder.mutation<Order, any>({
             query: (data) => ({
@@ -214,6 +218,7 @@ export const {
     useGetProductQuery,
     useGetLoyaltyProductsQuery,
     useGetHybridProductsQuery,
+    useAddReviewMutation,
 
     // Cart
     useGetCartQuery,
@@ -222,7 +227,6 @@ export const {
     useRemoveFromCartMutation,
 
     // Orders
-    useCreatePaymentIntentMutation,
     useCheckoutMutation,
     useGetOrdersQuery,
     useGetOrderQuery,

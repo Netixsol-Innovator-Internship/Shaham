@@ -11,6 +11,7 @@ interface Product {
   discount?: number;
   rating?: number;
   loyaltyPoints?: number;
+  variantId?: string;
 }
 
 interface ProductSectionProps {
@@ -41,9 +42,12 @@ const ProductSection: FC<ProductSectionProps> = ({
       )}
       {showViewAll && (
         <div className="flex justify-center mt-6">
-          <button className="px-6 py-2 rounded-full border border-black hover:bg-black hover:text-white transition">
+          <a 
+            href="/productsdisplaypage"
+            className="px-6 py-2 rounded-full border border-black hover:bg-black hover:text-white transition inline-block text-center"
+          >
             View All
-          </button>
+          </a>
         </div>
       )}
     </section>

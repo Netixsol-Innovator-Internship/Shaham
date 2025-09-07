@@ -17,7 +17,7 @@ export default function ProductInfo({
   setSelectedSize,
   onAddToCart,
   onVariantChange,
-  selectedVariantId,
+  // selectedVariantId,
 }: {
   id: string;
   name: string;
@@ -88,19 +88,18 @@ export default function ProductInfo({
         </div>
       )}
 
-      {/* Sizes - styled like Filters component */}
+      {/* Sizes */}
       {sizes.length > 0 && (
         <div className="mt-4">
-          <p className="font-medium mb-2">Select Size</p>
+          <h4 className="font-medium mb-2">Size</h4>
           <div className="flex gap-2 flex-wrap">
-            {sizes.map((s) => (
+            {sizes.map(s => (
               <button
                 key={s}
                 onClick={() => setSelectedSize(s)}
-                className={`px-3 py-1 rounded-full text-sm border ${selectedSize === s
-                  ? "bg-black text-white border-black"
-                  : "bg-gray-100 text-gray-700 border-gray-300"
-                  }`}
+                className={`px-4 py-2 border rounded-md ${
+                  selectedSize === s ? "bg-black text-white" : "bg-white"
+                }`}
               >
                 {s}
               </button>

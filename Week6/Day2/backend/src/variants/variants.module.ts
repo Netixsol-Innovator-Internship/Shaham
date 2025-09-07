@@ -7,10 +7,14 @@ import { AdminVariantsController } from './admin-variants.controller';
 import { ProductsModule } from '../products/products.module';
 import { UtilsModule } from '../utils/utils.module';
 import { SizeStockModule } from '../sizestocks/sizestocks.module';
+import { SizeStock, SizeStockSchema } from '../sizestocks/schemas/sizestocks.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Variant.name, schema: VariantSchema }]),
+    MongooseModule.forFeature([
+      { name: Variant.name, schema: VariantSchema },
+      { name: SizeStock.name, schema: SizeStockSchema },
+    ]),
     ProductsModule,
     forwardRef(() => SizeStockModule),
     UtilsModule,

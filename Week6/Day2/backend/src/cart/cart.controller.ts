@@ -9,7 +9,20 @@ export class CartController {
   @UseGuards(AuthGuard('jwt'))
   @Get()
   async myCart(@Request() req) {
-    return this.cart.getForUser(req.user.id);
+    console.log('=== CART GET DEBUG ===');
+    console.log('Headers:', req.headers.authorization);
+    console.log('User from JWT:', req.user);
+    console.log('User ID:', req.user?.id);
+    console.log('=====================');
+    
+    if (!req.user) {
+      console.log('ERROR: No user found in request - JWT authentication failed');
+      throw new Error('Authentication failed');
+    }
+    
+    const result = await this.cart.getForUser(req.user.id);
+    console.log('Cart result:', result);
+    return result;
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -27,7 +40,13 @@ export class CartController {
   @UseGuards(AuthGuard('jwt'))
   @Patch('update/:productId')
   async update(@Request() req, @Param('productId') productId: string, @Body() body: any) {
-    return this.cart.updateQty(
+    console.log('=== CART UPDATE DEBUG ===');
+    console.log('User ID:', req.user.id);
+    console.log('Product ID:', productId);
+    console.log('Request Body:', body);
+    console.log('========================');
+    
+    const result = await this.cart.updateQty(
       req.user.id,
       productId,
       body.variantId,
@@ -35,5 +54,8 @@ export class CartController {
       body.purchaseMethod,
       body.qty
     );
+    
+    console.log('Cart update result:', result);
+    return result;
   }
 }

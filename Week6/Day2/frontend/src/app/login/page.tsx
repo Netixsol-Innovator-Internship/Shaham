@@ -28,8 +28,10 @@ export default function LoginPage() {
       );
 
       // Persist in localStorage so auth survives refresh
-      localStorage.setItem("token", res.accessToken);
-      localStorage.setItem("user", JSON.stringify(res.user));
+      if (typeof window !== 'undefined') {
+        localStorage.setItem("token", res.accessToken);
+        localStorage.setItem("user", JSON.stringify(res.user));
+      }
 
       toast.success("Welcome back!");
       router.push("/");

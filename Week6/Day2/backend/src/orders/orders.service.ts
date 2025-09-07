@@ -2,22 +2,16 @@ import { emitRealtime } from '../realtime/realtime.util';
 import {
   Injectable,
   BadRequestException,
-  InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Order } from './schemas/order.schema';
 import { Model } from 'mongoose';
-import Stripe from 'stripe';
 import { CartService } from '../cart/cart.service';
 import { UsersService } from '../users/users.service';
 import { ProductsService } from '../products/products.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { Variant } from '../variants/schemas/variants.schema';
 import { SizeStock } from '../sizestocks/schemas/sizestocks.schema';
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2022-11-15',
-});
 
 @Injectable()
 export class OrdersService {
@@ -31,19 +25,19 @@ export class OrdersService {
     @InjectModel(SizeStock.name) private sizeStockModel: Model<SizeStock>,
   ) { }
 
-  async createPaymentIntent(amount: number) {
-    if (!process.env.STRIPE_SECRET_KEY)
-      throw new InternalServerErrorException('Stripe not configured');
-    const intent = await stripe.paymentIntents.create({
-      amount,
-      currency: 'usd',
-    });
-    return intent;
-  }
 
   async checkout(userId: string, payload: any) {
+    console.log('=== CHECKOUT PROCESS STARTED ===');
+    console.log('User ID:', userId);
+    console.log('Payload:', payload);
+    
     const cart = await this.cart.getForUser(userId);
-    if (!cart.items.length) throw new BadRequestException('Cart empty');
+    console.log('Cart retrieved:', cart);
+    
+    if (!cart.items.length) {
+      console.log('ERROR: Cart is empty');
+      throw new BadRequestException('Cart is empty. Please add items before checkout.');
+    }
 
     let subtotal = 0;
     const itemsSnapshot = [];
@@ -95,17 +89,22 @@ export class OrdersService {
       total = 0;
     }
 
-    // Validate payment intent if stripe (skip for points purchases)
-    if (payload.paymentMethod === 'stripe' && payload.purchaseMethod !== 'points') {
-      if (!payload.paymentIntentId)
-        throw new BadRequestException('paymentIntentId required for stripe');
-      const intent = await stripe.paymentIntents.retrieve(
-        payload.paymentIntentId,
-      );
-      if (!intent) throw new BadRequestException('Invalid payment intent');
-    }
+    // Mock payment processing - no external payment validation needed
 
     // Create order
+    console.log('Creating order with data:', {
+      userId,
+      address: payload.address || {},
+      items: itemsSnapshot,
+      deliveryFee: payload.purchaseMethod === 'points' ? 0 : 15,
+      discount: payload.discount || 0,
+      subtotal,
+      total,
+      paymentMethod: payload.paymentMethod || (payload.purchaseMethod === 'points' ? 'points' : 'stripe'),
+      pointsUsed: payload.purchaseMethod === 'points' ? subtotal : (payload.pointsUsed || 0),
+      pointsEarned: payload.purchaseMethod === 'points' ? 0 : Math.floor(subtotal / 50),
+    });
+    
     const order = await this.orderModel.create({
       userId,
       address: payload.address || {},
@@ -114,14 +113,15 @@ export class OrdersService {
       discount: payload.discount || 0,
       subtotal,
       total,
-      paymentMethod: payload.paymentMethod || (payload.purchaseMethod === 'points' ? 'points' : 'stripe'),
-      paymentIntentId: payload.paymentIntentId,
+      paymentMethod: payload.paymentMethod || (payload.purchaseMethod === 'points' ? 'points' : 'mock'),
       pointsUsed: payload.purchaseMethod === 'points' ? subtotal : (payload.pointsUsed || 0),
       pointsEarned: payload.purchaseMethod === 'points' ? 0 : Math.floor(subtotal / 50), // 1 point per $50 as per requirements
       completed: true,
       status: 'completed',
       completedAt: new Date(),
     });
+    
+    console.log('Order created successfully:', order._id);
 
     // Deduct stock & update sold
     for (const it of itemsSnapshot) {
@@ -148,10 +148,11 @@ export class OrdersService {
     }
 
     // Empty cart
-    cart.items = [];
-    await cart.save();
+    console.log('Clearing cart for user:', userId);
+    await this.cart.clearCart(userId);
 
     // Notify
+    console.log('Sending order completion notification');
     await this.notifications.createAndBroadcast({
       userId,
       type: 'order_completed',
@@ -167,6 +168,7 @@ export class OrdersService {
       await this.notifications.createLoyaltyPointsNotification(userId, order.pointsUsed, 'spent');
     }
 
+    console.log('=== CHECKOUT PROCESS COMPLETED ===');
     return order;
   }
 

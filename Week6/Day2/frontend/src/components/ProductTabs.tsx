@@ -1,8 +1,14 @@
 "use client";
-import { useState } from "react";
+import { useState, FC } from "react";
 import ProductReviews from "./ProductReviews";
 
-const ProductTabs = () => {
+interface TabsProps {
+  productId: string;
+  reviews: any[];
+}
+
+const ProductTabs: FC<TabsProps> = ({ productId, reviews }) => {
+
   const [active, setActive] = useState("reviews");
 
   return (
@@ -28,7 +34,7 @@ const ProductTabs = () => {
 
       {/* Content */}
       <div className="mt-8">
-        {active === "reviews" && <ProductReviews />}
+        {active === "reviews" && <ProductReviews productId={productId} reviews={reviews} />}
         {active === "details" && <p>Product details go here...</p>}
         {active === "faqs" && <p>FAQs go here...</p>}
       </div>
