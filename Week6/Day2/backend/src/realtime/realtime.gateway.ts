@@ -22,7 +22,6 @@ import { Server, Socket } from 'socket.io';
     methods: ['GET', 'POST'],
     credentials: true,
   },
-  namespace: '/realtime',
 })
 export class RealtimeGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()

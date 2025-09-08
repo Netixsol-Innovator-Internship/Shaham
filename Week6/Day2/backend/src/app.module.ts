@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { AppController } from './app.controller';
 import { RealtimeModule } from './realtime/realtime.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import * as dotenv from 'dotenv';
@@ -32,5 +33,6 @@ console.log('MONGO_URI from env:', process.env.MONGO_URI);
     NotificationsModule,
     UtilsModule,
   ],
+  controllers: [AppController],
 })
 export class AppModule {}
