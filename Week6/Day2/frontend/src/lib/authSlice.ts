@@ -9,10 +9,38 @@ interface AuthState {
     error: string | null;
 }
 
+// Helper function to safely parse localStorage data
+const getStoredUser = (): User | null => {
+    if (typeof window === 'undefined') return null;
+    
+    try {
+        const storedUser = localStorage.getItem('user');
+        if (!storedUser || storedUser === 'undefined' || storedUser === 'null') {
+            return null;
+        }
+        return JSON.parse(storedUser);
+    } catch (error) {
+        console.warn('Failed to parse stored user data:', error);
+        // Clear invalid data
+        localStorage.removeItem('user');
+        return null;
+    }
+};
+
+const getStoredToken = (): string | null => {
+    if (typeof window === 'undefined') return null;
+    
+    const token = localStorage.getItem('token');
+    if (!token || token === 'undefined' || token === 'null') {
+        return null;
+    }
+    return token;
+};
+
 const initialState: AuthState = {
-    user: typeof window !== 'undefined' && localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') as string) : null,
-    token: typeof window !== 'undefined' ? localStorage.getItem('token') : null,
-    isAuthenticated: typeof window !== 'undefined' ? !!localStorage.getItem('token') : false,
+    user: getStoredUser(),
+    token: getStoredToken(),
+    isAuthenticated: typeof window !== 'undefined' ? !!getStoredToken() : false,
     isLoading: false,
     error: null,
 };
@@ -27,10 +55,14 @@ const authSlice = createSlice({
             state.isAuthenticated = true;
             state.error = null;
 
-            // Save to localStorage
+            // Save to localStorage with error handling
             if (typeof window !== 'undefined') {
-                localStorage.setItem('token', action.payload.accessToken);
-                localStorage.setItem('user', JSON.stringify(action.payload.user));
+                try {
+                    localStorage.setItem('token', action.payload.accessToken);
+                    localStorage.setItem('user', JSON.stringify(action.payload.user));
+                } catch (error) {
+                    console.warn('Failed to save auth data to localStorage:', error);
+                }
             }
         },
 
@@ -38,6 +70,15 @@ const authSlice = createSlice({
             state.user = action.payload;
             state.isAuthenticated = true;
             state.error = null;
+            
+            // Update localStorage with new user data
+            if (typeof window !== 'undefined') {
+                try {
+                    localStorage.setItem('user', JSON.stringify(action.payload));
+                } catch (error) {
+                    console.warn('Failed to update user data in localStorage:', error);
+                }
+            }
         },
 
         logout: (state) => {
@@ -48,8 +89,12 @@ const authSlice = createSlice({
 
             // Clear localStorage
             if (typeof window !== 'undefined') {
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
+                try {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                } catch (error) {
+                    console.warn('Failed to clear localStorage:', error);
+                }
             }
         },
 

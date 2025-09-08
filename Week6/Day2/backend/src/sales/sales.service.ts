@@ -13,6 +13,18 @@ export class SalesService {
     private notifications: NotificationsService
   ) { }
 
+  private emitSaleEvent(event: 'sale:started' | 'sale:ended', sale: any) {
+    try {
+      const globalEmit = (globalThis as any).__realtimeEmit;
+      if (globalEmit) {
+        globalEmit(event, sale);
+        this.logger.log(`Emitted ${event} for sale: ${sale.title}`);
+      }
+    } catch (error) {
+      this.logger.error(`Failed to emit ${event}:`, error);
+    }
+  }
+
   async create(data: any, userId: string) {
     // Validate dates
     const startAt = new Date(data.startAt);
@@ -41,6 +53,7 @@ export class SalesService {
     // If sale starts immediately, activate it
     if (startAt <= now) {
       await this.notifications.createSaleNotification(sale);
+      this.emitSaleEvent('sale:started', sale);
       this.logger.log(`Sale "${sale.title}" started immediately`);
     } else {
       this.logger.log(`Sale "${sale.title}" scheduled to start at ${startAt}`);
@@ -103,7 +116,11 @@ export class SalesService {
   }
 
   async endSale(saleId: string) {
-    return this.saleModel.findByIdAndUpdate(saleId, { active: false }, { new: true });
+    const sale = await this.saleModel.findByIdAndUpdate(saleId, { active: false }, { new: true });
+    if (sale) {
+      this.emitSaleEvent('sale:ended', sale);
+    }
+    return sale;
   }
 
   // Cron job to check and activate scheduled sales every minute
@@ -125,6 +142,7 @@ export class SalesService {
         isScheduled: false 
       });
       await this.notifications.createSaleNotification(sale);
+      this.emitSaleEvent('sale:started', sale);
       this.logger.log(`Sale "${sale.title}" has been activated`);
     }
 
@@ -136,6 +154,7 @@ export class SalesService {
 
     for (const sale of salesToEnd) {
       await this.saleModel.findByIdAndUpdate(sale._id, { active: false });
+      this.emitSaleEvent('sale:ended', sale);
       this.logger.log(`Sale "${sale.title}" has ended`);
     }
   }

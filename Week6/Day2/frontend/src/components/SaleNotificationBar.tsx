@@ -9,6 +9,20 @@ export default function SaleNotificationBar() {
   const [isVisible, setIsVisible] = useState(true);
   const [timeLeft, setTimeLeft] = useState<string>('');
 
+  // Reset visibility when a new sale starts - use a more stable key
+  useEffect(() => {
+    if (currentSale?._id) {
+      setIsVisible(true);
+    }
+  }, [currentSale?._id]);
+
+  // Handle sale end gracefully
+  useEffect(() => {
+    if (!currentSale) {
+      setIsVisible(false);
+    }
+  }, [currentSale]);
+
   useEffect(() => {
     if (!currentSale || !currentSale.endAt) return;
 
