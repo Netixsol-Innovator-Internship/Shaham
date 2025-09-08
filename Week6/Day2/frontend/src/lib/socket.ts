@@ -3,13 +3,17 @@ import { io, Socket } from 'socket.io-client';
 let socketInstance: Socket | null = null;
 
 export function getSocket(auth?: { userId?: string | null; admin?: boolean }) {
-    const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || 'ws://localhost:5000';
-    const url = socketUrl.replace(/\/$/, '') + '/realtime';
+
+    const socketUrl =
+        process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:5000';
+
+    const url = socketUrl.replace(/\/$/, '');
 
     if (!socketInstance) {
         socketInstance = io(url, {
             autoConnect: false,
             transports: ['websocket'],
+            path: '/socket.io', // ensures it matches NestJS default
         });
     }
 
@@ -33,5 +37,3 @@ export function disconnectSocket() {
         socketInstance.disconnect();
     }
 }
-
-
