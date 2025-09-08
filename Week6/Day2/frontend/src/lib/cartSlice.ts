@@ -111,7 +111,7 @@ const cartSlice = createSlice({
             state.items.forEach(cartItem => {
                 const product = action.payload.find(p => p._id === cartItem.productId);
                 if (product) {
-                    const variant = product.variants.find(v => v._id === cartItem.variantId);
+                    const variant = product.variants?.find(v => v._id === cartItem.variantId);
                     if (variant) {
                         if (cartItem.purchaseMethod === 'points') {
                             totalPoints += (variant.pointsPrice || 0) * cartItem.qty;
