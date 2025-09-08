@@ -101,7 +101,7 @@ function SocketBridge({ children }: { children: React.ReactNode }) {
         store.dispatch(addNotification(payload));
         // Refresh cart to update stock status
         store.dispatch(api.endpoints.getCart.initiate());
-        toast.error(`⚠️ ${payload.title}`, {
+        toast.error(`${payload.title}`, {
           duration: 5000,
           position: 'top-right',
         });

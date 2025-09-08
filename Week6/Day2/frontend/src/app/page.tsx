@@ -25,9 +25,14 @@ export default function HomePage() {
     const testAPI = async () => {
       try {
         console.log("Testing API manually...");
-        const response = await fetch('http://localhost:5000/products');
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/products`
+        );
         const data = await response.json();
-        console.log("Manual API test result:", { status: response.status, data: data.slice(0, 2) });
+        console.log("Manual API test result:", {
+          status: response.status,
+          data: data.slice(0, 2),
+        });
       } catch (err) {
         console.error("Manual API test failed:", err);
       }
@@ -36,36 +41,45 @@ export default function HomePage() {
   }, []);
 
   const mapToCard = (p: any) => {
-    // Get the first variant (or use product directly if no variants)
     const variant = p?.variants?.[0];
 
-    // Extract image - prioritize variant images, then product image, then fallback
-    const firstImage = variant?.images?.[0] || p?.image || p?.images?.[0] || "/shirt.png";
+    const firstImage =
+      variant?.images?.[0] || p?.image || p?.images?.[0] || "/shirt.png";
 
-    // Extract price - prioritize sale price, then regular price, then fallback
-    const price = variant?.salePrice ?? variant?.regularPrice ?? p?.price ?? p?.salePrice ?? p?.regularPrice ?? 0;
+    const price =
+      variant?.salePrice ??
+      variant?.regularPrice ??
+      p?.price ??
+      p?.salePrice ??
+      p?.regularPrice ??
+      0;
 
-    // Extract old price - if there's a sale, use regular price as old price
-    const oldPrice = variant?.salePrice && variant?.regularPrice ? variant.regularPrice :
-      p?.salePrice && p?.regularPrice ? p.regularPrice : undefined;
+    const oldPrice =
+      variant?.salePrice && variant?.regularPrice
+        ? variant.regularPrice
+        : p?.salePrice && p?.regularPrice
+        ? p.regularPrice
+        : undefined;
 
-    // Calculate discount
-    const discount = oldPrice && price ? Math.max(0, Math.round(((oldPrice - price) / oldPrice) * 100)) : undefined;
+    const discount =
+      oldPrice && price
+        ? Math.max(0, Math.round(((oldPrice - price) / oldPrice) * 100))
+        : undefined;
 
-    // Extract rating - calculate average from reviews if available
-    const rating = p?.reviews?.length > 0 
-      ? p.reviews.reduce((sum: number, review: any) => sum + (review.rating || 0), 0) / p.reviews.length
-      : p?.rating || 0;
+    const rating =
+      p?.reviews?.length > 0
+        ? p.reviews.reduce(
+            (sum: number, review: any) => sum + (review.rating || 0),
+            0
+          ) / p.reviews.length
+        : p?.rating || 0;
 
-    // Extract loyalty points
     const loyaltyPoints = variant?.pointsPrice ?? p?.pointsPrice;
-
-    // Get variant ID for proper linking
     const variantId = variant?._id;
 
     return {
       _id: p._id || p.id,
-      name: p.name || 'Unnamed Product',
+      name: p.name || "Unnamed Product",
       image: firstImage,
       price,
       oldPrice,
@@ -86,17 +100,21 @@ export default function HomePage() {
       {/* Container for rest */}
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         {isLoading && (
-          <div className="py-12 text-center text-gray-500">Loading products…</div>
+          <div className="py-12 text-center text-gray-500">
+            Loading products…
+          </div>
         )}
         {isError && (
           <div className="py-12 text-center text-red-500">
-            Failed to load products. Error: {error?.status || 'Unknown error'}
+            Failed to load products. Error: {error?.status || "Unknown error"}
             <br />
             <small>Check console for details</small>
           </div>
         )}
         {!isLoading && !isError && products && products.length === 0 && (
-          <div className="py-12 text-center text-gray-500">No products found in database.</div>
+          <div className="py-12 text-center text-gray-500">
+            No products found in database.
+          </div>
         )}
         {!isLoading && !isError && products && products.length > 0 && (
           <>

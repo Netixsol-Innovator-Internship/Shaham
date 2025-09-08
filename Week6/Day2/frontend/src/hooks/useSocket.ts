@@ -13,13 +13,11 @@ export const useSocket = () => {
     const connect = useCallback(() => {
         if (!token || socketRef.current?.connected) return;
 
-        const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:5000';
+        const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL as string;
 
         socketRef.current = io(socketUrl, {
-            auth: {
-                token: token
-            },
-            transports: ['websocket', 'polling']
+            auth: { token },
+            transports: ['websocket', 'polling'],
         });
 
         // Connection events

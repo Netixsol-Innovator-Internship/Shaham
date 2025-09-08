@@ -3,8 +3,8 @@ import { io, Socket } from 'socket.io-client';
 let socketInstance: Socket | null = null;
 
 export function getSocket(auth?: { userId?: string | null; admin?: boolean }) {
-    const base = process.env.NEXT_PUBLIC_SOCKET_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-    const url = base.replace(/\/$/, '') + '/realtime';
+    const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || 'ws://localhost:5000';
+    const url = socketUrl.replace(/\/$/, '') + '/realtime';
 
     if (!socketInstance) {
         socketInstance = io(url, {
