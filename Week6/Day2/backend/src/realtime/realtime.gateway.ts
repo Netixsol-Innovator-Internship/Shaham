@@ -17,6 +17,7 @@ import { Server, Socket } from 'socket.io';
     origin: [
       'http://localhost:3001',
       'http://localhost:3000',
+      'https://shahamweek6day2frontend-production.up.railway.app',
       process.env.FRONTEND_ORIGIN
     ].filter(Boolean),
     methods: ['GET', 'POST'],

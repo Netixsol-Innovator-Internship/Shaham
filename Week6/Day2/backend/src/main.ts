@@ -14,43 +14,53 @@ if (!globalThis.crypto) {
 }
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  try {
+    console.log('Starting application bootstrap...');
+    console.log('Environment:', process.env.NODE_ENV);
+    console.log('MongoDB URI exists:', !!process.env.MONGO_URI);
+    
+    const app = await NestFactory.create(AppModule);
+    console.log('NestJS application created successfully');
 
-  app.use(cookieParser());
+    app.use(cookieParser());
 
-  // Enable HTTP CORS
-  const allowedOrigins = [
-    'http://localhost:3001',
-    'http://localhost:3000',
-    process.env.FRONTEND_ORIGIN
-  ].filter(Boolean);
+    // Enable HTTP CORS
+    const allowedOrigins = [
+      'http://localhost:3001',
+      'http://localhost:3000',
+      'https://shahamweek6day2frontend-production.up.railway.app',
+      process.env.FRONTEND_ORIGIN
+    ].filter(Boolean);
 
-  app.enableCors({
-    origin: allowedOrigins,
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
-    exposedHeaders: ['Authorization'],
-  });
+    console.log('Allowed CORS origins:', allowedOrigins);
 
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
-
-  // Configure Socket.IO adapter with CORS for frontend
-  const ioAdapter = new IoAdapter(app);
-  ioAdapter.createIOServer = (port: number, options?: any) => {
-    const corsOptions = {
-      origin: process.env.FRONTEND_ORIGIN || 'http://localhost:3001',
-      methods: ['GET', 'POST'],
+    app.enableCors({
+      origin: allowedOrigins,
       credentials: true,
-    };
-    const server = require('socket.io')(port, { ...options, cors: corsOptions });
-    return server;
-  };
-  app.useWebSocketAdapter(ioAdapter);
+      methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+      exposedHeaders: ['Authorization'],
+    });
 
-  const port = process.env.PORT || 5000;
-  await app.listen(port);
-  console.log(`Server started on http://localhost:${port}`);
-  console.log(`WebSocket server ready for Socket.IO connections`);
+    app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+
+    // Configure Socket.IO adapter with CORS for frontend
+    app.useWebSocketAdapter(new IoAdapter(app));
+    console.log('Socket.IO adapter configured');
+
+    const port = process.env.PORT || 5000;
+    await app.listen(port, '0.0.0.0');
+    console.log(`✅ Server started successfully on port ${port}`);
+    console.log(`✅ WebSocket server ready for Socket.IO connections`);
+    console.log(`✅ Health check available at: http://localhost:${port}/health`);
+  } catch (error) {
+    console.error('❌ Failed to start server:', error);
+    console.error('Error stack:', error.stack);
+    process.exit(1);
+  }
 }
-bootstrap();
+
+bootstrap().catch(error => {
+  console.error('❌ Bootstrap failed:', error);
+  process.exit(1);
+});
