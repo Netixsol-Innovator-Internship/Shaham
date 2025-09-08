@@ -52,7 +52,7 @@ export class SalesService {
 
     // If sale starts immediately, activate it
     if (startAt <= now) {
-      await this.notifications.createSaleNotification(sale);
+      await this.notifications.createSaleStartedNotification(sale);
       this.emitSaleEvent('sale:started', sale);
       this.logger.log(`Sale "${sale.title}" started immediately`);
     } else {
@@ -118,6 +118,7 @@ export class SalesService {
   async endSale(saleId: string) {
     const sale = await this.saleModel.findByIdAndUpdate(saleId, { active: false }, { new: true });
     if (sale) {
+      await this.notifications.createSaleEndedNotification(sale);
       this.emitSaleEvent('sale:ended', sale);
     }
     return sale;
@@ -141,7 +142,7 @@ export class SalesService {
         active: true, 
         isScheduled: false 
       });
-      await this.notifications.createSaleNotification(sale);
+      await this.notifications.createSaleStartedNotification(sale);
       this.emitSaleEvent('sale:started', sale);
       this.logger.log(`Sale "${sale.title}" has been activated`);
     }
@@ -154,6 +155,7 @@ export class SalesService {
 
     for (const sale of salesToEnd) {
       await this.saleModel.findByIdAndUpdate(sale._id, { active: false });
+      await this.notifications.createSaleEndedNotification(sale);
       this.emitSaleEvent('sale:ended', sale);
       this.logger.log(`Sale "${sale.title}" has ended`);
     }

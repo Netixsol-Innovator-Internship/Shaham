@@ -37,7 +37,7 @@ function SocketBridge({ children }: { children: React.ReactNode }) {
       if (isAuthenticated) {
         store.dispatch(addNotification(payload));
       }
-      toast.success(`🎉 ${payload.title} is now live! ${payload.discountPercentage}% OFF`, {
+      toast.success(`🎉 ${payload.title} is now live!`, {
         duration: 5000,
         position: 'top-center',
       });
@@ -47,10 +47,59 @@ function SocketBridge({ children }: { children: React.ReactNode }) {
       console.log('Sale ended event received:', payload);
       // Invalidate sale queries for real-time updates
       store.dispatch(api.util.invalidateTags(['Sale']));
+      if (isAuthenticated) {
+        store.dispatch(addNotification(payload));
+      }
       toast(`⏰ ${payload.title} has ended`, {
         duration: 4000,
         position: 'top-center',
       });
+    };
+
+    const onNewProduct = (payload: any) => {
+      console.log('New product event received:', payload);
+      // Invalidate product queries for real-time updates
+      store.dispatch(api.util.invalidateTags(['Product']));
+      if (isAuthenticated) {
+        store.dispatch(addNotification(payload));
+        toast.success(`🆕 ${payload.title}`, {
+          duration: 4000,
+          position: 'top-right',
+        });
+      }
+    };
+
+    const onRoleUpdated = (payload: any) => {
+      console.log('Role updated event received:', payload);
+      if (isAuthenticated && payload.userId === user?.id) {
+        store.dispatch(addNotification(payload));
+        // Refresh user profile to get updated role
+        store.dispatch(api.endpoints.getProfile.initiate());
+        if (payload.payload?.isPromotion) {
+          toast.success(`🎉 ${payload.title}`, {
+            duration: 6000,
+            position: 'top-center',
+          });
+        } else {
+          toast(`👤 ${payload.title}`, {
+            duration: 4000,
+            position: 'top-right',
+          });
+        }
+      }
+    };
+
+    const onProductSoldOut = (payload: any) => {
+      console.log('Product sold out event received:', payload);
+      if (isAuthenticated && payload.userId === user?.id) {
+        store.dispatch(addNotification(payload));
+        // Refresh cart to update stock status
+        store.dispatch(api.endpoints.getCart.initiate());
+        toast.error(`⚠️ ${payload.title}`, {
+          duration: 5000,
+          position: 'top-right',
+        });
+      }
     };
     
     const onPointsUpdated = (payload: { userId: string; points: number }) => {
@@ -59,15 +108,18 @@ function SocketBridge({ children }: { children: React.ReactNode }) {
       }
     };
 
-    // Always listen for sale events
+    // Always listen for sale events and new products
     socket.on("sale:started", onSaleStarted);
     socket.on("sale:ended", onSaleEnded);
+    socket.on("new_product", onNewProduct);
     
     // Only listen for auth-specific events if authenticated
     if (isAuthenticated && token) {
       socket.on("notifications:new", onNewNotification);
       socket.on("loyalty:points_updated", onPointsUpdated);
       socket.on("notification", onNewNotification);
+      socket.on("role_updated", onRoleUpdated);
+      socket.on("product_sold_out", onProductSoldOut);
 
       // Initial fetch: notifications and profile refresh
       store.dispatch(api.endpoints.getNotifications.initiate());
@@ -78,10 +130,13 @@ function SocketBridge({ children }: { children: React.ReactNode }) {
       const s = getSocket();
       s.off("sale:started", onSaleStarted);
       s.off("sale:ended", onSaleEnded);
+      s.off("new_product", onNewProduct);
       if (isAuthenticated) {
         s.off("notifications:new", onNewNotification);
         s.off("loyalty:points_updated", onPointsUpdated);
         s.off("notification", onNewNotification);
+        s.off("role_updated", onRoleUpdated);
+        s.off("product_sold_out", onProductSoldOut);
       }
     };
   }, [isAuthenticated, token, user?.id, user?.role]);

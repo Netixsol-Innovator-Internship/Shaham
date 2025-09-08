@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Product, ProductDocument } from './schemas/product.schema';
 import { Variant, VariantDocument } from '../variants/schemas/variants.schema';
 import { SizeStock, SizeStockDocument } from '../sizestocks/schemas/sizestocks.schema';
+import { NotificationsService } from '../notifications/notifications.service';
 import { Model, Types } from 'mongoose';
 
 // Product with populated variants and sizes
@@ -16,6 +17,7 @@ export class ProductsService {
     @InjectModel(Product.name) private productModel: Model<ProductDocument>,
     @InjectModel(Variant.name) private variantModel: Model<VariantDocument>,
     @InjectModel(SizeStock.name) private sizeStockModel: Model<SizeStockDocument>,
+    private notifications: NotificationsService,
   ) { }
 
   // --- helper: attach variants with sizes ---
@@ -69,7 +71,12 @@ export class ProductsService {
   }
 
   async createProduct(data: any) {
-    return this.productModel.create(data);
+    const product = await this.productModel.create(data);
+    
+    // Emit notification for new product
+    await this.notifications.createNewProductNotification(product);
+    
+    return product;
   }
 
   async updateProduct(id: string, productData: any) {

@@ -8,6 +8,7 @@ import { Product, ProductSchema } from './schemas/product.schema';
 import { Variant, VariantSchema } from '../variants/schemas/variants.schema';
 import { SizeStock, SizeStockSchema } from '../sizestocks/schemas/sizestocks.schema';
 import { AuthModule } from '../auth/auth.module';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { AuthModule } from '../auth/auth.module';
     ]),
     PassportModule,
     AuthModule,
+    NotificationsModule,
   ],
   providers: [ProductsService],
   controllers: [ProductsController, AdminProductsController],

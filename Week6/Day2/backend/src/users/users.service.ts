@@ -2,11 +2,15 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.schema';
+import { NotificationsService } from '../notifications/notifications.service';
 import { LOYALTY_CONSTANTS } from '../common/constants/loyalty.constants';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<User>,
+    private notifications: NotificationsService,
+  ) {}
 
   async findById(id: string) {
     return this.userModel.findById(id).select('-passwordHash -otp -otpExpiresAt -otpRequestedAt').lean();
@@ -81,11 +85,22 @@ export class UsersService {
       throw new Error('Invalid role');
     }
     
-    return this.userModel.findByIdAndUpdate(
+    // Get current user to check old role
+    const currentUser = await this.userModel.findById(userId).select('role').lean();
+    const oldRole = currentUser?.role || 'user';
+    
+    const updatedUser = await this.userModel.findByIdAndUpdate(
       userId,
       { role },
       { new: true }
     ).select('-password');
+    
+    // Emit notification for role change
+    if (updatedUser && oldRole !== role) {
+      await this.notifications.createRoleUpdateNotification(userId, role, oldRole);
+    }
+    
+    return updatedUser;
   }
 
   async updateUserBlockStatus(userId: string, isBlocked: boolean) {

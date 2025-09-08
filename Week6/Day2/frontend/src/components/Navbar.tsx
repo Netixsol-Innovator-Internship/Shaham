@@ -12,6 +12,7 @@ import {
   ChevronDown,
   X,
 } from "lucide-react";
+import NotificationIcon from "./NotificationIcon";
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -83,6 +84,9 @@ export default function Navbar() {
             <button className="md:hidden">
               <Search className="w-6 h-6" />
             </button>
+
+            {/* Notifications */}
+            <NotificationIcon />
 
             {/* Cart → Link to /cart */}
             <Link href="/cart" className="hover:text-gray-600">
