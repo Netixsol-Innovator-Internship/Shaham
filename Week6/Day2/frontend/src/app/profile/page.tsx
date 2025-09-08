@@ -429,7 +429,7 @@ export default function ProfilePage() {
       setFormData({
         name: profile.name || "",
         email: profile.email || "",
-        address: profile.addresses || "",
+        address: profile.address || "",
         loyaltyPoints: profile.loyaltyPoints || 0,
       });
     }

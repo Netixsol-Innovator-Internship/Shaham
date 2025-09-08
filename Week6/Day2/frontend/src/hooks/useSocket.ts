@@ -2,7 +2,8 @@ import { useEffect, useRef, useCallback } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
-import { addNotification, updateLoyaltyPoints } from '@/lib/store';
+import { addNotification } from '@/lib/notificationSlice';
+import { updateLoyaltyPoints } from '@/lib/authSlice';
 import type { SocketEvents } from '@/types';
 
 export const useSocket = () => {

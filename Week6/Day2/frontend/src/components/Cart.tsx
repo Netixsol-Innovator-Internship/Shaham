@@ -165,7 +165,7 @@ const Cart: FC = () => {
       )}
       {isError && (
         <div className="text-center text-red-500 py-8">
-          Failed to load cart. Error: {error?.status || 'Unknown error'}
+          Failed to load products. Error: {'status' in error ? error.status : "Unknown error"}
           <br />
           <small>Check console for details</small>
         </div>

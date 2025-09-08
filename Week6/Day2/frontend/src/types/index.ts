@@ -7,6 +7,8 @@ export interface User {
     loyaltyPoints: number;
     verified: boolean;
     blocked: boolean;
+    mobile?: string;
+    address?: string;
     addresses: Address[];
     orders: string[];
     cart: CartItem[];
