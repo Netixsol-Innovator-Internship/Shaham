@@ -19,8 +19,14 @@ async function bootstrap() {
   app.use(cookieParser());
 
   // Enable HTTP CORS
+  const allowedOrigins = [
+    'http://localhost:3001',
+    'http://localhost:3000',
+    process.env.FRONTEND_ORIGIN
+  ].filter(Boolean);
+
   app.enableCors({
-    origin: process.env.FRONTEND_ORIGIN || 'http://localhost:3001',
+    origin: allowedOrigins,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],

@@ -14,7 +14,11 @@ import { Server, Socket } from 'socket.io';
 // NOTE: CORS is permissive by default; tighten in production via environment
 @WebSocketGateway({
   cors: {
-    origin: process.env.FRONTEND_ORIGIN || 'http://localhost:3001',
+    origin: [
+      'http://localhost:3001',
+      'http://localhost:3000',
+      process.env.FRONTEND_ORIGIN
+    ].filter(Boolean),
     methods: ['GET', 'POST'],
     credentials: true,
   },
