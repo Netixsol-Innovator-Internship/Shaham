@@ -10,11 +10,17 @@ import { addNotification } from "@/lib/notificationSlice";
 import { updateLoyaltyPoints } from "@/lib/authSlice";
 import { api } from "@/lib/api";
 import toast from "react-hot-toast";
+import { useStockSocket } from "@/hooks/useStockSocket";
+import { useAdminSocket } from "@/hooks/useAdminSocket";
 
 function SocketBridge({ children }: { children: React.ReactNode }) {
   const token = useSelector((s: RootState) => s.auth.token);
   const isAuthenticated = useSelector((s: RootState) => s.auth.isAuthenticated);
   const user = useSelector((s: RootState) => s.auth.user);
+  
+  // Initialize socket hooks for real-time updates
+  useStockSocket();
+  useAdminSocket();
 
   useEffect(() => {
     // Connect socket regardless of auth status for sale events

@@ -4,6 +4,7 @@ import { SizeStock } from './schemas/sizestocks.schema';
 import { Model, Types } from 'mongoose';
 import { VariantsService } from '../variants/variants.service';
 import { NotificationsService } from '../notifications/notifications.service';
+import { emitRealtime } from '../realtime/realtime.util';
 
 @Injectable()
 export class SizeStockService {
@@ -22,7 +23,13 @@ export class SizeStockService {
   }
 
   async update(id: string, data: Partial<{ stock: number; size: string }>) {
-    return this.sizeModel.findByIdAndUpdate(id, data, { new: true });
+    const updated = await this.sizeModel.findByIdAndUpdate(id, data, { new: true });
+    
+    if (updated && data.stock !== undefined) {
+      await this.emitStockUpdate(updated);
+    }
+    
+    return updated;
   }
 
   async listByVariant(variantId: string) {
@@ -38,12 +45,42 @@ export class SizeStockService {
   async decrementStock(sizeStockId: string, qty = 1) {
     const updated = await this.sizeModel.findByIdAndUpdate(sizeStockId, { $inc: { stock: -Math.abs(qty) } }, { new: true });
     
-    // Check if item went out of stock and notify users with this item in cart
-    if (updated && updated.stock <= 0) {
-      await this.notifyUsersOfOutOfStock(sizeStockId);
+    if (updated) {
+      // Emit real-time stock update
+      await this.emitStockUpdate(updated);
+      
+      // Check if item went out of stock and notify users with this item in cart
+      if (updated.stock <= 0) {
+        await this.notifyUsersOfOutOfStock(sizeStockId);
+      }
     }
     
     return updated;
+  }
+
+  private async emitStockUpdate(sizeStock: any) {
+    try {
+      const variant = await this.variants.findById(sizeStock.variantId.toString());
+      if (variant) {
+        const stockUpdateData = {
+          sizeStockId: sizeStock._id,
+          variantId: variant._id,
+          productId: variant.productId,
+          size: sizeStock.size,
+          stock: sizeStock.stock,
+          color: variant.color,
+          isOutOfStock: sizeStock.stock <= 0
+        };
+        
+        // Emit to all users for real-time stock updates
+        emitRealtime('stock:updated', stockUpdateData);
+        
+        // Also emit to admins for dashboard updates
+        emitRealtime('admin:stock_updated', stockUpdateData, 'admins');
+      }
+    } catch (error) {
+      console.error('Failed to emit stock update:', error);
+    }
   }
 
   private async notifyUsersOfOutOfStock(sizeStockId: string) {
@@ -55,14 +92,12 @@ export class SizeStockService {
       
       if (variant) {
         // Emit socket event for real-time updates
-        const globalEmit = (globalThis as any).__realtimeEmit;
-        if (globalEmit) {
-          globalEmit('product:sold_out', {
-            sizeStockId,
-            variantId: variant._id,
-            productName: `${variant.color} - Size ${sizeStock.size}`
-          });
-        }
+        emitRealtime('product:sold_out', {
+          sizeStockId,
+          variantId: variant._id,
+          productId: variant.productId,
+          productName: `${variant.color} - Size ${sizeStock.size}`
+        });
       }
     } catch (error) {
       console.error('Failed to notify users of out-of-stock item:', error);

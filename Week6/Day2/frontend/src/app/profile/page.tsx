@@ -159,10 +159,10 @@ export default function ProfilePage() {
         filterDate.setDate(now.getDate() - 7);
         break;
       case 'monthly':
-        filterDate.setMonth(now.getMonth() - 1);
+        filterDate.setMonth(now.getMonth() - 12); // Show last 12 months
         break;
       case 'yearly':
-        filterDate.setFullYear(now.getFullYear() - 1);
+        filterDate.setFullYear(now.getFullYear() - 5); // Show last 5 years
         break;
     }
     
@@ -171,8 +171,7 @@ export default function ProfilePage() {
 
   // Generate sales chart data
   const salesChartData = useMemo(() => {
-    if (!filteredOrders.length) return [];
-    
+    // Always generate data points even if no orders exist
     const periods = analyticsPeriod === 'weekly' ? 7 : analyticsPeriod === 'monthly' ? 12 : 5;
     const data = [];
     

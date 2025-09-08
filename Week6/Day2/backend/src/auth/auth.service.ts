@@ -5,6 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
 import { User } from '../users/schemas/user.schema';
 import { MailService } from '../utils/mail.service';
+import { emitRealtime } from '../realtime/realtime.util';
 
 function genOTP(len = 6) {
   const digits = '0123456789';
@@ -49,6 +50,15 @@ export class AuthService {
       'Verify your account',
       `Your OTP: ${otp}. It expires in 5 minutes.`,
     );
+
+    // Emit admin dashboard event for new user registration
+    emitRealtime('admin:new_user_registered', {
+      userId: created._id,
+      name: created.name,
+      email: created.email,
+      registeredAt: new Date(),
+      verified: false
+    }, 'admins');
 
     return { message: 'Registered. Verify OTP sent to email.' };
   }
