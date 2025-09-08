@@ -1,11 +1,13 @@
 "use client";
 import { FC, useMemo } from "react";
 import Item from "./Item";
-import { useGetCartQuery, useUpdateCartItemMutation, useRemoveFromCartMutation } from "@/lib/api";
+import { useGetCartQuery, useUpdateCartItemMutation, useRemoveFromCartMutation, useGetCurrentSaleQuery } from "@/lib/api";
+import { calculateSalePrice } from "@/lib/saleUtils";
 import toast from "react-hot-toast";
 
 const Cart: FC = () => {
   const { data, isLoading, isError, error } = useGetCartQuery();
+  const { data: currentSale } = useGetCurrentSaleQuery();
   
   // Debug authentication
   console.log("Cart query state:", { data, isLoading, isError, error });
@@ -17,19 +19,28 @@ const Cart: FC = () => {
     console.log("Cart data received:", data);
     const list = data?.items || [];
     console.log("Cart items:", list);
-    return list.map((it: any) => ({
-      id: `${it.productId}:${it.variantId}:${it.sizeStockId}:${it.purchaseMethod}`,
-      image: it.image || "/shirt.png",
-      name: it.name || "Product",
-      size: it.size || "",
-      color: it.color || "",
-      price: it.moneyPrice || it.pointsPrice || 0,
-      qty: it.qty || 1,
-      purchaseMethod: it.purchaseMethod,
-      pointsPrice: it.pointsPrice,
-      raw: it,
-    }));
-  }, [data]);
+    return list.map((it: any) => {
+      // Calculate sale pricing for money purchases
+      const regularPrice = it.moneyPrice || 0;
+      const pricing = calculateSalePrice(regularPrice, it.productId, currentSale);
+      
+      return {
+        id: `${it.productId}:${it.variantId}:${it.sizeStockId}:${it.purchaseMethod}`,
+        image: it.image || "/shirt.png",
+        name: it.name || "Product",
+        size: it.size || "",
+        color: it.color || "",
+        price: it.purchaseMethod === 'money' ? pricing.salePrice : (it.pointsPrice || 0),
+        originalPrice: it.purchaseMethod === 'money' && pricing.isOnSale ? pricing.originalPrice : undefined,
+        isOnSale: it.purchaseMethod === 'money' ? pricing.isOnSale : false,
+        discountPercentage: it.purchaseMethod === 'money' ? pricing.discountPercentage : undefined,
+        qty: it.qty || 1,
+        purchaseMethod: it.purchaseMethod,
+        pointsPrice: it.pointsPrice,
+        raw: it,
+      };
+    });
+  }, [data, currentSale]);
 
   const increaseQty = async (id: string) => {
     const it = items.find(i => i.id === id)?.raw;

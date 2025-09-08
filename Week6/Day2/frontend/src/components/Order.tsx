@@ -4,13 +4,16 @@ import {
   useCheckoutMutation,
   useGetCartQuery,
   useGetPointsBalanceQuery,
+  useGetCurrentSaleQuery,
 } from "@/lib/api";
+import { calculateSalePrice } from "@/lib/saleUtils";
 import toast from "react-hot-toast";
 
 const Order: FC = () => {
   const [promo, setPromo] = useState("");
   const { data: cart } = useGetCartQuery();
   const { data: pointsData } = useGetPointsBalanceQuery();
+  const { data: currentSale } = useGetCurrentSaleQuery();
   const [checkout, { isLoading }] = useCheckoutMutation();
   
   const userPointsBalance = pointsData?.loyaltyPoints || 0;
@@ -18,11 +21,18 @@ const Order: FC = () => {
   const subtotal = useMemo(() => {
     return (cart?.items || []).reduce((sum: number, it: any) => {
       // If purchase with points → price is 0 (handled separately)
-      const price =
-        it.purchaseMethod === "points" ? 0 : it.moneyPrice || 0;
-      return sum + price * (it.qty || 1);
+      if (it.purchaseMethod === "points") {
+        return sum;
+      }
+      
+      // Calculate sale price for money purchases
+      const originalPrice = it.moneyPrice || 0;
+      const saleInfo = calculateSalePrice(originalPrice, it.productId, currentSale);
+      const finalPrice = saleInfo.salePrice;
+      
+      return sum + finalPrice * (it.qty || 1);
     }, 0);
-  }, [cart]);
+  }, [cart, currentSale]);
 
   const loyaltySubtotal = useMemo(() => {
     return (cart?.items || []).reduce((sum: number, it: any) => {

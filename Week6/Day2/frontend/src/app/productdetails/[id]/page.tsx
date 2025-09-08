@@ -5,7 +5,8 @@ import ProductInfo from "@/components/ProductInfo";
 import ProductTabs from "@/components/ProductTabs";
 import AlsoLike from "@/components/AlsoLike";
 import { useParams, useSearchParams } from "next/navigation";
-import { useGetProductQuery, useAddToCartMutation } from "@/lib/api";
+import { useGetProductQuery, useAddToCartMutation, useGetCurrentSaleQuery } from "@/lib/api";
+import { calculateSalePrice } from "@/lib/saleUtils";
 import toast from "react-hot-toast";
 
 const ProductDetailsPage = () => {
@@ -15,6 +16,7 @@ const ProductDetailsPage = () => {
   const variantIdFromURL = searchParams.get("variantId");
 
   const { data: product } = useGetProductQuery(productId, { skip: !productId });
+  const { data: currentSale } = useGetCurrentSaleQuery();
   const [addToCart] = useAddToCartMutation();
 
   const [selectedVariant, setSelectedVariant] = useState<any>(null);
@@ -54,18 +56,13 @@ const ProductDetailsPage = () => {
     }
   }, [selectedVariant, sizeStocks]);
 
-  const price =
-    selectedVariant?.salePrice ??
-    selectedVariant?.regularPrice ??
-    product?.pointsPrice ??
-    0;
-
-  const oldPrice = selectedVariant?.salePrice
-    ? selectedVariant?.regularPrice
-    : undefined;
-
-  const discount =
-    oldPrice && price ? Math.round(((oldPrice - price) / oldPrice) * 100) : undefined;
+  // Calculate sale pricing using the sale utility
+  const regularPrice = selectedVariant?.regularPrice ?? 0;
+  const pricing = calculateSalePrice(regularPrice, productId, currentSale);
+  
+  const price = pricing.salePrice;
+  const oldPrice = pricing.isOnSale ? pricing.originalPrice : undefined;
+  const discount = pricing.isOnSale ? pricing.discountPercentage : undefined;
 
   const handleAddToCart = async ({
     productId,

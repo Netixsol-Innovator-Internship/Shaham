@@ -9,6 +9,9 @@ type ItemProps = {
   size: string;
   color: string;
   price: number;
+  originalPrice?: number;
+  isOnSale?: boolean;
+  discountPercentage?: number;
   qty: number;
   purchaseMethod?: 'money' | 'points' | 'hybrid';
   pointsPrice?: number;
@@ -25,6 +28,9 @@ const Item: FC<ItemProps> = ({
   size,
   color,
   price,
+  originalPrice,
+  isOnSale,
+  discountPercentage,
   qty,
   purchaseMethod,
   pointsPrice,
@@ -75,8 +81,20 @@ const Item: FC<ItemProps> = ({
               </div>
             ) : (
               <div className="flex items-center gap-2">
-                <p className="font-bold">${price}</p>
-                <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">Money Only</span>
+                {isOnSale && originalPrice ? (
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className="font-bold text-red-600">${price}</p>
+                    <p className="text-sm text-gray-400 line-through">${originalPrice}</p>
+                    <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">
+                      -{discountPercentage}% OFF
+                    </span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <p className="font-bold">${price}</p>
+                    <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">Money Only</span>
+                  </div>
+                )}
               </div>
             )}
           </div>
