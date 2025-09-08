@@ -106,7 +106,7 @@ export default function HomePage() {
         )}
         {isError && (
           <div className="py-12 text-center text-red-500">
-            Failed to load products. Error: {error?.status || "Unknown error"}
+            Failed to load products. Error: {'status' in error ? error.status : "Unknown error"}
             <br />
             <small>Check console for details</small>
           </div>
