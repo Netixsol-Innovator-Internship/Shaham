@@ -5,7 +5,13 @@ import { ValidationPipe } from '@nestjs/common';
 import { IoAdapter } from '@nestjs/platform-socket.io';
 import cookieParser from 'cookie-parser';
 dotenv.config();
+import { randomUUID } from "crypto";
 
+if (!globalThis.crypto) {
+  globalThis.crypto = {
+    randomUUID,
+  } as unknown as Crypto;
+}
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
